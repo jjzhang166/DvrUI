@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/">
+        <file>camera.jpg</file>
+        <file>camera.png</file>
+        <file>camera2.png</file>
+        <file>change.png</file>
+        <file>frontCamera.png</file>
+        <file>GPS.png</file>
+        <file>light.png</file>
+        <file>lock.png</file>
+        <file>movie1.png</file>
+        <file>picture.png</file>
+        <file>picture1.png</file>
+        <file>play.png</file>
+        <file>rearCamera.png</file>
+        <file>record.png</file>
+        <file>return.png</file>
+        <file>reverseline1.png</file>
+        <file>reverseline2.png</file>
+        <file>setting.png</file>
+        <file>voice.png</file>
+    </qresource>
+</RCC>
