@@ -31,8 +31,8 @@
     <rect>
      <x>220</x>
      <y>500</y>
-     <width>80</width>
-     <height>80</height>
+     <width>81</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -47,8 +47,8 @@
     <rect>
      <x>320</x>
      <y>500</y>
-     <width>80</width>
-     <height>80</height>
+     <width>81</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -63,8 +63,8 @@
     <rect>
      <x>430</x>
      <y>500</y>
-     <width>80</width>
-     <height>80</height>
+     <width>81</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -79,8 +79,8 @@
     <rect>
      <x>530</x>
      <y>500</y>
-     <width>80</width>
-     <height>80</height>
+     <width>81</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -95,8 +95,8 @@
     <rect>
      <x>630</x>
      <y>500</y>
-     <width>80</width>
-     <height>80</height>
+     <width>81</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -111,28 +111,12 @@
     <rect>
      <x>840</x>
      <y>500</y>
-     <width>80</width>
-     <height>80</height>
+     <width>81</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">background-image:url(:/change.png)</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="cameraView">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1031</width>
-     <height>601</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-image:url(:/picture.png)</string>
    </property>
    <property name="text">
     <string/>
@@ -156,13 +140,35 @@
     <rect>
      <x>629</x>
      <y>10</y>
-     <width>251</width>
-     <height>50</height>
+     <width>241</width>
+     <height>51</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">color:rgb(244, 255, 29);
 font: 75 14pt &quot;Courier 10 Pitch&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="cameraView">
+   <property name="geometry">
+    <rect>
+     <x>-1</x>
+     <y>-1</y>
+     <width>1031</width>
+     <height>601</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image:url(:/picture.png)</string>
    </property>
    <property name="text">
     <string/>
@@ -178,6 +184,14 @@ font: 75 14pt &quot;Courier 10 Pitch&quot;;</string>
   <zorder>camera_change_Button</zorder>
   <zorder>pushButton_8</zorder>
   <zorder>time_Label</zorder>
+  <zorder>horizontalSpacer</zorder>
+  <zorder>horizontalSpacer_2</zorder>
+  <zorder>horizontalSpacer_3</zorder>
+  <zorder>horizontalSpacer_4</zorder>
+  <zorder>horizontalSpacer_5</zorder>
+  <zorder>horizontalSpacer_6</zorder>
+  <zorder>horizontalSpacer_7</zorder>
+  <zorder>horizontalSpacer_8</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

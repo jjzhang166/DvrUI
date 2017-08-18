@@ -11,6 +11,7 @@ ADAS::ADAS(QWidget *parent) :
     front_ADAS_label->setBaseSize(60,20);
     front_ADAS_label->setStyleSheet(tr("background-image: url(:/frontCamera.png);"));
     QVBoxLayout *vbox2 = new QVBoxLayout;
+    vbox2->addSpacing(25);
     vbox2->addWidget(front_ADAS_label);
     ui->groupBox->setLayout(vbox2);
     connect(front_ADAS_label,SIGNAL(clicked()),this,SLOT(on_pictureLabel2_clicked()));
@@ -18,6 +19,7 @@ ADAS::ADAS(QWidget *parent) :
     rear_ADAS_label->setBaseSize(60,20);
     rear_ADAS_label->setStyleSheet(tr("background-image: url(:/rearCamera.png);"));
     QVBoxLayout *vbox1 = new QVBoxLayout;
+    vbox1->addSpacing(25);
     vbox1->addWidget(rear_ADAS_label);
     ui->groupBox_2->setLayout(vbox1);
     connect(rear_ADAS_label,SIGNAL(clicked()),this,SLOT(on_pictureLabel1_clicked()));

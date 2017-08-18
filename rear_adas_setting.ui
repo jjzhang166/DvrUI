@@ -16,95 +16,138 @@
   <property name="styleSheet">
    <string notr="true">font: 75 10pt &quot;微软雅黑&quot;;</string>
   </property>
-  <widget class="QPushButton" name="returnButton">
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>90</y>
+     <width>90</width>
+     <height>251</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <spacer name="horizontalSpacer_7">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>88</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer_6">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>78</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>360</y>
-     <width>51</width>
-     <height>51</height>
+     <y>30</y>
+     <width>635</width>
+     <height>30</height>
     </rect>
    </property>
-   <property name="styleSheet">
-    <string notr="true">background-image:url(:/image/image/return.png)</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <widget class="QPushButton" name="titleButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:rgb(71, 154, 255)</string>
+      </property>
+      <property name="text">
+       <string>后ADAS设置</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer_4">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>538</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
   </widget>
-  <widget class="QPushButton" name="tittleButton">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>540</x>
-     <y>360</y>
-     <width>101</width>
-     <height>51</height>
+     <x>10</x>
+     <y>80</y>
+     <width>90</width>
+     <height>251</height>
     </rect>
    </property>
-   <property name="styleSheet">
-    <string notr="true">font: 75 10pt &quot;微软雅黑&quot;;</string>
-   </property>
-   <property name="text">
-    <string>下一步</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="nextButton">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>111</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color:rgb(71, 154, 255)</string>
-   </property>
-   <property name="text">
-    <string>后ADAS设置</string>
-   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>78</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>88</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
   </widget>
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>70</y>
-     <width>391</width>
-     <height>311</height>
+     <x>100</x>
+     <y>60</y>
+     <width>421</width>
+     <height>301</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="title">
     <string/>
    </property>
-   <widget class="QGroupBox" name="groupBox_2">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>49</y>
-      <width>31</width>
-      <height>311</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_3">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>310</y>
-      <width>301</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string/>
-    </property>
-   </widget>
    <widget class="Line" name="HorizontalLine">
     <property name="geometry">
      <rect>
@@ -138,88 +181,141 @@ rgb(255, 8, 12)</string>
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QLabel" name="highLabel">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>10</y>
-      <width>21</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 75 10pt &quot;微软雅黑&quot;;</string>
-    </property>
-    <property name="text">
-     <string>高</string>
-    </property>
-   </widget>
-   <widget class="QSlider" name="high_low_Slider">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
       <x>27</x>
-      <y>30</y>
-      <width>20</width>
-      <height>241</height>
+      <y>10</y>
+      <width>31</width>
+      <height>261</height>
      </rect>
     </property>
-    <property name="orientation">
-     <enum>Qt::Vertical</enum>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QLabel" name="highLabel">
+       <property name="styleSheet">
+        <string notr="true">font: 75 10pt &quot;微软雅黑&quot;;</string>
+       </property>
+       <property name="text">
+        <string>高</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="high_low_Slider">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lowLabel">
+       <property name="text">
+        <string>低</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
-   <widget class="QLabel" name="leftLabel">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>81</x>
-      <y>269</y>
-      <width>21</width>
-      <height>16</height>
+      <x>90</x>
+      <y>270</y>
+      <width>291</width>
+      <height>31</height>
      </rect>
     </property>
-    <property name="text">
-     <string>左</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lowLabel">
-    <property name="geometry">
-     <rect>
-      <x>28</x>
-      <y>275</y>
-      <width>16</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>低</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="rightLabel">
-    <property name="geometry">
-     <rect>
-      <x>341</x>
-      <y>271</y>
-      <width>21</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>右</string>
-    </property>
-   </widget>
-   <widget class="QSlider" name="left_right_Slider">
-    <property name="geometry">
-     <rect>
-      <x>101</x>
-      <y>271</y>
-      <width>231</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="leftLabel">
+       <property name="text">
+        <string>左</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="left_right_Slider">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="rightLabel">
+       <property name="text">
+        <string>右</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>380</y>
+     <width>635</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="returnButton">
+      <property name="styleSheet">
+       <string notr="true">background-image:url(:/image/image/return.png)</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>488</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="nextButton">
+      <property name="styleSheet">
+       <string notr="true">font: 75 10pt &quot;微软雅黑&quot;;</string>
+      </property>
+      <property name="text">
+       <string>下一步</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <zorder>splitter_6</zorder>
+  <zorder>horizontalSpacer</zorder>
+  <zorder>horizontalSpacer_4</zorder>
+  <zorder>horizontalSpacer</zorder>
+  <zorder>horizontalSpacer_2</zorder>
+  <zorder>horizontalSpacer_3</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>horizontalSpacer_6</zorder>
  </widget>
  <resources/>
  <connections/>

@@ -9,12 +9,14 @@ ReverseLine::ReverseLine(QWidget *parent) :
     reverse_setting_label=new myLabel();
     reverse_setting_label->setStyleSheet(tr("background-image: url(:/reverseline2.png);"));
     QVBoxLayout *vbox2 = new QVBoxLayout;
+    vbox2->addSpacing(20);
     vbox2->addWidget(reverse_setting_label);
     ui->groupBox_2->setLayout(vbox2);
     connect(reverse_setting_label,SIGNAL(clicked()),this,SLOT(on_pictureLabel2_clicked()));
     rearVision_setting_label=new myLabel();
     rearVision_setting_label->setStyleSheet(tr("background-image: url(:/reverseline1.png);"));
     QVBoxLayout *vbox1 = new QVBoxLayout;
+    vbox1->addSpacing(20);
     vbox1->addWidget(rearVision_setting_label);
     ui->groupBox->setLayout(vbox1);
     connect(rearVision_setting_label,SIGNAL(clicked()),this,SLOT(on_pictureLabel1_clicked()));

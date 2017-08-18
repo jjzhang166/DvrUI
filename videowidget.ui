@@ -13,16 +13,11 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QListWidget" name="listWidget_file">
-   <property name="geometry">
-    <rect>
-     <x>1</x>
-     <y>1</y>
-     <width>451</width>
-     <height>421</height>
-    </rect>
-   </property>
-  </widget>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QListWidget" name="listWidget_file"/>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

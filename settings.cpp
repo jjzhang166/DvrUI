@@ -9,7 +9,7 @@ Settings::Settings(QWidget *parent) :
     //将Tab设置为横向
     ui->settingTab->setTabPosition(QTabWidget::West);
 //    ui->settingTab->setTabShape(QTabWidget::Triangular);
-    ui->settingTab->tabBar()->setStyle(new CustomTabStyle(130,86));
+    ui->settingTab->tabBar()->setStyle(new CustomTabStyle(130,80));
     //设置Tab标签的名称
 //    ui->settingTab->setTabText(0,tr("预览设置"));
 //    ui->settingTab->setTabText(1,tr("ADAS"));
