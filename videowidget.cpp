@@ -13,13 +13,13 @@ videoWidget::videoWidget(QWidget *parent) :
 
     ui->listWidget_file->setObjectName(QString::fromUtf8("listWidget_file"));
     ui->listWidget_file->setGeometry(QRect(0,0,0,0));
-    QDirIterator m_DirIterator(QString("/home/libo/桌面/ui_qt/DvrUI/video"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
+    QDirIterator m_DirIterator(QString("E:/tech_practise/DvrUI/DvrUI/video/"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
     qDebug()<<" 当前目录为："<<m_DirIterator.path();
     ui->listWidget_file->clear();
     while (m_DirIterator.hasNext()) {
         QString tempFile=m_DirIterator.next();
         qDebug()<<"当前文件信息为："<<tempFile;
-        QString tempFileName=tempFile.remove(QString("/home/libo/桌面/ui_qt/DvrUI/video/"),Qt::CaseSensitive);
+        QString tempFileName=tempFile.remove(QString("E:/tech_practise/DvrUI/DvrUI/video/"),Qt::CaseSensitive);
         QString tempFileName_NoSuffix=tempFileName;
         int suffix_index=tempFileName_NoSuffix.lastIndexOf(".");
         tempFileName_NoSuffix.truncate(suffix_index);
@@ -43,7 +43,7 @@ videoWidget::videoWidget(QWidget *parent) :
         const QString cmd="E:\\tech_practise\\T3_linux\\T3_linux\\T3_linux\\shared\\bin\\ffmpeg.exe";
         QStringList arg;
         arg.append("-i");
-        arg.append("E:\\tech_practise\\T3_linux\\T3_linux\\T3_linux\\video\\"+tempFileName);
+        arg.append("E:\\tech_practise\\DvrUI\\DvrUI\\video\\"+tempFileName);
         arg.append("-y");
         arg.append("-r");
         arg.append("1");
@@ -55,12 +55,12 @@ videoWidget::videoWidget(QWidget *parent) :
         arg.append("00:00:01");
         arg.append(tempFileName_NoSuffix+".jpg");
         qDebug()<<"arg:"<<arg;
-        const QString now_dir="E:\\tech_practise\\T3_linux\\T3_linux\\T3_linux";
+        const QString now_dir="E:\\tech_practise\\DvrUI\\DvrUI\\";
         QProcess::startDetached(cmd,arg,now_dir);
-        QString file_path="/home/libo/桌面/ui_qt/DvrUI/"+tempFileName_NoSuffix+".jpg";
+        QString file_path="E:/tech_practise/DvrUI/DvrUI/"+tempFileName_NoSuffix+".jpg";
         qDebug()<<file_path;
         QPixmap objPixmap(file_path);
-        //tempFile=tempFile.remove(QString("E:/tech_practise/T3_linux/T3_Linux/T3_Linux/image/"),Qt::CaseSensitive);
+        tempFile=tempFile.remove(QString("E:/tech_practise/T3_linux/T3_Linux/T3_Linux/image/"),Qt::CaseSensitive);
         QListWidgetItem *pItem = new QListWidgetItem(QIcon(objPixmap.scaled(QSize(90,70))),tempFile);
         pItem->setSizeHint(QSize(90,90));            //设置单元项的宽度和高度
 

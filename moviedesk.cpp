@@ -20,11 +20,13 @@ movieDesk::movieDesk(QWidget *parent) :
         }");
     #endif
     //为tabbar加入widget
+    slave_picturewidget=new slave_PictureWidget();
+    slave_videowidget=new slave_VideoWidget();
     videowidget=new videoWidget();
-    ui->tabWidget->addTab(videowidget,tr("视频"));
     editwidget=new editWidget();
-    ui->tabWidget->insertTab(1,editwidget,tr("编辑"));
     picturewidget=new pictureWidget();
+    ui->tabWidget->addTab(videowidget,tr("视频"));
+    ui->tabWidget->insertTab(1,editwidget,tr("编辑"));
     ui->tabWidget->insertTab(2,picturewidget,tr("图片"));
     //此处加图标有问题
     ui->tabWidget->tabBar()->setTabIcon(2,QIcon(QPixmap("./image/camera.png")));
@@ -43,8 +45,22 @@ void movieDesk::on_returnButton_clicked()
 void movieDesk::on_mainCameraButton_clicked()
 {
     qDebug()<<"调整为主摄像头";
+    ui->tabWidget->removeTab(0);
+    ui->tabWidget->removeTab(1);
+    ui->tabWidget->removeTab(2);
+    ui->tabWidget->addTab(videowidget,tr("视频"));
+    ui->tabWidget->insertTab(1,editwidget,tr("编辑"));
+    ui->tabWidget->insertTab(2,picturewidget,tr("图片"));
 }
 void movieDesk::on_viceButton_clicked()
 {
     qDebug()<<"调整为副摄像头";
+    ui->tabWidget->removeTab(0);
+    ui->tabWidget->removeTab(1);
+    ui->tabWidget->removeTab(2);
+    ui->tabWidget->addTab(slave_videowidget,tr("视频"));
+    ui->tabWidget->insertTab(1,editwidget,tr("编辑"));
+    ui->tabWidget->insertTab(2,slave_picturewidget,tr("图片"));
+
+
 }

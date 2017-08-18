@@ -46,7 +46,9 @@ SOURCES += \
     videowidget.cpp \
     video_widgets.cpp \
     dashboard.cpp \
-    myspeed.cpp
+    myspeed.cpp \
+    slave_picturewidget.cpp \
+    slave_videowidget.cpp
 
 HEADERS += \
         main_desktop.h \
@@ -70,7 +72,9 @@ HEADERS += \
     video_widgets.h \
     picturewidget.h \
     dashboard.h \
-    myspeed.h
+    myspeed.h \
+    slave_picturewidget.h \
+    slave_videowidget.h
 
 FORMS += \
         main_desktop.ui \
@@ -91,7 +95,9 @@ FORMS += \
     video_player.ui \
     videowidget.ui \
     picturewidget.ui \
-    dashboard.ui
+    dashboard.ui \
+    slave_picturewidget.ui \
+    slave_videowidget.ui
 
 RESOURCES += \
     image/image.qrc

@@ -169,24 +169,6 @@ void main_desktop::show_dashboard()
 void main_desktop::on_cameraButton_clicked()
 {
 //    screenshot_pic=QScreen::grabWindow(this,0,0,600,200);
-    ui->cameraButton->setVisible(true);
-    ui->camera_change_Button->setVisible(true);
-    ui->lockButton->setVisible(true);
-    ui->movieButton->setVisible(true);
-    ui->recordButton->setVisible(true);
-    ui->setFirstButton->setVisible(true);
-    ui->compassButton->setVisible(true);
-    QScreen * pqscreen  = QGuiApplication::primaryScreen() ;
-    QPixmap pixmap = pqscreen->grabWindow( QApplication::activeWindow()->winId(), -2,-2,QApplication::activeWindow()->width() + 1, QApplication::activeWindow()->height() + 1);
-
-    //截图保存
-    QString filename=QFileDialog::getSaveFileName(this,"ScreenShot Save",QDir::currentPath());
-    if(!filename.isEmpty()){
-        pixmap.save(filename);
-    }else{
-        QMessageBox::information(this,"错误","请选择一个名称 ");
-        return;
-    }
     ui->cameraButton->setVisible(false);
     ui->camera_change_Button->setVisible(false);
     ui->lockButton->setVisible(false);
@@ -194,6 +176,27 @@ void main_desktop::on_cameraButton_clicked()
     ui->recordButton->setVisible(false);
     ui->setFirstButton->setVisible(false);
     ui->compassButton->setVisible(false);
+    QScreen * pqscreen  = QGuiApplication::primaryScreen() ;
+    QPixmap pixmap = pqscreen->grabWindow( QApplication::activeWindow()->winId(), -2,-2,QApplication::activeWindow()->width() + 1, QApplication::activeWindow()->height() + 1);
+
+    //截图保存
+    QString filename=QDateTime::currentDateTime().toString("yyyy-MM-ddHH-mm-ss")+".bmp";
+    if(pixmap.isNull()){
+        QMessageBox::information(this,tr("错误"),"截屏失败！",QMessageBox::Ok);
+    }else{
+        if(!pixmap.save("E:/tech_practise/DvrUI/DvrUI/screen/"+filename,"BMP")){
+            QMessageBox::information(this,tr("错误"),"无法保存！",QMessageBox::Ok);
+        }else{
+            QMessageBox::information(this,tr("成功"),"保存成功！",QMessageBox::Ok);
+        }
+    }
+    ui->cameraButton->setVisible(true);
+    ui->camera_change_Button->setVisible(true);
+    ui->lockButton->setVisible(true);
+    ui->movieButton->setVisible(true);
+    ui->recordButton->setVisible(true);
+    ui->setFirstButton->setVisible(true);
+    ui->compassButton->setVisible(true);
 }
 //锁定屏幕，使用锁定屏幕所有按钮的方法
 void main_desktop::on_lockButton_clicked()
@@ -223,4 +226,9 @@ void main_desktop::on_lockButton_clicked()
         ui->compassButton->setVisible(true);
         isLocked=false;
     }
+}
+
+void main_desktop::on_recordButton_clicked()
+{
+    QMessageBox::information(this,tr("提示"),tr("start recording！"),QMessageBox::Yes);
 }
