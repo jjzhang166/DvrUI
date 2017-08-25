@@ -239,13 +239,13 @@
          <widget class="QLabel" name="label">
           <property name="minimumSize">
            <size>
-            <width>101</width>
+            <width>151</width>
             <height>31</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>101</width>
+            <width>151</width>
             <height>31</height>
            </size>
           </property>
@@ -258,13 +258,13 @@
          <widget class="QSpinBox" name="movieTimeSetting">
           <property name="minimumSize">
            <size>
-            <width>101</width>
+            <width>141</width>
             <height>41</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>101</width>
+            <width>141</width>
             <height>41</height>
            </size>
           </property>
@@ -304,13 +304,13 @@
          <widget class="QLabel" name="label_2">
           <property name="minimumSize">
            <size>
-            <width>101</width>
+            <width>141</width>
             <height>31</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>101</width>
+            <width>141</width>
             <height>31</height>
            </size>
           </property>
@@ -323,13 +323,13 @@
          <widget class="QComboBox" name="comboBox">
           <property name="minimumSize">
            <size>
-            <width>121</width>
+            <width>151</width>
             <height>41</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>121</width>
+            <width>151</width>
             <height>41</height>
            </size>
           </property>
@@ -500,7 +500,7 @@
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-image:url(:/light.png)</string>
+         <string notr="true">background-image:url(./light.png)</string>
         </property>
         <property name="text">
          <string/>
@@ -525,7 +525,7 @@
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-image:url(:/voice.png)</string>
+         <string notr="true">background-image:url(./voice.png)</string>
         </property>
         <property name="text">
          <string/>

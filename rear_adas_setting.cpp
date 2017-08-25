@@ -30,6 +30,7 @@ void rear_ADAS_setting::on_returnButton_clicked()
 void rear_ADAS_setting::on_nextButton_clicked()
 {
     qDebug()<<"设置完成执行下一步";
+    this->close();
 }
 void rear_ADAS_setting::change_line_value(int value)
 {
@@ -38,14 +39,14 @@ void rear_ADAS_setting::change_line_value(int value)
     if(sender==ui->left_right_Slider){
         qDebug()<<"横滑块变化";
         this->horizontal_values=3*value;
-        ui->VerticelLine->move(81+this->horizontal_values,11);
+        ui->VerticelLine->move(10+this->horizontal_values,40);
         this->model=2;
 //        update();
     }else if(sender==ui->high_low_Slider){
         qDebug()<<"竖滑块变化";
         this->vertical_values=3*value;
         this->model=1;
-        ui->HorizontalLine->move(81,237-this->vertical_values);
+        ui->HorizontalLine->move(0,260-this->vertical_values);
 //        update();
     }else{
         qDebug()<<"无信号检测到";

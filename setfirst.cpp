@@ -22,7 +22,7 @@ SetFirst::SetFirst(QWidget *parent) :
     ui->lightButton->setStyleSheet(tr("background-image: url(:/image/image/light.png);"));
     //设置QSpinBox设置录像时间
     ui->movieTimeSetting->setRange(1,5);
-    ui->movieTimeSetting->setSingleStep(1);
+    ui->movieTimeSetting->setSingleStep(2);
     ui->movieTimeSetting->setValue(1);
     ui->movieTimeSetting->setSuffix(tr("分钟"));
 //    connect(ui->movieTimeSetting, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
