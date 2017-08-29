@@ -13,7 +13,7 @@ public:
     video_widgets(QWidget *parent = 0);
 
 protected:
-    void keyPressEvent(QKeyEvent *event);
+//    void keyPressEvent(QKeyEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
 };

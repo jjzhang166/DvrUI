@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>main_desktop</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QPushButton" name="compassButton">
    <property name="geometry">
     <rect>
@@ -155,10 +158,10 @@ font: 75 14pt &quot;Courier 10 Pitch&quot;;</string>
   <widget class="QLabel" name="cameraView">
    <property name="geometry">
     <rect>
-     <x>-1</x>
-     <y>-1</y>
-     <width>1031</width>
-     <height>601</height>
+     <x>120</x>
+     <y>60</y>
+     <width>371</width>
+     <height>231</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -168,7 +171,7 @@ font: 75 14pt &quot;Courier 10 Pitch&quot;;</string>
     </sizepolicy>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-image:url(:/picture.png)</string>
+    <string notr="true">background-image:url(:/picture.png);</string>
    </property>
    <property name="text">
     <string/>
@@ -184,14 +187,6 @@ font: 75 14pt &quot;Courier 10 Pitch&quot;;</string>
   <zorder>camera_change_Button</zorder>
   <zorder>pushButton_8</zorder>
   <zorder>time_Label</zorder>
-  <zorder>horizontalSpacer</zorder>
-  <zorder>horizontalSpacer_2</zorder>
-  <zorder>horizontalSpacer_3</zorder>
-  <zorder>horizontalSpacer_4</zorder>
-  <zorder>horizontalSpacer_5</zorder>
-  <zorder>horizontalSpacer_6</zorder>
-  <zorder>horizontalSpacer_7</zorder>
-  <zorder>horizontalSpacer_8</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
