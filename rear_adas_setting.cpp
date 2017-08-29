@@ -1,5 +1,7 @@
 #include "rear_adas_setting.h"
 #include "ui_rear_adas_setting.h"
+#include "adas.h"
+#include "ui_adas.h"
 
 rear_ADAS_setting::rear_ADAS_setting(QWidget *parent) :
     QDialog(parent),
@@ -26,6 +28,7 @@ rear_ADAS_setting::~rear_ADAS_setting()
 void rear_ADAS_setting::on_returnButton_clicked()
 {
     this->close();
+    emit unHideSettings();
 }
 void rear_ADAS_setting::on_nextButton_clicked()
 {

@@ -59,6 +59,7 @@ void pictureWidget::show_big_picture(QModelIndex pos)
 //    qDebug()<<"点击了"<<pos.row();
     which_filename_show_big=item->text();
     which_pic_show_big=pos.row();
-    picture_views=new Picture_view();
-    picture_views->exec();
+    picture_views=new Picture_view(this);
+    this->hide();
+    picture_views->showNormal();
 }

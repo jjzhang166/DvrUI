@@ -1,5 +1,9 @@
 #include "picture_view.h"
 #include "ui_picture_view.h"
+#include "picturewidget.h"
+#include "ui_picturewidget.h"
+
+
 // This is available in all editors.
 extern int which_pic_show_big;
 extern QString which_filename_show_big;
@@ -67,4 +71,6 @@ Picture_view::~Picture_view()
 void Picture_view::on_closeButton_clicked()
 {
     this->close();
+    pictureWidget* pPictureWidget=static_cast<pictureWidget*>(parentWidget());
+    pPictureWidget->setHidden(false);
 }

@@ -1,6 +1,7 @@
 #include "front_adas_setting.h"
 #include "ui_front_adas_setting.h"
-
+#include "adas.h"
+#include "ui_adas.h"
 front_ADAS_setting::front_ADAS_setting(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::front_ADAS_setting)
@@ -27,6 +28,7 @@ front_ADAS_setting::~front_ADAS_setting()
 void front_ADAS_setting::on_returnButton_clicked()
 {
     this->close();
+    emit unHideSettings();
 }
 void front_ADAS_setting::on_nextButton_clicked()
 {

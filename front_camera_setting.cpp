@@ -1,5 +1,7 @@
 #include "front_camera_setting.h"
 #include "ui_front_camera_setting.h"
+#include "preview.h"
+#include "ui_preview.h"
 
 Front_camera_setting::Front_camera_setting(QWidget *parent) :
     QDialog(parent),
@@ -19,6 +21,7 @@ Front_camera_setting::~Front_camera_setting()
 void Front_camera_setting::on_returnButton_clicked(bool)
 {
     this->close();
+    emit unHideSettings();
 }
 void Front_camera_setting::on_upperButton_clicked(bool)
 {

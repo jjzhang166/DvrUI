@@ -21,6 +21,8 @@ public slots:
     void on_nextButton_clicked();
     void on_returnButton_clicked();
     void change_line_value(int value);
+signals:
+    void unHideSettings();
 private:
     Ui::rear_ADAS_setting *ui;
 

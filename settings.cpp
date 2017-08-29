@@ -1,6 +1,7 @@
 #include "settings.h"
 #include "ui_settings.h"
-
+#include "setfirst.h"
+#include "ui_setfirst.h"
 Settings::Settings(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Settings)
@@ -30,29 +31,46 @@ Settings::Settings(QWidget *parent) :
     //设置按钮的ICON
 
     //为tabbar加入widget
-    abouts=new About();
+    abouts=new About(this);
     ui->settingTab->addTab(abouts,tr("关于"));
-    previews=new Preview();
+    previews=new Preview(this);
     ui->settingTab->insertTab(0,previews,tr("预览设置"));
-    adass=new ADAS();
+    adass=new ADAS(this);
     ui->settingTab->insertTab(1,adass,tr("ADAS"));
-    reverselines=new ReverseLine();
+    reverselines=new ReverseLine(this);
     ui->settingTab->insertTab(2,reverselines,tr("倒车线设置"));
-    timesettings=new TimeSetting();
+    timesettings=new TimeSetting(this);
     ui->settingTab->insertTab(3,timesettings,tr("时间设置"));
     ui->settingTab->setCurrentIndex(0);
 
     ui->returnButton->setStyleSheet(tr("background-image: url(:/image/image/return.png);"));
     connect(ui->returnButton,SIGNAL(clicked(bool)),this,SLOT(on_click_returnButton(bool)));
 
+    connect(previews,SIGNAL(hideSettings()),this,SLOT(on_hideSettings()));
+    connect(adass,SIGNAL(hideSettings()),this,SLOT(on_hideSettings()));
+    connect(reverselines,SIGNAL(hideSettings()),this,SLOT(on_hideSettings()));
+
+    connect(previews,SIGNAL(unhideSettings_signal()),this,SLOT(on_unhideSettings()));
+    connect(adass,SIGNAL(unhideSettings_signal()),this,SLOT(on_unhideSettings()));
+    connect(reverselines,SIGNAL(unhideSettings_signal()),this,SLOT(on_unhideSettings()));
 }
 
 Settings::~Settings()
 {
     delete ui;
 }
+void Settings::on_hideSettings()
+{
+    this->hide();
+}
+void Settings::on_unhideSettings()
+{
+    this->setHidden(false);
+}
 void Settings::on_click_returnButton(bool)
 {
-
     this->close();
+    //恢复显示setFirst页面
+    SetFirst* psetFirst=static_cast<SetFirst*>(parentWidget());
+    psetFirst->setHidden(false);
 }

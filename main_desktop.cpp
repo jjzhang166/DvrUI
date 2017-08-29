@@ -373,7 +373,7 @@ void main_desktop::mouseReleaseEvent(QMouseEvent *)
 void main_desktop::show_settingDesk()
 {
     setting_desktop=new SetFirst();
-    connect(setting_desktop,SIGNAL(send_data_to_main(results)),this,SLOT(recieve_setting_data(results)));
+//    connect(setting_desktop,SIGNAL(send_data_to_main(results)),this,SLOT(recieve_setting_data(results)));
     setting_desktop->exec();
 
 }

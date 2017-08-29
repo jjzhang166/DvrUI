@@ -81,8 +81,9 @@ void videoWidget::play_video(QModelIndex pos)
     qDebug()<<"点击了"<<pos.row();
     which_filename_to_play=item->text();
 //    which_pic_show_big=pos.row();
-    video_players=new Video_Player();
-    video_players->exec();
+    video_players=new Video_Player(this);
+    this->hide();
+    video_players->showNormal();
 //        player_video=new Player_Video();
 //    const QRect availableGeometry = QApplication::desktop()->availableGeometry(player_video);
 

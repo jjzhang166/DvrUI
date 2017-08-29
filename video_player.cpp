@@ -1,6 +1,8 @@
 #include "video_player.h"
 #include "ui_video_player.h"
 #include <QDirIterator>
+#include "videowidget.h"
+#include "ui_videowidget.h"
 
 extern QString which_filename_to_play;
 
@@ -82,4 +84,11 @@ void Video_Player::on_voiceSlider_sliderMoved(int position)
 void Video_Player::on_progressSlider_sliderMoved(int position)
 {
 
+}
+
+void Video_Player::on_pushButton_clicked()
+{
+    this->close();
+    videoWidget* pVideoWidget=static_cast<videoWidget*>(parentWidget());
+    pVideoWidget->setHidden(false);
 }

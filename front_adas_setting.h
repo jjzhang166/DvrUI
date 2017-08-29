@@ -18,6 +18,8 @@ public slots:
     void on_nextButton_clicked();
     void on_returnButton_clicked();
     void change_line_value(int value);
+signals:
+    void unHideSettings();
 private:
     Ui::front_ADAS_setting *ui;
     int horizontal_values,vertical_values;

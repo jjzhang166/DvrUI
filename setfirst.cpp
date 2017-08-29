@@ -46,8 +46,9 @@ SetFirst::~SetFirst()
 }
 void SetFirst::on_click_setttingsButton(bool)
 {
-    setSecond_Desk=new Settings();
-    setSecond_Desk->exec();
+    setSecond_Desk=new Settings(this);
+    this->hide();
+    setSecond_Desk->showNormal();
 }
 void SetFirst::on_click_returnButton(bool)
 {

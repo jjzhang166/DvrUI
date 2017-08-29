@@ -19,6 +19,8 @@ public slots:
     void on_sureButton_clicked(bool);
     void on_upperButton_clicked(bool);
     void on_downButton_clicked(bool);
+signals:
+    void unHideSettings();
 private:
     Ui::Front_camera_setting *ui;
 };

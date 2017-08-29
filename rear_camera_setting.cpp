@@ -1,5 +1,7 @@
 #include "rear_camera_setting.h"
 #include "ui_rear_camera_setting.h"
+#include "preview.h"
+#include "ui_preview.h"
 
 Rear_Camera_Setting::Rear_Camera_Setting(QWidget *parent) :
     QDialog(parent),
@@ -19,6 +21,7 @@ Rear_Camera_Setting::~Rear_Camera_Setting()
 void Rear_Camera_Setting::on_returnButton_clicked(bool)
 {
     this->close();
+    emit unHideSettings();
 }
 void Rear_Camera_Setting::on_upperButton_clicked(bool)
 {

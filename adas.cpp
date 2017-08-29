@@ -32,12 +32,20 @@ ADAS::~ADAS()
 void ADAS::on_pictureLabel1_clicked()
 {
     qDebug()<<"打开后ADAS设置界面";
-    rear_adas_settings=new rear_ADAS_setting();
-    rear_adas_settings->exec();
+    rear_adas_settings=new rear_ADAS_setting(this);
+    connect(rear_adas_settings,SIGNAL(unHideSettings()),this,SLOT(on_unhideSettings()));
+    emit hideSettings();
+    rear_adas_settings->showNormal();
 }
 void ADAS::on_pictureLabel2_clicked()
 {
     qDebug()<<"打开前ADAS设置界面";
-    front_adas_settings=new front_ADAS_setting();
-    front_adas_settings->exec();
+    front_adas_settings=new front_ADAS_setting(this);
+    connect(front_adas_settings,SIGNAL(unHideSettings()),this,SLOT(on_unhideSettings()));
+    emit hideSettings();
+    front_adas_settings->showNormal();
+}
+void ADAS::on_unhideSettings()
+{
+    emit unhideSettings_signal();
 }

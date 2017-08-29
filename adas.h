@@ -18,9 +18,13 @@ class ADAS : public QDialog
 public:
     explicit ADAS(QWidget *parent = 0);
     ~ADAS();
+signals:
+    hideSettings();
+    unhideSettings_signal();
 public slots:
     void on_pictureLabel2_clicked();
     void on_pictureLabel1_clicked();
+    void on_unhideSettings();
 private:
     Ui::ADAS *ui;
     rear_ADAS_setting* rear_adas_settings;
