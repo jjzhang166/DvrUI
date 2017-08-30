@@ -6,9 +6,13 @@ SetFirst::SetFirst(QWidget *parent) :
     ui(new Ui::SetFirst)
 {
     ui->setupUi(this);
+    //设置界面的样式
+    setWindowStyleSheet();
+
     //连接前后两级页面
     connect(ui->settingsButton,SIGNAL(clicked(bool)),this,SLOT(on_click_setttingsButton(bool)));
     connect(ui->returnButton,SIGNAL(clicked(bool)),this,SLOT(on_click_returnButton(bool)));
+
 
     //设置音量和亮度调节
     //设置滚动条和显示数字联动
@@ -25,12 +29,6 @@ SetFirst::SetFirst(QWidget *parent) :
     ui->movieTimeSetting->setSingleStep(2);
     ui->movieTimeSetting->setValue(1);
     ui->movieTimeSetting->setSuffix(tr("分钟"));
-//    connect(ui->movieTimeSetting, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-//                [=](int value)
-//            {
-//                qDebug() << "Value : "  << value;
-//                qDebug() << "Text : "  << ui->movieTimeSetting->text();
-//            });
 
     //设置四个按钮的样式:按下和弹起操作
     ui->audioButton->setCheckable(true);
@@ -123,4 +121,29 @@ void SetFirst::on_movieTimeSetting_valueChanged(int value)
 {
     qDebug() << "Value : "  << value;
     qDebug() << "Text : "  << ui->movieTimeSetting->text();
+}
+void SetFirst::setWindowStyleSheet()
+{
+    QPalette p=QPalette();
+    p.setColor(QPalette::Background,QColor(255,255,255));
+    this->setPalette(p);
+    ui->comboBox->setStyleSheet("QComboBox{border:1px solid gray;}"
+      "QComboBox QAbstractItemView::item{height:40px;}"
+      "QComboBox::down-arrow{image:url(:/icon/arrowdown.png);}"
+      "QComboBox::drop-down{border:0px;}");
+      ui->comboBox->setView(new QListView());
+    ui->voiceSlider->setStyleSheet("QSlider::groove:vertical{background: #cbcbcb;width: 6px;border-radius: 1px;padding-left:-1px;padding-right:-1px;padding-top:-1px;padding-bottom:-1px; }"
+                                   "QSlider::sub-page:vertical{background: #cbcbcb;border-radius: 2px;}"
+                                   "QSlider::add-page:vertical{background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #439cf4, stop:1 #439cf4);\
+                                   background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,stop: 0 #439cf4, stop: 1 #439cf4);\
+                                   width: 10px;border-radius: 2px;}"
+                                   "QSlider::handle:vertical{border-image: url(:/icon/circle-white.png);margin: -2px -7px -2px -7px; height: 17px;}"
+                                    "QSlider{border-color: #cbcbcb;}"  );
+    ui->lightSlider->setStyleSheet("QSlider::groove:vertical{background: #cbcbcb;width: 6px;border-radius: 1px;padding-left:-1px;padding-right:-1px;padding-top:-1px;padding-bottom:-1px; }"
+                                   "QSlider::sub-page:vertical{background: #cbcbcb;border-radius: 2px;}"
+                                   "QSlider::add-page:vertical{background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #439cf4, stop:1 #439cf4);\
+                                   background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,stop: 0 #439cf4, stop: 1 #439cf4);\
+                                   width: 10px;border-radius: 2px;}"
+                                   "QSlider::handle:vertical{border-image: url(:/icon/circle-white.png);margin: -2px -7px -2px -7px; height: 17px;}"
+                                    "QSlider{border-color: #cbcbcb;}"  );
 }

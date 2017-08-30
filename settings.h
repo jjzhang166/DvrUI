@@ -26,6 +26,7 @@ public:
 public slots:
     void on_click_returnButton(bool);
     void on_hideSettings();
+
     void on_unhideSettings();
 private://tabbar管理
     About *abouts;

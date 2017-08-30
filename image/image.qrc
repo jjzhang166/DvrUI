@@ -19,5 +19,7 @@
         <file>reverseline2.png</file>
         <file>setting.png</file>
         <file>voice.png</file>
+        <file>icon/arrowdown.png</file>
+        <file>icon/circle-white.png</file>
     </qresource>
 </RCC>

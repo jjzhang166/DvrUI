@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QDebug>
 #include <settings.h>
-
+#include <QListView>
 namespace Ui {
 class SetFirst;
 }
@@ -33,6 +33,7 @@ private slots:
 private:
     Ui::SetFirst *ui;
     Settings* setSecond_Desk;
+    void setWindowStyleSheet();
 };
 
 #endif // SETFIRST_H

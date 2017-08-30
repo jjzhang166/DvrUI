@@ -15,8 +15,9 @@ class Preview : public QDialog
 {
     Q_OBJECT
 signals:
-    hideSettings();
-    unhideSettings_signal();
+    void hideSettings();
+    void unhideSettings_signal();
+
 public:
     explicit Preview(QWidget *parent = 0);
     ~Preview();
@@ -24,6 +25,7 @@ public slots:
     void on_rearButton_clicked(bool);
     void on_frontButton_clicked(bool);
     void on_unhideSettings();
+
 private:
     Ui::Preview *ui;
     Rear_Camera_Setting *rear_camera_setting;

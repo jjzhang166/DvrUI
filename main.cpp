@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
     a.setFont(QFont("WenQuanYi Zen Hei", 12));
     main_desktop w;
     w.show();
+    w.videoshow();
 
     return a.exec();
 }

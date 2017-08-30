@@ -1,7 +1,6 @@
 #include "main_desktop.h"
 #include "ui_main_desktop.h"
 #include <QDesktopWidget>
-
 //#define USE_AW_360
 //#define AAA
 //#define SUPPORT_RTSP 1
@@ -9,8 +8,8 @@
 #define CAMERA_FONT 0  //While move to cfg
 #define CAMERA_BACK 1 //While move to cfg
 #define LOG_BUF_SIZE	1024
-#define VIEW_WEITH 1024
-#define VIEW_HEIGHT 600
+#define VIEW_WEITH 720
+#define VIEW_HEIGHT 480
 main_desktop *pstaticthis=NULL;
 #if defined(Q_OS_LINUX)
 using namespace android;
@@ -69,7 +68,6 @@ status_t usr_h264datacb(int32_t msgType,
                         void *user)
 {
 
-
 }
 #endif
 
@@ -104,7 +102,7 @@ main_desktop::main_desktop(QWidget *parent) :
     QPalette pa;
     pa.setColor(QPalette::WindowText,Qt::white);
     ui->time_Label->setPalette(pa);
-
+    ui->cameraView->setHidden(true);
     //摄像头数据显示cameraView
     connect(ui->camera_change_Button,SIGNAL(clicked()),this,SLOT(cameraChange()));
 //    ui->cameraView->setStyleSheet(tr("background-image: url(:/image/image/picture.png);"));//初始化为前置
@@ -124,12 +122,26 @@ main_desktop::main_desktop(QWidget *parent) :
     connect(ui->compassButton,SIGNAL(clicked(bool)),this,SLOT(show_dashboard()));
 
 
+#ifdef QT_ROTATE_APP
+    QGraphicsScene *scene = new QGraphicsScene();
+    QGraphicsView *view = new QGraphicsView(parent);
+    view->setGeometry(0,0,800,480); // actual Display size
+    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    QGraphicsProxyWidget *proxy = scene->addWidget(this);
+    view->setScene(scene);
+    view->show();
+    view->rotate(180);
+#endif
     setProperty("noinput",true);
     isaf=false;
+#ifdef AAA
+    setStyleSheet(QStringLiteral("background-color: rgb(112, 200, 11);"));
+#endif
 
 #if defined(Q_OS_LINUX)
+
     printf("------------------------------------construction function\n");
-    ui->cameraView->setHidden(true);
     HwDisplay* mcd=NULL;
     //test screen mode
     //0 disable
@@ -146,7 +158,10 @@ main_desktop::main_desktop(QWidget *parent) :
     int i;
     for(i=0;i<SUPPORT_CAMERA_NUM;i++)
         dvrCamera[i].dvr=new dvr_factory();
+
 #endif
+    printf("Play----------%p----\r\n",this);
+    pstaticthis=this;//fucking bad,single obj only
 }
 //设置窗口为透明的，重载了paintEvent
 void main_desktop::paintEvent(QPaintEvent *event)
@@ -161,7 +176,6 @@ void main_desktop::startRecord()
     //int cycltime;
     char bufname[512];
    // int cx,cy;
-    printf("----------------------startRecord\n");
     printf("startRecord--------------\r\n");
     Mutex::Autolock locker(&mObjectLock);
 
@@ -169,7 +183,6 @@ void main_desktop::startRecord()
     int i;
     for(i=0;i<SUPPORT_CAMERA_NUM;i++)
     {
-        //dvrCamera定义在#include "frm_playimpl.h" get和set系列函数为inline
         p_dvr=dvrCamera[i].dvr;
         printf("get camera startup flag=%d \r\n",config_get_startup(i));
         if(1==config_get_startup(i))
@@ -190,21 +203,20 @@ void main_desktop::startRecord()
                 //config_set_heigth(0,720);
                 //config_set_weith(0,1280);
                 sprintf(bufname,"%d",i);
-                rt= p_dvr->recordInit(bufname);//Dvrfactory.h中定义
+                rt= p_dvr->recordInit(bufname);
             #endif
                 if(rt <0){
                     printf("init record fail camera[%s] ret =%d \r\n",bufname,rt);
                     continue;
                 }
-                p_dvr->SetDataCB(usr_h264datacb,p_dvr);//Dvrfactory.h中定义
-                p_dvr->setCallbacks(usernotifyCallback,userdataCallback,userdataCallbackTimestamp,p_dvr/* must dvr obj*/ /*dump*/);//Dvrfactory.h中定义
-                //dvr->prepare();//Dvrfactory.h中定义
-                p_dvr->start();//Dvrfactory.h中定义
-                p_dvr->enableWaterMark();//Dvrfactory.h中定义
+                p_dvr->SetDataCB(usr_h264datacb,p_dvr);
+                p_dvr->setCallbacks(usernotifyCallback,userdataCallback,userdataCallbackTimestamp,p_dvr/* must dvr obj*/ /*dump*/);
+                //dvr->prepare();
+                //p_dvr->start();
+                p_dvr->enableWaterMark();
                 sprintf(bufname,"64,64,0,64,250,T3L SDK,64,450,ASTEROID V1 alpha");
-                p_dvr->setWaterMarkMultiple(bufname);//Dvrfactory.h中定义
+                p_dvr->setWaterMarkMultiple(bufname);
         #ifdef SUPPORT_RTSP
-                //Dvrfactory.h中定义
                 p_dvr->set_rtsp_to_file(0);//test !!!! if 1 wirite to encode stream to file . must start before start_rtsp
 
                 p_dvr->start_rtsp();
@@ -226,7 +238,6 @@ int main_desktop::startAllCameraWithPreview(int camera_no /* nouse now*/)
 
 #if defined(Q_OS_LINUX)
    startRecord();
-   printf("-----------------------------------startAllCameraWithPreview\n");
    printf("startAllCameraWithPreview play %d\r\n",cur_camera);
    dvr_factory *p_dvr=dvrCamera[cur_camera].dvr;
 
@@ -235,9 +246,11 @@ int main_desktop::startAllCameraWithPreview(int camera_no /* nouse now*/)
         struct view_info vv= {0,0,VIEW_WEITH,VIEW_HEIGHT};
         //ALOGV("vx=%d vy=%d sx=%d sy%d",mcd->lcdxres,mcd->lcdyres,dvr->recordwith,dvr->recordheith);
         p_dvr->startPriview(vv);
+        #ifdef AAA
+        setStyleSheet(QStringLiteral("background-color: rgba(112, 200, 11, 0);"));
+#endif
         dvrCamera[cur_camera].setPreview(true);
     }
-    printf("startAllCameraWithPreview---------------------------out\n");
 
 #endif
     return 0;
@@ -245,12 +258,9 @@ int main_desktop::startAllCameraWithPreview(int camera_no /* nouse now*/)
 //前后摄像头切换
 void main_desktop::cameraChange(void)
 {
-    printf("ready to change camera.\n");
 #if defined(Q_OS_LINUX)
-    if(SUPPORT_CAMERA_NUM<2){
-        printf("only have one camera.\n");
+    if(SUPPORT_CAMERA_NUM<2)
         return;
-    }
     dvr_factory * p_dvr=dvrCamera[cur_camera].dvr;
     if(dvrCamera[cur_camera].getPreview()){
         p_dvr->stopPriview();
@@ -331,6 +341,13 @@ void main_desktop::cameraChange(void)
 main_desktop::~main_desktop()
 {
     delete ui;
+    #if defined(Q_OS_LINUX)
+    //delete dvr;
+    int i;
+    for(i=0;i<SUPPORT_CAMERA_NUM;i++)
+       delete dvrCamera[i].dvr;
+    delete pgEmulatedCameraFactory;
+    #endif
 }
 void main_desktop::timerUpdate(void)
 {
@@ -396,11 +413,8 @@ void main_desktop::show_dashboard()
 
     dashboards->setAutoFillBackground(true);
     dashboards->setPalette(pal);
-    //打开子窗口时设置父窗口为隐藏
-    this->hide();
+
     dashboards->showNormal();
-
-
 }
 //截图的方法
 void main_desktop::on_cameraButton_clicked()
