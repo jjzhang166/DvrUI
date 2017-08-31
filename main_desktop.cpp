@@ -8,8 +8,8 @@
 #define CAMERA_FONT 0  //While move to cfg
 #define CAMERA_BACK 1 //While move to cfg
 #define LOG_BUF_SIZE	1024
-#define VIEW_WEITH 720
-#define VIEW_HEIGHT 480
+#define VIEW_WEITH 1024
+#define VIEW_HEIGHT 600
 main_desktop *pstaticthis=NULL;
 #if defined(Q_OS_LINUX)
 using namespace android;
@@ -138,10 +138,8 @@ main_desktop::main_desktop(QWidget *parent) :
 #ifdef AAA
     setStyleSheet(QStringLiteral("background-color: rgb(112, 200, 11);"));
 #endif
+    #if defined(Q_OS_LINUX)
 
-#if defined(Q_OS_LINUX)
-
-    printf("------------------------------------construction function\n");
     HwDisplay* mcd=NULL;
     //test screen mode
     //0 disable
@@ -203,7 +201,7 @@ void main_desktop::startRecord()
                 //config_set_heigth(0,720);
                 //config_set_weith(0,1280);
                 sprintf(bufname,"%d",i);
-                rt= p_dvr->recordInit(bufname);
+                rt= p_dvr->recordInit("bufname");
             #endif
                 if(rt <0){
                     printf("init record fail camera[%s] ret =%d \r\n",bufname,rt);
@@ -211,8 +209,8 @@ void main_desktop::startRecord()
                 }
                 p_dvr->SetDataCB(usr_h264datacb,p_dvr);
                 p_dvr->setCallbacks(usernotifyCallback,userdataCallback,userdataCallbackTimestamp,p_dvr/* must dvr obj*/ /*dump*/);
-                //dvr->prepare();
-                //p_dvr->start();
+                p_dvr->prepare();
+                p_dvr->start();
                 p_dvr->enableWaterMark();
                 sprintf(bufname,"64,64,0,64,250,T3L SDK,64,450,ASTEROID V1 alpha");
                 p_dvr->setWaterMarkMultiple(bufname);
@@ -259,15 +257,21 @@ int main_desktop::startAllCameraWithPreview(int camera_no /* nouse now*/)
 void main_desktop::cameraChange(void)
 {
 #if defined(Q_OS_LINUX)
+    printf("--------------------------------begin change camera\n");
     if(SUPPORT_CAMERA_NUM<2)
+    {
+        printf("------------------------------only have one camera\n");
         return;
+    }
+    printf("------------------------current camera is %d\n",cur_camera);
     dvr_factory * p_dvr=dvrCamera[cur_camera].dvr;
     if(dvrCamera[cur_camera].getPreview()){
         p_dvr->stopPriview();
+        printf("------------------------stop current camera %d\n",cur_camera);
         dvrCamera[cur_camera].setPreview(false);
     }
     cur_camera = (cur_camera==0)?1:0;
-
+   printf("------------------------current camera changed as %d\n",cur_camera);
     //int cycltime;
     char bufname[512];
     //int cx,cy;
@@ -275,6 +279,7 @@ void main_desktop::cameraChange(void)
     p_dvr=dvrCamera[cur_camera].dvr;
     if(!dvrCamera[cur_camera].getRecord())
     {
+        printf("--------------------------------------set current camera %d getRecord\n",cur_camera);
            int rt ;
         #ifdef USE_AW_360
             config_set_heigth(360,960);
@@ -290,7 +295,7 @@ void main_desktop::cameraChange(void)
                 return;
             p_dvr->SetDataCB(usr_h264datacb,p_dvr);
 
-            //dvr->prepare();
+            p_dvr->prepare();
             p_dvr->start();
             p_dvr->enableWaterMark();
             sprintf(bufname,"64,64,0,64,250,T2L SDK,64,450,RAINBOW V0.3a");
@@ -310,6 +315,7 @@ void main_desktop::cameraChange(void)
 
     if(!dvrCamera[cur_camera].getPreview())
     {
+        printf("--------------------------------------set current camera %d getPreview\n",cur_camera);
         struct view_info vv= {0,0,VIEW_WEITH,VIEW_HEIGHT};
         //ALOGV("vx=%d vy=%d sx=%d sy%d",mcd->lcdxres,mcd->lcdyres,dvr->recordwith,dvr->recordheith);
         p_dvr->startPriview(vv);
@@ -419,6 +425,7 @@ void main_desktop::show_dashboard()
 //截图的方法
 void main_desktop::on_cameraButton_clicked()
 {
+
 //    screenshot_pic=QScreen::grabWindow(this,0,0,600,200);
     setButtonDisvisible();
     ui->cameraButton->setVisible(false);
@@ -437,6 +444,7 @@ void main_desktop::on_cameraButton_clicked()
         }
     }
     setButtonVisible();
+
 }
 //锁定屏幕，使用锁定屏幕所有按钮的方法
 void main_desktop::on_lockButton_clicked()
