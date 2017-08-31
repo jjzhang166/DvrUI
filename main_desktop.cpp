@@ -104,7 +104,7 @@ main_desktop::main_desktop(QWidget *parent) :
     ui->time_Label->setPalette(pa);
     ui->cameraView->setHidden(true);
     //摄像头数据显示cameraView
-    connect(ui->camera_change_Button,SIGNAL(clicked()),this,SLOT(cameraChange()));
+    connect(ui->camera_change_Button,SIGNAL(clicked()),this,SLOT(cameraChange()),Qt::UniqueConnection);
 //    ui->cameraView->setStyleSheet(tr("background-image: url(:/image/image/picture.png);"));//初始化为前置
     cameraState=false;//点击切换后切换到后置
 
@@ -116,10 +116,10 @@ main_desktop::main_desktop(QWidget *parent) :
     mouseMoveTime->start(8000);
 
     //调出其它界面的信号
-    connect(ui->setFirstButton,SIGNAL(clicked(bool)),this,SLOT(show_settingDesk()));
-    connect(ui->cameraButton,SIGNAL(clicked(bool)),this,SLOT(show_photoDesk()));
-    connect(ui->movieButton,SIGNAL(clicked(bool)),this,SLOT(show_movieDesk()));
-    connect(ui->compassButton,SIGNAL(clicked(bool)),this,SLOT(show_dashboard()));
+    connect(ui->setFirstButton,SIGNAL(clicked()),this,SLOT(show_settingDesk()));
+    //connect(ui->cameraButton,SIGNAL(clicked(bool)),this,SLOT(show_photoDesk()),on_cameraButton_clicked());
+    connect(ui->movieButton,SIGNAL(clicked()),this,SLOT(show_movieDesk()));
+    connect(ui->compassButton,SIGNAL(clicked()),this,SLOT(show_dashboard()));
 
 
 #ifdef QT_ROTATE_APP
@@ -209,7 +209,7 @@ void main_desktop::startRecord()
                 }
                 p_dvr->SetDataCB(usr_h264datacb,p_dvr);
                 p_dvr->setCallbacks(usernotifyCallback,userdataCallback,userdataCallbackTimestamp,p_dvr/* must dvr obj*/ /*dump*/);
-                p_dvr->prepare();
+//                p_dvr->prepare();
                 p_dvr->start();
                 p_dvr->enableWaterMark();
                 sprintf(bufname,"64,64,0,64,250,T3L SDK,64,450,ASTEROID V1 alpha");
@@ -246,7 +246,7 @@ int main_desktop::startAllCameraWithPreview(int camera_no /* nouse now*/)
         p_dvr->startPriview(vv);
         #ifdef AAA
         setStyleSheet(QStringLiteral("background-color: rgba(112, 200, 11, 0);"));
-#endif
+        #endif
         dvrCamera[cur_camera].setPreview(true);
     }
 
@@ -294,25 +294,21 @@ void main_desktop::cameraChange(void)
             if(rt <0)
                 return;
             p_dvr->SetDataCB(usr_h264datacb,p_dvr);
-
-            p_dvr->prepare();
+            p_dvr->setCallbacks(usernotifyCallback,userdataCallback,userdataCallbackTimestamp,p_dvr/* must dvr obj*/ /*dump*/);
+//            p_dvr->prepare();
             p_dvr->start();
             p_dvr->enableWaterMark();
             sprintf(bufname,"64,64,0,64,250,T2L SDK,64,450,RAINBOW V0.3a");
             p_dvr->setWaterMarkMultiple(bufname);
-    #ifdef AAA
-            setStyleSheet(QStringLiteral("background-color: rgba(112, 200, 11, 0);"));
-    #endif
     #ifdef SUPPORT_RTSP
             p_dvr->set_rtsp_to_file(0);//test !!!! if 1 wirite to encode stream to file . must start before start_rtsp
+
             p_dvr->start_rtsp();
     #endif
             p_dvr->startRecord();
-            isaf=true;
-            dvrCamera[cur_camera].setRecord(true);
+            isaf = true;
+            dvrCamera[i].setRecord(true);
     }
-
-
     if(!dvrCamera[cur_camera].getPreview())
     {
         printf("--------------------------------------set current camera %d getPreview\n",cur_camera);
@@ -321,11 +317,11 @@ void main_desktop::cameraChange(void)
         p_dvr->startPriview(vv);
         #ifdef AAA
         setStyleSheet(QStringLiteral("background-color: rgba(112, 200, 11, 0);"));
-#endif
+        #endif
 
         dvrCamera[cur_camera].setPreview(true);
     }
-    sleep(1);//temp add here,must use timestamp for response gap,i will impl next version
+    sleep(3);//temp add here,must use timestamp for response gap,i will impl next version
 #else
     //如果现在是前置->切换为后置
     //如果为后置->切换为前置
@@ -400,11 +396,11 @@ void main_desktop::show_settingDesk()
     setting_desktop->exec();
 
 }
-//暂时做成截图功能
-void main_desktop::show_photoDesk()
-{
-    qDebug()<<"修改为截图功能";
-}
+////暂时做成截图功能
+//void main_desktop::show_photoDesk()
+//{
+//    qDebug()<<"修改为截图功能";
+//}
 void main_desktop::show_movieDesk()
 {
     qDebug()<<"open movie";
@@ -425,7 +421,28 @@ void main_desktop::show_dashboard()
 //截图的方法
 void main_desktop::on_cameraButton_clicked()
 {
+#if defined(Q_OS_LINUX)
+    printf("----------------------take pic\n");
+    Mutex::Autolock locker(&mObjectLock);
+    if(dvrCamera[cur_camera].getRecord())
+    {
+        status_t rt=dvrCamera[cur_camera].dvr->takePicture();
+        if(NO_ERROR!=rt)
+            QMessageBox::information(this, tr("拍照"), tr("拍照失败!"),QMessageBox::Ok);
+        else
+        {
+            QMessageBox* box = new QMessageBox;
+            QTimer::singleShot(1000, box, SLOT(close()));
 
+            box->setWindowTitle(tr("takepic"));
+            box->setStyleSheet(QStringLiteral("background-color: rgba(0, 200, 11,0);"));
+//            box->setIcon(QMessageBox::information);
+            box->setText(tr("pic success"));
+            box->move(300,240);
+            box->show();
+        }
+    }
+#else
 //    screenshot_pic=QScreen::grabWindow(this,0,0,600,200);
     setButtonDisvisible();
     ui->cameraButton->setVisible(false);
@@ -444,7 +461,7 @@ void main_desktop::on_cameraButton_clicked()
         }
     }
     setButtonVisible();
-
+#endif
 }
 //锁定屏幕，使用锁定屏幕所有按钮的方法
 void main_desktop::on_lockButton_clicked()
@@ -495,3 +512,5 @@ void main_desktop::setButtonDisvisible()
     ui->setFirstButton->setVisible(false);
     ui->compassButton->setVisible(false);
 }
+
+

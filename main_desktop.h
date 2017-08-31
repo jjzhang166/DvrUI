@@ -96,7 +96,7 @@ private slots://有动作时显示图标
 public slots://其它界面调出
     void show_settingDesk();
     void show_movieDesk();
-    void show_photoDesk();
+
     void show_dashboard();
     void on_cameraButton_clicked();//截图
     void on_lockButton_clicked();//锁屏

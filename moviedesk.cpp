@@ -2,7 +2,7 @@
 #include "ui_moviedesk.h"
 movieDesk::movieDesk(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::movieDesk)
+    ui(new Ui::movieDesk),cur_index(0)
 {
     ui->setupUi(this);
 
@@ -45,22 +45,25 @@ void movieDesk::on_returnButton_clicked()
 void movieDesk::on_mainCameraButton_clicked()
 {
     qDebug()<<"调整为主摄像头";
+    cur_index=ui->tabWidget->currentIndex();
     ui->tabWidget->removeTab(0);
     ui->tabWidget->removeTab(1);
     ui->tabWidget->removeTab(2);
     ui->tabWidget->addTab(videowidget,tr("视频"));
     ui->tabWidget->insertTab(1,editwidget,tr("编辑"));
     ui->tabWidget->insertTab(2,picturewidget,tr("图片"));
+    ui->tabWidget->setCurrentIndex(cur_index);
 }
 void movieDesk::on_viceButton_clicked()
 {
     qDebug()<<"调整为副摄像头";
+    cur_index=ui->tabWidget->currentIndex();
     ui->tabWidget->removeTab(0);
     ui->tabWidget->removeTab(1);
     ui->tabWidget->removeTab(2);
     ui->tabWidget->addTab(slave_videowidget,tr("视频"));
     ui->tabWidget->insertTab(1,editwidget,tr("编辑"));
     ui->tabWidget->insertTab(2,slave_picturewidget,tr("图片"));
-
+    ui->tabWidget->setCurrentIndex(cur_index);
 
 }

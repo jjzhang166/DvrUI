@@ -25,6 +25,7 @@ public slots:
     void on_viceButton_clicked();
 private:
     Ui::movieDesk *ui;
+    int cur_index;
 private:
     editWidget* editwidget;
     videoWidget* videowidget;
