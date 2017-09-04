@@ -147,6 +147,52 @@ main_desktop::main_desktop(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::main_desktop)
 {
+#if defined(Q_OS_LINUX)
+
+    HwDisplay* mcd=NULL;
+    int i;
+    int tvmode=3;//0 disable ,1 tvout pal ;2 tvout ntsc;3 hdmi 1280x720;4 hdmi 1920x1080
+    cur_camera = 0 ;
+    //test screen mode
+    //0 disable
+    //config_set_tvout(0,tvmode);
+    int rt=0;
+    sdk_log_setlevel(3);
+    mcd=HwDisplay::getInstance();
+
+    #ifdef AUTEVENT_TEST//defined
+        NetlinkManager *nm;
+        if (!(nm = NetlinkManager::Instance())) {
+            SLOGE("Unable to create NetlinkManager");
+        };
+        printf("--------------------------------NetlinkManager done\n");
+    #endif
+    pgEmulatedCameraFactory=new HALCameraFactory();
+    pdvr=new dvr_factory();
+    pdvr1=new dvr_factory();
+    #ifdef AUDIO_TEST //defined
+        //AudioCapThread audiocap;
+        sp<AudioCapThread> audiocap=new AudioCapThread();
+        int hdl=audiocap->reqAudioSource(pdvr->__audio_data_cb_timestamp,(void *) pdvr);
+        pdvr->setAudioOps(audiocap,hdl);
+         printf("--------------------------------AudioCapThread done\n");
+    #endif
+    #ifdef AUTEVENT_TEST//defined
+         AutEvent *pevent=AutEvent::Instance();
+         pevent->setEventCb(testaut_event_cb_func,(void *)pdvr);
+         if (nm->start()) {
+             SLOGE("Unable to start NetlinkManager (%s)", strerror(errno));
+         }
+         //sleep(1000);
+        printf("--------------------------------AutEvent done\n");
+    #endif
+    tvmode=config_get_tvout(TEST_CAMERA_ID);
+    printf("--------------tvmode =%d \r\n",tvmode);
+    mcd->hwd_screen1_mode(tvmode);
+    //mcd->hwd_tvout();
+    config_set_startup(TEST_CAMERA_ID,1);
+    printf("------------------------------------camera initial done\n");
+#endif
     ui->setupUi(this);
     setAttribute(Qt::WA_TranslucentBackground, true);
     //设置窗口为固定大小
@@ -193,54 +239,11 @@ main_desktop::main_desktop(QWidget *parent) :
     connect(ui->movieButton,SIGNAL(clicked()),this,SLOT(show_movieDesk()));
     connect(ui->compassButton,SIGNAL(clicked()),this,SLOT(show_dashboard()));
 
-    setProperty("noinput",true);
-    #if defined(Q_OS_LINUX)
+//    setProperty("noinput",true);
 
-    HwDisplay* mcd=NULL;
-    int i;
-    int tvmode=3;//0 disable ,1 tvout pal ;2 tvout ntsc;3 hdmi 1280x720;4 hdmi 1920x1080
-    cur_camera = 0 ;
-    //test screen mode
-    //0 disable
-    //config_set_tvout(0,tvmode);
-    int rt=0;
-    sdk_log_setlevel(3);
-    mcd=HwDisplay::getInstance();
-
-    #ifdef AUTEVENT_TEST//defined
-        NetlinkManager *nm;
-        if (!(nm = NetlinkManager::Instance())) {
-            SLOGE("Unable to create NetlinkManager");
-        };
-        printf("--------------------------------NetlinkManager done\n");
-    #endif
-    pgEmulatedCameraFactory=new HALCameraFactory();
-    pdvr=new dvr_factory();
-    pdvr1=new dvr_factory();
-    #ifdef AUDIO_TEST //defined
-        //AudioCapThread audiocap;
-        sp<AudioCapThread> audiocap=new AudioCapThread();
-        int hdl=audiocap->reqAudioSource(pdvr->__audio_data_cb_timestamp,(void *) pdvr);
-        pdvr->setAudioOps(audiocap,hdl);
-         printf("--------------------------------AudioCapThread done\n");
-    #endif
-    #ifdef AUTEVENT_TEST//defined
-         AutEvent *pevent=AutEvent::Instance();
-         pevent->setEventCb(testaut_event_cb_func,(void *)pdvr);
-         if (nm->start()) {
-             SLOGE("Unable to start NetlinkManager (%s)", strerror(errno));
-         }
-         //sleep(1000);
-        printf("--------------------------------AutEvent done\n");
-    #endif
-    tvmode=config_get_tvout(TEST_CAMERA_ID);
-    printf("--------------tvmode =%d \r\n",tvmode);
-    mcd->hwd_screen1_mode(tvmode);
-    //mcd->hwd_tvout();
-    config_set_startup(TEST_CAMERA_ID,1);
-    printf("-------------------------------------construction function done\n");
-#endif
     printf("main_desktop----------%p----\r\n",this);
+    printf("-------------------------------------construction function done\n");
+
 //    pstaticthis=this;//fucking bad,single obj only
 }
 //设置窗口为透明的，重载了paintEvent
@@ -255,7 +258,7 @@ void main_desktop::startRecord()
 #if defined(Q_OS_LINUX)
     printf("startRecord--------------\r\n");
     Mutex::Autolock locker(&mObjectLock);
-//    char bufname[512];
+    char bufname[512];
     int rt=0;
     rt=pdvr->recordInit("0");
     rt=pdvr1->recordInit("1");
@@ -274,108 +277,61 @@ void main_desktop::startRecord()
     retrec=pdvr->startRecord();
     retrec+=pdvr1->startRecord();
     if(retrec<0){
-         ALOGE("!!start record fail pls insert tf card");
-         g_recordstatus=0;
+        ALOGE("!!start record fail pls insert tf card");
+        g_recordstatus=0;
     }else{
         g_recordstatus=1;
     }
-//    pdvr->enableWaterMark();
-//    sprintf(bufname,"64,64,0,64,250,T3L SDK,64,450,ASTEROID V1 alpha");
-//    pdvr->setWaterMarkMultiple(bufname);
+    pdvr->enableWaterMark();
+    sprintf(bufname,"64,64,0,64,250,T3L SDK,64,450,ASTEROID V1 alpha");
+    pdvr->setWaterMarkMultiple(bufname);
 #endif
 }
 int main_desktop::startAllCameraWithPreview(int camera_no /* nouse now*/)
 {
     //sp<CameraHardwareInterface>     mHardware;
-    printf("startAllCameraWithPreview play %p\r\n",this);
+//    printf("startAllCameraWithPreview play %p\r\n",this);
     camera_no=camera_no;
 
 #if defined(Q_OS_LINUX)
    startRecord();
    printf("startAllCameraWithPreview play %d\r\n",cur_camera);
-    struct view_info vv= {0,0,1024,600};
-    pdvr->startPriview(vv);
-    pdvr1->startPriview(vv);
-
+   struct view_info vv= {0,0,1024,600};
+   pdvr->startPriview(vv);
+   pdvr1->startPriview(vv);
 #endif
     return 0;
 }
 //前后摄像头切换
 void main_desktop::cameraChange(void)
 {
-#if defined(Q_OS_LINUX)
-//    printf("--------------------------------begin change camera\n");
-//    if(SUPPORT_CAMERA_NUM<2)
-//    {
-//        printf("------------------------------only have one camera\n");
-//        return;
-//    }
-//    printf("------------------------current camera is %d\n",cur_camera);
-//    dvr_factory * p_dvr=dvrCamera[cur_camera].dvr;
-//    if(dvrCamera[cur_camera].getPreview()){
-//        p_dvr->stopPriview();
-//        printf("------------------------stop current camera %d\n",cur_camera);
-//        dvrCamera[cur_camera].setPreview(false);
-//    }
-//    cur_camera = (cur_camera==0)?1:0;
-//   printf("------------------------current camera changed as %d\n",cur_camera);
-//    //int cycltime;
-//    char bufname[512];
-//    //int cx,cy;
-//    bool rt;
-//    p_dvr=dvrCamera[cur_camera].dvr;
-//    if(!dvrCamera[cur_camera].getRecord())
-//    {
-//        printf("--------------------------------------set current camera %d getRecord\n",cur_camera);
-//        int rt ;
-//        #ifdef USE_AW_360
-//            config_set_heigth(360,960);
-//            config_set_weith(360,1440);
-//            rt= p_dvr->recordInit("360");
-//        #else
-//            //config_set_heigth(0,720);
-//            //config_set_weith(0,1280);
-//            sprintf(bufname,"%d",cur_camera);
-//            rt= p_dvr->recordInit(bufname);
-//        #endif
-//            if(rt <0)
-//                return;
-//            p_dvr->SetDataCB(usr_datacb,p_dvr);
-//            p_dvr->setCallbacks(usernotifyCallback,userdataCallback,userdataCallbackTimestamp,p_dvr /*dump*/);
-//            p_dvr->start();
-//            p_dvr->enableWaterMark();
-//            sprintf(bufname,"64,64,0,64,250,T2L SDK,64,450,RAINBOW V0.3a");
-//            p_dvr->setWaterMarkMultiple(bufname);
-//            p_dvr->startRecord();
-//            isaf = true;
-//            dvrCamera[cur_camera].setRecord(true);
-//    }
-//    if(!dvrCamera[cur_camera].getPreview())
-//    {
-//        printf("--------------------------------------set current camera %d getPreview\n",cur_camera);
-//        struct view_info vv= {0,0,VIEW_WEITH,VIEW_HEIGHT};
-//        //ALOGV("vx=%d vy=%d sx=%d sy%d",mcd->lcdxres,mcd->lcdyres,dvr->recordwith,dvr->recordheith);
-//        p_dvr->startPriview(vv);
-//        dvrCamera[cur_camera].setPreview(true);
-//    }
-//    sleep(3);//temp add here,must use timestamp for response gap,i will impl next version
-    printf("----------------------------------change camera\n");
-#else
     //如果现在是前置->切换为后置
     //如果为后置->切换为前置
     if(cameraState==true)
     {
         qDebug()<<"按下1";
+    #if defined(Q_OS_LINUX)
+        struct view_info vv= {0,0,1024,600};
+        pdvr->stopPriview();
+        pdvr1->startPriview(vv);
+    #else
         ui->cameraView->setStyleSheet(tr("background-image: url(:/picture.png);"));
+    #endif
         cameraState=false;
     }
     else
     {
         qDebug()<<"按下2";
+    #if defined(Q_OS_LINUX)
+        struct view_info vv= {0,0,1024,600};
+        pdvr1->stopPriview();
+        pdvr->startPriview(vv);
+    #else
         ui->cameraView->setStyleSheet(tr("background-image: url(:/picture1.png);"));
+    #endif
         cameraState=true;
     }
-#endif
+
 }
 
 main_desktop::~main_desktop()

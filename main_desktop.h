@@ -83,8 +83,8 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include "Fat.h"
-#include "DebugLevelThread.h"//
-#include "DvrRecordManager.h"//
+#include "DebugLevelThread.h"
+#include "DvrRecordManager.h"
 using namespace android;
 
 //#define DB_LEVEL_TEST
