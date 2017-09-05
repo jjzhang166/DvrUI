@@ -21,6 +21,7 @@ signals:
 public:
     explicit Preview(QWidget *parent = 0);
     ~Preview();
+
 public slots:
     void on_rearButton_clicked(bool);
     void on_frontButton_clicked(bool);

@@ -23,8 +23,7 @@ Picture_view::Picture_view(QWidget *parent) :
 //    scrollArea->setBaseSize(QSize(260,260));
 
 
-    int which_pic_show_big;
-    QString which_filename_show_big;
+
     if(pic_slave_or_master){
         qDebug()<<"显示主摄像头数据";
         which_pic_show_big=which_masterpic_show_big;
@@ -37,26 +36,18 @@ Picture_view::Picture_view(QWidget *parent) :
     qDebug()<<"需要打开第"<<which_pic_show_big<<"张图片";
     qDebug()<<which_pic_show_big;
     qDebug()<<"打开的文件名称为"<<which_filename_show_big;
-    QDirIterator m_DirIterator(QString("../DvrUI/image"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
-//    qDebug()<<" 当前目录为："<<m_DirIterator.path();
-//    int count=0;
-    while (m_DirIterator.hasNext()) {
-        QString tempFile=m_DirIterator.next();
-        QString tempFileName=tempFile;
-        tempFileName=tempFileName.remove(QString("../DvrUI/image/"),Qt::CaseSensitive);
+    #if defined(Q_OS_LINUX)
+        if(pic_slave_or_master){
+            m_DirIterator=new QDirIterator(QString("/mnt/sdcard/mmcblk1p1/frontPicture/"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
+        }else{
+            m_DirIterator=new QDirIterator(QString("/mnt/sdcard/mmcblk1p1/rearPicture/"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
+        }
 
-        if(which_filename_show_big==tempFileName){
-            qDebug()<<"打开图片ing";
-            QPixmap objPixmap(tempFile);
-            ui->pictureLabel->setPixmap(objPixmap);
-            ui->pictureLabel->resize(QSize(objPixmap.width(),objPixmap.height()));
-            break;
-        }
-        else{
-            continue;
-        }
-    }
-    ui->pictureLabel->setAlignment(Qt::AlignCenter);  // 图片居中
+    #else
+        m_DirIterator=new QDirIterator(QString("../DvrUI/image"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
+    #endif
+    show_image(m_DirIterator);
+
     //去掉scroll的边框
 //    QGridLayout *layout=new QGridLayout();
 //    scrollArea->setWidget(pictureLabel);
@@ -72,9 +63,6 @@ Picture_view::Picture_view(QWidget *parent) :
 //    layout->addWidget(scrollArea,0,0);
 //    layout->addLayout(ui->gridLayout,0,1);
 //    setLayout(layout);
-
-
-
 }
 
 Picture_view::~Picture_view()
@@ -87,4 +75,35 @@ void Picture_view::on_closeButton_clicked()
     this->close();
     pictureWidget* pPictureWidget=static_cast<pictureWidget*>(parentWidget());
     pPictureWidget->setHidden(false);
+}
+void Picture_view::show_image(QDirIterator* m_DirIterator)
+{
+    while (m_DirIterator->hasNext()) {
+        QString tempFile=m_DirIterator->next();
+        QString tempFileName=tempFile;
+        qDebug()<<"打开的图片名为："<<tempFileName;
+        #if defined(Q_OS_LINUX)
+        if(pic_slave_or_master){
+            tempFileName=tempFileName.remove(QString("/mnt/sdcard/mmcblk1p1/frontPicture/"),Qt::CaseSensitive);
+        }else{
+            tempFileName=tempFileName.remove(QString("/mnt/sdcard/mmcblk1p1/rearPicture/"),Qt::CaseSensitive);
+        }
+        #else
+            tempFileName=tempFileName.remove(QString("../DvrUI/image/"),Qt::CaseSensitive);
+        #endif
+
+        if(which_filename_show_big==tempFileName){
+            qDebug()<<"打开图片ing";
+            printf("-------------------------------open pic ing\n");
+            QPixmap objPixmap(tempFile);
+            ui->pictureLabel->setPixmap(objPixmap);
+//            ui->pictureLabel->resize(QSize(objPixmap.width(),objPixmap.height()));
+//            ui->pictureLabel->resize(QSize(512,300));
+            break;
+        }
+        else{
+            continue;
+        }
+    }
+    ui->pictureLabel->setAlignment(Qt::AlignCenter);  // 图片居中
 }

@@ -7,6 +7,10 @@ Settings::Settings(QWidget *parent) :
     ui(new Ui::Settings)
 {
     ui->setupUi(this);
+    int w,h;
+    w=(890-this->width())/2;
+    h=(450-this->height())/2;
+    this->mapToParent(QPoint(w,h));
     //将Tab设置为横向
     ui->settingTab->setTabPosition(QTabWidget::West);
 //    ui->settingTab->setTabShape(QTabWidget::Triangular);

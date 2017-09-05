@@ -10,7 +10,10 @@ movieDesk::movieDesk(QWidget *parent) :
     ui(new Ui::movieDesk),cur_index(0)
 {
     ui->setupUi(this);
-
+    int w,h;
+    w=(1024-this->width())/2;
+    h=(600-this->height())/2;
+    this->mapToParent(QPoint(w,h));
     connect(ui->returnButton,SIGNAL(clicked(bool)),SLOT(on_returnButton_clicked()));
 
     //将Tab设置为横向

@@ -1,13 +1,20 @@
 #include "setfirst.h"
 #include "ui_setfirst.h"
 
+
 SetFirst::SetFirst(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SetFirst)
 {
     ui->setupUi(this);
+    int w,h;
+    w=(1024-this->width())/2;
+    h=(600-this->height())/2;
+
+    this->mapToParent(QPoint(w,h));
     //设置界面的样式
     setWindowStyleSheet();
+    ui->comboBox->setView(new QListView());
     voiceButtonState=true;
     //连接前后两级页面
     connect(ui->settingsButton,SIGNAL(clicked(bool)),this,SLOT(on_click_setttingsButton(bool)));
@@ -135,13 +142,14 @@ void SetFirst::setWindowStyleSheet()
     QPalette p=QPalette();
     p.setColor(QPalette::Background,QColor(255,255,255));
     this->setPalette(p);
+
 //    ui->lightButton->setStyleSheet("QPushButton{border-image:url(:/icon/brightness.png)};");
 //    ui->voiceButton->setStyleSheet("QPushButton{border-image:url(:/icon/sound.png)};");
 //    ui->comboBox->setStyleSheet("QComboBox{border:1px solid rgb(100, 100, 100); border-radius: 4px;}"
 //      "QComboBox QAbstractItemView::item{height:40px;}"
 //      "QComboBox::down-arrow{image:url(:/icon/arrowdown.png);}"
 //      "QComboBox::drop-down{border:0px;}");
-      ui->comboBox->setView(new QListView());
+
     ui->voiceSlider->setStyleSheet("QSlider::groove:vertical{background: #cbcbcb;width: 6px;border-radius: 1px;padding-left:-1px;padding-right:-1px;padding-top:-1px;padding-bottom:-1px; }"
                                    "QSlider::sub-page:vertical{background: #cbcbcb;border-radius: 2px;}"
                                    "QSlider::add-page:vertical{background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #439cf4, stop:1 #439cf4);\

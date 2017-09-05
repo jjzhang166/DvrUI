@@ -13,31 +13,143 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" columnstretch="7,0">
-   <item row="0" column="1" rowspan="2">
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0">
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="minimumSize">
+      <size>
+       <width>431</width>
+       <height>401</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>431</width>
+       <height>401</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QScrollBar:vertical {
+	width:10px; 
+	background-color:rgba(0,0,0,0%); 
+	padding-top:10px; 
+	padding-bottom:10px;
+}
+
+QScrollBar:horizontal {
+	height:10px; 
+	background-color:rgba(0,0,0,0%); 
+	padding-left:10px; padding-right:10px;
+}
+
+QScrollBar::handle:vertical {
+	width:10px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA); 
+}
+
+QScrollBar::handle:horizontal {
+	height:10px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA); 
+}
+
+QScrollBar::handle:vertical:hover {
+	width:10px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+}
+
+QScrollBar::handle:horizontal:hover {
+	height:10px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+}
+
+QScrollBar::add-line:vertical {
+	height:10px;
+	width:10px;
+	subcontrol-position: bottom; 
+	subcontrol-origin: margin;
+	border-image:url(:/icon/add-line_vertical.png);
+}
+
+QScrollBar::add-line:horizontal {
+	height:10px;
+	width:10px;
+	subcontrol-position: right;
+	subcontrol-origin: margin;
+	border-image:url(:/icon/add-line_horizontal.png);
+}
+
+QScrollBar::sub-line:vertical {
+	height:10px;
+	width:10px;
+	subcontrol-position: top; 
+	subcontrol-origin: margin;
+	border-image:url(:/icon/sub-line_vertical.png);
+}
+
+QScrollBar::sub-line:horizontal {
+	height:10px;
+	width:10px;
+	subcontrol-position: left;
+	subcontrol-origin: margin;
+	border-image:url(:/icon/sub-line_horizontal.png);
+}
+
+QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical {
+	width:10px;
+	background: #C0C0C0;
+}
+
+QScrollBar::add-page:horizontal,QScrollBar::sub-page:horizontal {
+	height:10px;
+	background: #C0C0C0;
+}
+
+QScrollArea {
+	border: 0px ; 
+}</string>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>431</width>
+        <height>401</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="pictureLabel">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="0" column="1">
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QPushButton" name="closeButton">
        <property name="minimumSize">
         <size>
-         <width>21</width>
-         <height>21</height>
+         <width>31</width>
+         <height>31</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>21</width>
-         <height>21</height>
+         <width>31</width>
+         <height>31</height>
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton{
-	border-radius:0px;
-	color: #F0F0F0;
-	background-color:rgba(1,1,1,0);
-	border-style:none;
-}
-QPushButton:hover{
+        <string notr="true">QPushButton:hover{
 	background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, stop:0 rgba(238, 0, 0, 128), stop:1 rgba(238, 44, 44, 255));
 }
 </string>
@@ -61,19 +173,6 @@ QPushButton:hover{
       </spacer>
      </item>
     </layout>
-   </item>
-   <item row="0" column="0" rowspan="2">
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QLabel" name="pictureLabel">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
    </item>
   </layout>
  </widget>
