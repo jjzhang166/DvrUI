@@ -13,15 +13,8 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" columnstretch="10,0">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
+  <layout class="QGridLayout" name="gridLayout_2" columnstretch="7,0">
+   <item row="0" column="1" rowspan="2">
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QPushButton" name="closeButton">
@@ -36,6 +29,18 @@
          <width>21</width>
          <height>21</height>
         </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton{
+	border-radius:0px;
+	color: #F0F0F0;
+	background-color:rgba(1,1,1,0);
+	border-style:none;
+}
+QPushButton:hover{
+	background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, stop:0 rgba(238, 0, 0, 128), stop:1 rgba(238, 44, 44, 255));
+}
+</string>
        </property>
        <property name="text">
         <string>×</string>
@@ -56,6 +61,19 @@
       </spacer>
      </item>
     </layout>
+   </item>
+   <item row="0" column="0" rowspan="2">
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="pictureLabel">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>

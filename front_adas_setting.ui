@@ -82,18 +82,18 @@
     <widget class="QPushButton" name="returnButton">
      <property name="minimumSize">
       <size>
-       <width>51</width>
-       <height>51</height>
+       <width>41</width>
+       <height>41</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>51</width>
-       <height>51</height>
+       <width>41</width>
+       <height>41</height>
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-image:url(:/image/image/return.png)</string>
+      <string notr="true">border-image:url(:/icon/Back.png)</string>
      </property>
      <property name="text">
       <string/>
@@ -115,7 +115,31 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 75 10pt &quot;微软雅黑&quot;;</string>
+      <string notr="true">QPushButton{
+	border-style: none;
+	border: 0px;
+	color: #F0F0F0;
+	padding: 5px;	
+	border-radius:5px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+}
+
+.QPushButton[focusPolicy=&quot;0&quot;] {
+	border-style: none;
+	border: 0px;
+	color: #F0F0F0;
+	padding: 0px;	
+	border-radius:3px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+}
+
+.QPushButton:hover{ 
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
+}
+
+.QPushButton:pressed{ 
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
+}</string>
      </property>
      <property name="text">
       <string>下一步</string>
@@ -135,6 +159,15 @@
        <width>371</width>
        <height>351</height>
       </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QGroupBox{
+border-width:2px;
+border-style:solid;
+border-radius: 10px;
+border-color:blue;
+margin-top:0.5ex;
+}</string>
      </property>
      <property name="title">
       <string/>
@@ -258,12 +291,6 @@ rgb(255, 8, 12)</string>
       </item>
      </layout>
      <zorder>widget</zorder>
-     <zorder>left_right_Slider</zorder>
-     <zorder>leftLabel</zorder>
-     <zorder>rightLabel</zorder>
-     <zorder>lowLabel</zorder>
-     <zorder>high_low_Slider</zorder>
-     <zorder>highLabel</zorder>
      <zorder>verticalSpacer</zorder>
      <zorder>horizontalSpacer</zorder>
     </widget>

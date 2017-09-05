@@ -16,10 +16,10 @@ About::About(QWidget *parent) :
     test =qrand()%100;
     qDebug()<<"随机数"<<test;
     ui->ROM_usage->setValue(test);
-    ui->languageSelect->setStyleSheet("QComboBox{border:1px solid gray;}"
-      "QComboBox QAbstractItemView::item{height:40px;}"
-      "QComboBox::down-arrow{image:url(:/icon/arrowdown.png);}"
-      "QComboBox::drop-down{border:0px;}");
+//    ui->languageSelect->setStyleSheet("QComboBox{border:1px solid rgb(100, 100, 100);border-radius: 4px;}"
+//      "QComboBox QAbstractItemView::item{height:40px;}"
+//      "QComboBox::down-arrow{image:url(:/icon/arrowdown.png);}"
+//      "QComboBox::drop-down{border:0px;}");
       ui->languageSelect->setView(new QListView());
 }
 

@@ -137,6 +137,22 @@ font: 63 18pt &quot;Ubuntu&quot;;</string>
              <height>51</height>
             </size>
            </property>
+           <property name="styleSheet">
+            <string notr="true">QComboBox::drop-down,QDateEdit::drop-down {
+	subcontrol-origin: padding;
+	subcontrol-position: top right;
+	width: 15px; 
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+	border-left-color: #50A3F0;
+}
+
+QComboBox::down-arrow,QDateEdit::down-arrow {
+	image: url(:/icon/arrowdown.png); 
+}</string>
+           </property>
            <item>
             <property name="text">
              <string>中文简体</string>
@@ -259,6 +275,18 @@ font: 63 20pt &quot;Ubuntu&quot;;</string>
              <height>31</height>
             </size>
            </property>
+           <property name="styleSheet">
+            <string notr="true">border: 2px solid gray;
+border-radius: 5px;
+background-color: #FFFFFF;
+   border-radius: 5px;
+   text-align: center;
+chunk {
+   background-color: #05B8CC;
+   width: 20px;
+}
+</string>
+           </property>
            <property name="value">
             <number>24</number>
            </property>
@@ -307,6 +335,33 @@ font: 63 20pt &quot;Ubuntu&quot;;</string>
              <width>91</width>
              <height>41</height>
             </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+	border-style: none;
+	border: 0px;
+	color: #F0F0F0;
+	padding: 5px;	
+	border-radius:5px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+}
+
+.QPushButton[focusPolicy=&quot;0&quot;] {
+	border-style: none;
+	border: 0px;
+	color: #F0F0F0;
+	padding: 0px;	
+	border-radius:3px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+}
+
+.QPushButton:hover{ 
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
+}
+
+.QPushButton:pressed{ 
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
+}</string>
            </property>
            <property name="text">
             <string>格式化</string>

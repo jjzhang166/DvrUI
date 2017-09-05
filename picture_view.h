@@ -27,9 +27,8 @@ private slots:
 
 private:
     Ui::Picture_view *ui;
-    int number_to_show;
-    QLabel *pictureLabel;
-    QScrollArea *scrollArea;
+//    QLabel *pictureLabel;
+//    QScrollArea *scrollArea;
 };
 
 #endif // PICTURE_VIEW_H

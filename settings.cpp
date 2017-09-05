@@ -43,7 +43,6 @@ Settings::Settings(QWidget *parent) :
     ui->settingTab->insertTab(3,timesettings,tr("时间设置"));
     ui->settingTab->setCurrentIndex(0);
 
-    ui->returnButton->setStyleSheet(tr("background-image: url(:/image/image/return.png);"));
     connect(ui->returnButton,SIGNAL(clicked(bool)),this,SLOT(on_click_returnButton(bool)));
 
     connect(previews,SIGNAL(hideSettings()),this,SLOT(on_hideSettings()));

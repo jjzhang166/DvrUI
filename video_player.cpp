@@ -19,7 +19,7 @@ Video_Player::Video_Player(QWidget *parent) :
 
     ui->progressSlider->setRange(0, player->duration() / 1000);
 
-    player->setVideoOutput(my_video_widget);
+//    player->setVideoOutput(my_video_widget);
     my_video_widget->show();
     qDebug()<<"将要播放的视频名称为："<<which_filename_to_play;
     QDirIterator m_DirIterator(QString("E:/tech_practise/T3_linux/T3_Linux/T3_Linux/video"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);

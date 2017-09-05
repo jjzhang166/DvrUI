@@ -21,5 +21,21 @@
         <file>voice.png</file>
         <file>icon/arrowdown.png</file>
         <file>icon/circle-white.png</file>
+        <file>icon/left_arrow.png</file>
+        <file>icon/right_arrow.png</file>
+        <file>icon/Back.png</file>
+        <file>icon/settings.png</file>
+        <file>icon/brightness.png</file>
+        <file>icon/no_sound.png</file>
+        <file>icon/sound.png</file>
+        <file>icon/navigate-down.png</file>
+        <file>icon/navigate-up.png</file>
+        <file>icon/camera.png</file>
+        <file>icon/lock.png</file>
+        <file>icon/record.png</file>
+        <file>icon/setting_main.png</file>
+        <file>icon/gps.png</file>
+        <file>icon/Switch_Camera.png</file>
+        <file>icon/video.png</file>
     </qresource>
 </RCC>

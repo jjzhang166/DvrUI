@@ -18,6 +18,8 @@
 #include "dashboard.h"
 #include "moviedesk.h"
 
+
+
 #if defined(Q_OS_LINUX)//行车记录模块视频显示
 #define PATH_SDCARD  "/mnt/sdcard/mmcblk1p1/"
 #define PATH_SD_DEV  "/dev/mmcblk1p1"
@@ -129,17 +131,22 @@ private:
     void accept();
 public slots:
     void timerUpdate(void);
-    void cameraChange();//前后摄像头切换
+//    void cameraChange();//前后摄像头切换
 private slots://有动作时显示图标
     void on_mouse_no_active_10_second();
+public slots://其它界面调出
     void on_recordButton_clicked();
 
-public slots://其它界面调出
-    void show_settingDesk();
-    void show_movieDesk();
+    void on_camera_change_Button_clicked();
 
-    void show_dashboard();
+    void on_compassButton_clicked();
+
+    void on_setFirstButton_clicked();
+
+    void on_movieButton_clicked();
+
     void on_cameraButton_clicked();//截图
+
     void on_lockButton_clicked();//锁屏
 private://界面类
     SetFirst *setting_desktop;

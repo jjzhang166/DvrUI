@@ -14,6 +14,213 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,5,3,3">
+   <item row="0" column="3">
+    <widget class="QWidget" name="widget_3" native="true">
+     <layout class="QGridLayout" name="gridLayout_9">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="4">
+        <item>
+         <spacer name="verticalSpacer_12">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <layout class="QGridLayout" name="gridLayout_8" columnstretch="2,1,2">
+        <property name="leftMargin">
+         <number>5</number>
+        </property>
+        <property name="rightMargin">
+         <number>5</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QWidget" name="widget_6" native="true">
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QLabel" name="lightLabel">
+             <property name="minimumSize">
+              <size>
+               <width>31</width>
+               <height>31</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>31</width>
+               <height>31</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QSlider" name="lightSlider">
+             <property name="minimumSize">
+              <size>
+               <width>31</width>
+               <height>191</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>31</width>
+               <height>191</height>
+              </size>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QPushButton" name="lightButton">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>31</width>
+               <height>31</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>31</width>
+               <height>31</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border-image:url(:/icon/brightness.png)</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>28</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="2">
+         <widget class="QWidget" name="widget_5" native="true">
+          <layout class="QGridLayout" name="gridLayout_7">
+           <item row="0" column="0">
+            <widget class="QLabel" name="voiceLabel">
+             <property name="minimumSize">
+              <size>
+               <width>31</width>
+               <height>31</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>31</width>
+               <height>31</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QSlider" name="voiceSlider">
+             <property name="minimumSize">
+              <size>
+               <width>31</width>
+               <height>191</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>31</width>
+               <height>191</height>
+              </size>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QPushButton" name="voiceButton">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>31</width>
+               <height>31</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>31</width>
+               <height>31</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border-image:url(:/icon/sound.png)</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0">
+        <item>
+         <spacer name="verticalSpacer_10">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QWidget" name="widget_4" native="true">
      <layout class="QGridLayout" name="gridLayout">
@@ -49,7 +256,7 @@
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-image:url(:/setting.png)</string>
+             <string notr="true">border-image:url(:/icon/settings.png)</string>
             </property>
             <property name="text">
              <string/>
@@ -84,7 +291,7 @@
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-image:url(:/return.png)</string>
+             <string notr="true">border-image:url(:/icon/Back.png)</string>
             </property>
             <property name="text">
              <string/>
@@ -114,88 +321,6 @@
          </widget>
         </item>
        </layout>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QPushButton" name="movieButton">
-        <property name="minimumSize">
-         <size>
-          <width>191</width>
-          <height>191</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>191</width>
-          <height>191</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>开机录像</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="audioButton">
-        <property name="minimumSize">
-         <size>
-          <width>191</width>
-          <height>191</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>191</width>
-          <height>191</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>录音</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="ADASButton">
-        <property name="minimumSize">
-         <size>
-          <width>191</width>
-          <height>191</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>191</width>
-          <height>191</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>ADAS</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="reverseButton">
-        <property name="minimumSize">
-         <size>
-          <width>191</width>
-          <height>191</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>191</width>
-          <height>191</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>倒车线</string>
-        </property>
-       </widget>
       </item>
      </layout>
     </widget>
@@ -333,6 +458,22 @@
             <height>41</height>
            </size>
           </property>
+          <property name="styleSheet">
+           <string notr="true">QComboBox::drop-down,QDateEdit::drop-down {
+	subcontrol-origin: padding;
+	subcontrol-position: top right;
+	width: 15px; 
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+	border-left-color: #50A3F0;
+}
+
+QComboBox::down-arrow,QDateEdit::down-arrow {
+	image: url(:/icon/arrowdown.png); 
+}</string>
+          </property>
           <item>
            <property name="text">
             <string>1920×1080</string>
@@ -380,174 +521,84 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="3">
-    <widget class="QWidget" name="widget_3" native="true">
-     <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="4">
-        <item>
-         <spacer name="verticalSpacer_12">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
+   <item row="0" column="1">
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QGridLayout" name="gridLayout_2">
       <item row="1" column="0">
-       <widget class="QLabel" name="lightLabel">
+       <widget class="QPushButton" name="ADASButton">
         <property name="minimumSize">
          <size>
-          <width>31</width>
-          <height>31</height>
+          <width>191</width>
+          <height>191</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>31</width>
-          <height>31</height>
+          <width>191</width>
+          <height>191</height>
          </size>
         </property>
         <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <string>ADAS</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLabel" name="voiceLabel">
+       <widget class="QPushButton" name="reverseButton">
         <property name="minimumSize">
          <size>
-          <width>31</width>
-          <height>31</height>
+          <width>191</width>
+          <height>191</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>31</width>
-          <height>31</height>
+          <width>191</width>
+          <height>191</height>
          </size>
         </property>
         <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <string>倒车线</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QSlider" name="lightSlider">
+      <item row="0" column="1">
+       <widget class="QPushButton" name="audioButton">
         <property name="minimumSize">
          <size>
-          <width>31</width>
+          <width>191</width>
           <height>191</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>31</width>
+          <width>191</width>
           <height>191</height>
          </size>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QSlider" name="voiceSlider">
-        <property name="minimumSize">
-         <size>
-          <width>31</width>
-          <height>191</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>31</width>
-          <height>191</height>
-         </size>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QPushButton" name="lightButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>31</width>
-          <height>31</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>31</width>
-          <height>31</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-image:url(./light.png)</string>
         </property>
         <property name="text">
-         <string/>
+         <string>录音</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="voiceButton">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="movieButton">
         <property name="minimumSize">
          <size>
-          <width>31</width>
-          <height>31</height>
+          <width>191</width>
+          <height>191</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>31</width>
-          <height>31</height>
+          <width>191</width>
+          <height>191</height>
          </size>
         </property>
-        <property name="styleSheet">
-         <string notr="true">background-image:url(./voice.png)</string>
-        </property>
         <property name="text">
-         <string/>
+         <string>开机录像</string>
         </property>
        </widget>
-      </item>
-      <item row="4" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0">
-        <item>
-         <spacer name="verticalSpacer_10">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
       </item>
      </layout>
     </widget>

@@ -1,5 +1,10 @@
 #include "moviedesk.h"
 #include "ui_moviedesk.h"
+
+//用来判断预览的是哪个摄像头保存的数据，true为master false为slave
+bool pic_slave_or_master;
+bool video_slave_or_master;
+
 movieDesk::movieDesk(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::movieDesk),cur_index(0)
@@ -45,6 +50,7 @@ void movieDesk::on_returnButton_clicked()
 void movieDesk::on_mainCameraButton_clicked()
 {
     qDebug()<<"调整为主摄像头";
+    pic_slave_or_master=true;
     cur_index=ui->tabWidget->currentIndex();
     ui->tabWidget->removeTab(0);
     ui->tabWidget->removeTab(1);
@@ -57,6 +63,7 @@ void movieDesk::on_mainCameraButton_clicked()
 void movieDesk::on_viceButton_clicked()
 {
     qDebug()<<"调整为副摄像头";
+    pic_slave_or_master=false;
     cur_index=ui->tabWidget->currentIndex();
     ui->tabWidget->removeTab(0);
     ui->tabWidget->removeTab(1);

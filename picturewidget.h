@@ -11,6 +11,8 @@
 #include <QListWidgetItem>
 #include <QModelIndex>
 #include "picture_view.h"
+
+
 namespace Ui {
 class pictureWidget;
 }

@@ -35,7 +35,15 @@
       </sizepolicy>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 75 10pt &quot;微软雅黑&quot;;</string>
+      <string notr="true">QGroupBox{
+border-width:2px;
+border-style:solid;
+border-radius: 10px;
+border-color:blue;
+margin-top:0.5ex;
+}
+font: 75 10pt &quot;微软雅黑&quot;;
+</string>
      </property>
      <property name="title">
       <string/>
@@ -67,7 +75,14 @@
       </sizepolicy>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 75 10pt &quot;微软雅黑&quot;;</string>
+      <string notr="true">QGroupBox{
+border-width:2px;
+border-style:solid;
+border-radius: 10px;
+border-color:blue;
+margin-top:0.5ex;
+}
+font: 75 10pt &quot;微软雅黑&quot;;</string>
      </property>
      <property name="title">
       <string/>

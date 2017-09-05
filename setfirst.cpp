@@ -8,7 +8,7 @@ SetFirst::SetFirst(QWidget *parent) :
     ui->setupUi(this);
     //设置界面的样式
     setWindowStyleSheet();
-
+    voiceButtonState=true;
     //连接前后两级页面
     connect(ui->settingsButton,SIGNAL(clicked(bool)),this,SLOT(on_click_setttingsButton(bool)));
     connect(ui->returnButton,SIGNAL(clicked(bool)),this,SLOT(on_click_returnButton(bool)));
@@ -22,8 +22,7 @@ SetFirst::SetFirst(QWidget *parent) :
     ui->lightSlider->setValue(50);
     ui->voiceLabel->setText(tr("50"));
     ui->lightLabel->setText(tr("50"));
-    ui->voiceButton->setStyleSheet(tr("background-image: url(:/image/image/voice.png);"));
-    ui->lightButton->setStyleSheet(tr("background-image: url(:/image/image/light.png);"));
+
     //设置QSpinBox设置录像时间
     ui->movieTimeSetting->setRange(1,5);
     ui->movieTimeSetting->setSingleStep(2);
@@ -108,11 +107,19 @@ void SetFirst::on_reverseButton_clicked()
 
 void SetFirst::on_voiceButton_clicked()
 {
-    if(ui->voiceButton->isChecked()){
+    if(!voiceButtonState){
         qDebug()<<"按下为静音";
+        ui->voiceButton->setStyleSheet("QPushButton{border-image:url(:/icon/no_sound.png)};");
+        ui->voiceSlider->setValue(0);
+        ui->voiceSlider->setEnabled(false);
+        voiceButtonState=true;
     }
     else{
         qDebug()<<"不是静音";
+        ui->voiceButton->setStyleSheet("QPushButton{border-image:url(:/icon/sound.png)};");
+        ui->voiceSlider->setValue(30);
+        ui->voiceSlider->setEnabled(true);
+        voiceButtonState=false;
     }
 
 }
@@ -124,13 +131,16 @@ void SetFirst::on_movieTimeSetting_valueChanged(int value)
 }
 void SetFirst::setWindowStyleSheet()
 {
+
     QPalette p=QPalette();
     p.setColor(QPalette::Background,QColor(255,255,255));
     this->setPalette(p);
-    ui->comboBox->setStyleSheet("QComboBox{border:1px solid gray;}"
-      "QComboBox QAbstractItemView::item{height:40px;}"
-      "QComboBox::down-arrow{image:url(:/icon/arrowdown.png);}"
-      "QComboBox::drop-down{border:0px;}");
+//    ui->lightButton->setStyleSheet("QPushButton{border-image:url(:/icon/brightness.png)};");
+//    ui->voiceButton->setStyleSheet("QPushButton{border-image:url(:/icon/sound.png)};");
+//    ui->comboBox->setStyleSheet("QComboBox{border:1px solid rgb(100, 100, 100); border-radius: 4px;}"
+//      "QComboBox QAbstractItemView::item{height:40px;}"
+//      "QComboBox::down-arrow{image:url(:/icon/arrowdown.png);}"
+//      "QComboBox::drop-down{border:0px;}");
       ui->comboBox->setView(new QListView());
     ui->voiceSlider->setStyleSheet("QSlider::groove:vertical{background: #cbcbcb;width: 6px;border-radius: 1px;padding-left:-1px;padding-right:-1px;padding-top:-1px;padding-bottom:-1px; }"
                                    "QSlider::sub-page:vertical{background: #cbcbcb;border-radius: 2px;}"
@@ -146,4 +156,14 @@ void SetFirst::setWindowStyleSheet()
                                    width: 10px;border-radius: 2px;}"
                                    "QSlider::handle:vertical{border-image: url(:/icon/circle-white.png);margin: -2px -7px -2px -7px; height: 17px;}"
                                     "QSlider{border-color: #cbcbcb;}"  );
+
+    /*spinbox 按下和抬起样式*/
+    ui->movieTimeSetting->setStyleSheet("QSpinBox::up-button {subcontrol-origin:border;subcontrol-position:right;image: url(:/icon/right_arrow.png);width: 32px;height: 32px;}"
+                                        "QSpinBox::down-button {subcontrol-origin:border;subcontrol-position:left;border-image: url(:/icon/left_arrow.png);width: 32px;height: 32px;}"
+                                        "QSpinBox::down-button:enabled:hover {background: rgb(255, 255, 255, 30);}"
+                                        "QSpinBox::up-button:enabled:hover {background: rgb(255, 255, 255, 30);}"
+                                        "QSpinBox::up-button:pressed{subcontrol-origin:border;subcontrol-position:right;image: url(:/icon/right_arrow.png); width: 32px;height: 32px;}"
+                                        "QSpinBox::down-button:pressed{subcontrol-position:left;image: url(:/icon/left_arrow.png);width: 32px;height: 32px;}"
+                                        "QSpinBox{border: 1px solid rgb(100, 100, 100);text-align: center; border-radius: 4px;}");
+
 }

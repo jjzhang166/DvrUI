@@ -8,6 +8,9 @@
 #include "settings.h"
 #include "slave_picturewidget.h"
 #include "slave_videowidget.h"
+
+
+
 namespace Ui {
 class movieDesk;
 }

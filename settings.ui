@@ -49,8 +49,11 @@
          <height>51</height>
         </size>
        </property>
+       <property name="styleSheet">
+        <string notr="true">border-image:url(:/icon/Back.png)</string>
+       </property>
        <property name="text">
-        <string>back</string>
+        <string/>
        </property>
       </widget>
      </item>

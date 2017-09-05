@@ -31,10 +31,17 @@
    </property>
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox">
+     <property name="styleSheet">
+      <string notr="true">border: 2px solid #0000EE;
+border-radius: 5px;
+margin-top: 1ex; 
+font: 75 10pt &quot;微软雅黑&quot;;
+</string>
+     </property>
      <property name="title">
       <string/>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
+     <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,2,1">
       <item row="0" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
@@ -69,6 +76,10 @@
             <width>181</width>
             <height>20</height>
            </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-width:0px
+</string>
           </property>
           <property name="text">
            <string> 前摄像头预览设置</string>
@@ -113,6 +124,9 @@
           <height>175555</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">border-width:0px</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -150,6 +164,33 @@
             <height>30</height>
            </size>
           </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton{
+	border-style: none;
+	border: 0px;
+	color: #F0F0F0;
+	padding: 5px;	
+	border-radius:5px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+}
+
+.QPushButton[focusPolicy=&quot;0&quot;] {
+	border-style: none;
+	border: 0px;
+	color: #F0F0F0;
+	padding: 0px;	
+	border-radius:3px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+}
+
+.QPushButton:hover{ 
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
+}
+
+.QPushButton:pressed{ 
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
+}</string>
+          </property>
           <property name="text">
            <string>预览</string>
           </property>
@@ -175,10 +216,17 @@
    </item>
    <item row="0" column="1">
     <widget class="QGroupBox" name="groupBox_2">
+     <property name="styleSheet">
+      <string notr="true">border: 2px solid #0000EE;
+border-radius: 5px;
+margin-top: 1ex; 
+font: 75 10pt &quot;微软雅黑&quot;;
+</string>
+     </property>
      <property name="title">
       <string/>
      </property>
-     <layout class="QGridLayout" name="gridLayout_3">
+     <layout class="QGridLayout" name="gridLayout_3" rowstretch="1,2,1">
       <item row="0" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
@@ -213,6 +261,10 @@
             <width>181</width>
             <height>20</height>
            </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-width:0px
+</string>
           </property>
           <property name="text">
            <string>后摄像头预览设置</string>
@@ -257,6 +309,9 @@
           <height>117555</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">border-width:0px</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -293,6 +348,33 @@
             <width>85</width>
             <height>30</height>
            </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton{
+	border-style: none;
+	border: 0px;
+	color: #F0F0F0;
+	padding: 5px;	
+	border-radius:5px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+}
+
+.QPushButton[focusPolicy=&quot;0&quot;] {
+	border-style: none;
+	border: 0px;
+	color: #F0F0F0;
+	padding: 0px;	
+	border-radius:3px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+}
+
+.QPushButton:hover{ 
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
+}
+
+.QPushButton:pressed{ 
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
+}</string>
           </property>
           <property name="text">
            <string>预览</string>

@@ -34,6 +34,8 @@ private:
     Ui::SetFirst *ui;
     Settings* setSecond_Desk;
     void setWindowStyleSheet();
+private:
+    bool voiceButtonState;
 };
 
 #endif // SETFIRST_H

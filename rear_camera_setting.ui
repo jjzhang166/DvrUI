@@ -72,8 +72,11 @@
          <height>55</height>
         </size>
        </property>
+       <property name="styleSheet">
+        <string notr="true">border-image:url(&quot;:/icon/navigate-up.png&quot;)</string>
+       </property>
        <property name="text">
-        <string>up</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -104,8 +107,11 @@
          <height>55</height>
         </size>
        </property>
+       <property name="styleSheet">
+        <string notr="true">border-image:url(&quot;:/icon/navigate-down.png&quot;)</string>
+       </property>
        <property name="text">
-        <string>down</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -136,21 +142,21 @@
       <widget class="QPushButton" name="returnButton">
        <property name="minimumSize">
         <size>
-         <width>81</width>
+         <width>41</width>
          <height>41</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>81</width>
+         <width>41</width>
          <height>41</height>
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-image:url(:/image/image/return.png)</string>
+        <string notr="true">border-image:url(:/icon/Back.png)</string>
        </property>
        <property name="text">
-        <string>return</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -180,6 +186,33 @@
          <width>81</width>
          <height>41</height>
         </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton{
+	border-style: none;
+	border: 0px;
+	color: #F0F0F0;
+	padding: 5px;	
+	border-radius:5px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+}
+
+.QPushButton[focusPolicy=&quot;0&quot;] {
+	border-style: none;
+	border: 0px;
+	color: #F0F0F0;
+	padding: 0px;	
+	border-radius:3px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+}
+
+.QPushButton:hover{ 
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
+}
+
+.QPushButton:pressed{ 
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
+}</string>
        </property>
        <property name="text">
         <string>next</string>
