@@ -20,11 +20,12 @@ pictureWidget::pictureWidget(QWidget *parent) :
 
     ui->listWidget_file->setObjectName(QString::fromUtf8("listWidget_file"));
     ui->listWidget_file->setGeometry(QRect(0,0,0,0));
-
+    QStringList filters;
+    filters<<QString("*.jpeg")<<QString("*.jpg")<<QString("*.png")<<QString("*.tiff")<<QString("*.gif")<<QString("*.bmp");
     #if defined(Q_OS_LINUX)
-    QDirIterator m_DirIterator(QString("/mnt/sdcard/mmcblk1p1/frontPicture/"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
+    QDirIterator m_DirIterator(QString("/mnt/sdcard/mmcblk1p1/frontPicture/"),filters,QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
     #else
-    QDirIterator m_DirIterator(QString("../DvrUI/image/"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
+    QDirIterator m_DirIterator(QString("../DvrUI/image/"),filters,QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
     #endif
 
     qDebug()<<" 当前目录为："<<m_DirIterator.path();
@@ -78,6 +79,12 @@ void pictureWidget::show_big_picture(QModelIndex pos)
     which_masterfilename_show_big=item->text();
     which_masterpic_show_big=pos.row();
     picture_views=new Picture_view(this);
+    emit hide_moviedesktop();
+    connect(picture_views,SIGNAL(p_unhide_moviedesktop()),this,SLOT(deal_picture_views_signal()));
 //    this->hide();
     picture_views->showNormal();
+}
+void pictureWidget::deal_picture_views_signal()
+{
+    emit on_unhide_moviedesktop();
 }

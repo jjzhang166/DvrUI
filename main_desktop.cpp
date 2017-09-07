@@ -1,12 +1,14 @@
 #include "main_desktop.h"
 #include "ui_main_desktop.h"
 #include <QDesktopWidget>
-
+#include "videowidget.h"
 #if defined(Q_OS_LINUX)
 dvr_factory* pdvr;
 dvr_factory* pdvr1;
 #endif
 int g_recordstatus=0;
+
+main_desktop* pStaticMaindesktop=NULL;
 #if defined(Q_OS_LINUX)
 using namespace android;
 void usernotifyCallback(int32_t msgType, int32_t ext1, int32_t ext2, void* user){
@@ -239,7 +241,9 @@ main_desktop::main_desktop(QWidget *parent) :
     printf("main_desktop----------%p----\r\n",this);
     printf("-------------------------------------construction function done\n");
 
-//    pstaticthis=this;//fucking bad,single obj only
+
+    pStaticMaindesktop=this;
+
 }
 //设置窗口为透明的，重载了paintEvent
 void main_desktop::paintEvent(QPaintEvent *event)
@@ -345,8 +349,25 @@ void main_desktop::mouseReleaseEvent(QMouseEvent *)
 {
     on_mouse_active();
 }
-
-
+void main_desktop::on_main_desktop_disvisible()
+{
+    qDebug()<<"main_desktop will hidden";
+    this->setHidden(true);
+    #if defined(Q_OS_LINUX)
+        pdvr->stopPriview();
+        pdvr1->stopPriview();
+    #endif
+}
+void main_desktop::on_main_desktop_visible()
+{
+    this->setHidden(false);
+    this->moviedesk->activateWindow();
+    #if defined(Q_OS_LINUX)
+        struct view_info vv= {0,0,1024,600};
+        pdvr->startPriview(vv);
+        pdvr1->startPriview(vv);
+    #endif
+}
 ////暂时做成截图功能
 //void main_desktop::show_photoDesk()
 //{
@@ -569,6 +590,8 @@ void main_desktop::on_setFirstButton_clicked()
 void main_desktop::on_movieButton_clicked()
 {
     qDebug()<<"open movie";
+
     moviedesk=new movieDesk();
     moviedesk->exec();
+
 }

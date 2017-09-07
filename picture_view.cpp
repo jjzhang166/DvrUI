@@ -22,7 +22,10 @@ Picture_view::Picture_view(QWidget *parent) :
 //    scrollArea->setWidget(pictureLabel);
 //    scrollArea->setBaseSize(QSize(260,260));
 
-
+    int w,h;
+    w=(1024-this->width())/2;
+    h=(600-this->height())/2;
+    this->mapToGlobal(QPoint(w,h));
 
     if(pic_slave_or_master){
         qDebug()<<"显示主摄像头数据";
@@ -73,8 +76,9 @@ Picture_view::~Picture_view()
 void Picture_view::on_closeButton_clicked()
 {
     this->close();
-    pictureWidget* pPictureWidget=static_cast<pictureWidget*>(parentWidget());
-    pPictureWidget->setHidden(false);
+//    pictureWidget* pPictureWidget=static_cast<pictureWidget*>(parentWidget());
+//    pPictureWidget->setHidden(false);
+    emit p_unhide_moviedesktop();
 }
 void Picture_view::show_image(QDirIterator* m_DirIterator)
 {

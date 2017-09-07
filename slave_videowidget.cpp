@@ -12,3 +12,7 @@ slave_VideoWidget::~slave_VideoWidget()
 {
     delete ui;
 }
+//void slave_VideoWidget::deal_picture_views_signal()
+//{
+//    emit on_unhide_moviedesktop();
+//}

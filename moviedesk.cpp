@@ -40,6 +40,17 @@ movieDesk::movieDesk(QWidget *parent) :
     ui->tabWidget->tabBar()->setTabIcon(2,QIcon(QPixmap("./image/camera.png")));
     ui->tabWidget->tabBar()->setTabIcon(1,QIcon(QPixmap("./image/camera.png")));
     ui->tabWidget->tabBar()->setTabIcon(0,QIcon(QPixmap("./image/cameras.png")));
+    connect(picturewidget,SIGNAL(hide_moviedesktop()),this,SLOT(on_hide_moviedesktop()));
+    connect(picturewidget,SIGNAL(on_unhide_moviedesktop()),this,SLOT(on_unhide_moviedesktop()));
+
+    connect(slave_picturewidget,SIGNAL(hide_moviedesktop()),this,SLOT(on_hide_moviedesktop()));
+    connect(slave_picturewidget,SIGNAL(on_unhide_moviedesktop()),this,SLOT(on_unhide_moviedesktop()));
+
+    connect(videowidget,SIGNAL(hide_moviedesktop()),this,SLOT(on_hide_moviedesktop()));
+    connect(videowidget,SIGNAL(on_unhide_moviedesktop()),this,SLOT(on_unhide_moviedesktop()));
+
+    connect(slave_videowidget,SIGNAL(hide_moviedesktop()),this,SLOT(on_hide_moviedesktop()));
+    connect(slave_videowidget,SIGNAL(on_unhide_moviedesktop()),this,SLOT(on_unhide_moviedesktop()));
 }
 
 movieDesk::~movieDesk()
@@ -48,7 +59,7 @@ movieDesk::~movieDesk()
 }
 void movieDesk::on_returnButton_clicked()
 {
-    this->close();
+    this->hide();
 }
 void movieDesk::on_mainCameraButton_clicked()
 {
@@ -76,4 +87,12 @@ void movieDesk::on_viceButton_clicked()
     ui->tabWidget->insertTab(2,slave_picturewidget,tr("图片"));
     ui->tabWidget->setCurrentIndex(cur_index);
 
+}
+void movieDesk::on_hide_moviedesktop()
+{
+    this->hide();
+}
+void movieDesk::on_unhide_moviedesktop()
+{
+    this->setHidden(false);
 }

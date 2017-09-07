@@ -20,7 +20,11 @@ class pictureWidget;
 class pictureWidget : public QDialog
 {
     Q_OBJECT
-
+signals:
+    void hide_moviedesktop();
+    void on_unhide_moviedesktop();
+public slots:
+    void deal_picture_views_signal();
 public:
     explicit pictureWidget(QWidget *parent = 0);
     ~pictureWidget();

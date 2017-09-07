@@ -93,7 +93,7 @@ using namespace android;
 //#define FORMATE_TEST
 #define RECORD_TEST 1
 #define AUDIO_TEST
-#define AUTEVENT_TEST 1
+//#define AUTEVENT_TEST 1
 
 #include "NetlinkManager.h"
 #include "NetlinkHandler.h"
@@ -134,6 +134,8 @@ public slots:
 //    void cameraChange();//前后摄像头切换
 private slots://有动作时显示图标
     void on_mouse_no_active_10_second();
+    void on_main_desktop_disvisible();
+    void on_main_desktop_visible();
 public slots://其它界面调出
     void on_recordButton_clicked();
 

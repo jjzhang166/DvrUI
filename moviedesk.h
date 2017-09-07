@@ -35,6 +35,9 @@ private:
     pictureWidget* picturewidget;
     slave_PictureWidget* slave_picturewidget;
     slave_VideoWidget* slave_videowidget;
+public slots:
+    void on_hide_moviedesktop();
+    void on_unhide_moviedesktop();
 };
 //将tabWidget设置为横向的
 

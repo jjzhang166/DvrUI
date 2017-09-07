@@ -24,7 +24,11 @@ class slave_PictureWidget : public QDialog
 public:
     explicit slave_PictureWidget(QWidget *parent = 0);
     ~slave_PictureWidget();
-
+signals:
+    void hide_moviedesktop();
+    void on_unhide_moviedesktop();
+public slots:
+    void deal_picture_views_signal();
 public slots:
     void show_big_picture(QModelIndex);
 

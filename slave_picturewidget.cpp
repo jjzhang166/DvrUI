@@ -78,5 +78,11 @@ void slave_PictureWidget::show_big_picture(QModelIndex pos)
     which_slavepic_show_big=pos.row();
     picture_views=new Picture_view(this);
 //    this->hide();
+    emit hide_moviedesktop();
+    connect(picture_views,SIGNAL(p_unhide_moviedesktop()),this,SLOT(deal_picture_views_signal()));
     picture_views->showNormal();
+}
+void slave_PictureWidget::deal_picture_views_signal()
+{
+    emit on_unhide_moviedesktop();
 }

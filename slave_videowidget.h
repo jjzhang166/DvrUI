@@ -14,7 +14,11 @@ class slave_VideoWidget : public QDialog
 public:
     explicit slave_VideoWidget(QWidget *parent = 0);
     ~slave_VideoWidget();
-
+//signals:
+//    void hide_moviedesktop();
+//    void on_unhide_moviedesktop();
+//public slots:
+//    void deal_picture_views_signal();
 private:
     Ui::slave_VideoWidget *ui;
 };
