@@ -10,6 +10,7 @@
 #include <QLabel>
 #include <QScrollArea>
 #include <QBoxLayout>
+#include "cprojectionpicture.h"
 namespace Ui {
 class Picture_view;
 }
@@ -24,7 +25,11 @@ public:
     void show_image(QDirIterator* m_DirIterator);
 
 private slots:
-    void on_closeButton_clicked();
+    void on_btnMenu_Min_clicked();
+
+    void on_btnMenu_Max_clicked();
+
+    void on_btnMenu_Close_clicked();
 
 private:
     Ui::Picture_view *ui;
@@ -33,6 +38,10 @@ private:
     QDirIterator* m_DirIterator;
     int which_pic_show_big;
     QString which_filename_show_big;
+    CProjectionPicture* pic_view;
+
+    void show_title();
+    void FormInCenter();
 signals:
     void p_unhide_moviedesktop();
 };

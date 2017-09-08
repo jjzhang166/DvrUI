@@ -2,15 +2,18 @@
 #include "ui_settings.h"
 #include "setfirst.h"
 #include "ui_setfirst.h"
+
+#include <QDesktopWidget>
 Settings::Settings(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Settings)
 {
     ui->setupUi(this);
-    int w,h;
-    w=(890-this->width())/2;
-    h=(450-this->height())/2;
-    this->mapToParent(QPoint(w,h));
+//    int w,h;
+//    w=(890-this->width())/2;
+//    h=(450-this->height())/2;
+//    this->mapToParent(QPoint(w,h));
+    FormInCenter();
     //将Tab设置为横向
     ui->settingTab->setTabPosition(QTabWidget::West);
 //    ui->settingTab->setTabShape(QTabWidget::Triangular);
@@ -58,6 +61,17 @@ Settings::Settings(QWidget *parent) :
     connect(reverselines,SIGNAL(unhideSettings_signal()),this,SLOT(on_unhideSettings()));
 }
 
+    //窗体居中显示
+    void Settings::FormInCenter()
+    {
+        int frmX = this->width();
+        int frmY = this->height();
+        QDesktopWidget w;
+        int deskWidth = w.width();
+        int deskHeight = w.height();
+        QPoint movePoint(deskWidth / 2 - frmX / 2, deskHeight / 2 - frmY / 2);
+        this->move(movePoint);
+    }
 Settings::~Settings()
 {
     delete ui;

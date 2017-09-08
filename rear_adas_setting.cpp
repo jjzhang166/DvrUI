@@ -2,7 +2,7 @@
 #include "ui_rear_adas_setting.h"
 #include "adas.h"
 #include "ui_adas.h"
-
+#include <QDesktopWidget>
 rear_ADAS_setting::rear_ADAS_setting(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::rear_ADAS_setting)
@@ -11,7 +11,7 @@ rear_ADAS_setting::rear_ADAS_setting(QWidget *parent) :
     this->horizontal_values=0;
     this->model=0;
     this->vertical_values=0;
-
+    FormInCenter();
     ui->VerticelLine->setLineWidth(1);
     ui->HorizontalLine->setLineWidth(1);
     ui->left_right_Slider->setRange(0,80);
@@ -35,7 +35,17 @@ rear_ADAS_setting::rear_ADAS_setting(QWidget *parent) :
                                    "QSlider::handle:horizontal{border-image: url(:/icon/circle-white.png);margin: -2px -7px -2px -7px; width: 17px;}"
                                     "QSlider{border-color: #cbcbcb;}"  );
 }
-
+    //窗体居中显示
+    void rear_ADAS_setting::FormInCenter()
+    {
+        int frmX = this->width();
+        int frmY = this->height();
+        QDesktopWidget w;
+        int deskWidth = w.width();
+        int deskHeight = w.height();
+        QPoint movePoint(deskWidth / 2 - frmX / 2, deskHeight / 2 - frmY / 2);
+        this->move(movePoint);
+    }
 rear_ADAS_setting::~rear_ADAS_setting()
 {
     delete ui;

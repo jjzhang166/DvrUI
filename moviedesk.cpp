@@ -10,10 +10,11 @@ movieDesk::movieDesk(QWidget *parent) :
     ui(new Ui::movieDesk),cur_index(0)
 {
     ui->setupUi(this);
-    int w,h;
-    w=(1024-this->width())/2;
-    h=(600-this->height())/2;
-    this->mapToParent(QPoint(w,h));
+//    int w,h;
+//    w=(1024-this->width())/2;
+//    h=(600-this->height())/2;
+//    this->mapToParent(QPoint(w,h));
+    FormInCenter();
     connect(ui->returnButton,SIGNAL(clicked(bool)),SLOT(on_returnButton_clicked()));
 
     //将Tab设置为横向
@@ -56,6 +57,17 @@ movieDesk::movieDesk(QWidget *parent) :
 movieDesk::~movieDesk()
 {
     delete ui;
+}
+//窗体居中显示
+void movieDesk::FormInCenter()
+{
+    int frmX = this->width();
+    int frmY = this->height();
+    QDesktopWidget w;
+    int deskWidth = w.width();
+    int deskHeight = w.height();
+    QPoint movePoint(deskWidth / 2 - frmX / 2, deskHeight / 2 - frmY / 2);
+    this->move(movePoint);
 }
 void movieDesk::on_returnButton_clicked()
 {

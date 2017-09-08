@@ -38,17 +38,19 @@ public slots:
 private slots:
     void on_playButton_clicked();
 
-    void on_pauseButton_clicked();
-
     void on_stopButton_clicked();
 
     void on_muteButton_clicked();
 
     void on_voiceSlider_sliderMoved(int position);
 
-    void on_progressSlider_sliderMoved(int position);
+    void on_progressSlider_valueChanged(int value);
 
-    void on_pushButton_clicked();
+    void on_btnMenu_Min_clicked();
+
+    void on_btnMenu_Max_clicked();
+
+    void on_btnMenu_Close_clicked();
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -70,6 +72,9 @@ private:
 signals:
     void p_unhide_moviedesktop();
     void main_desktop_visible();
+private:
+    void show_title();
+    void FormInCenter();
 };
 
 #endif // VIDEO_PLAYER_H

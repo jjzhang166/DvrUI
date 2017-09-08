@@ -34,6 +34,7 @@ private:
     Ui::SetFirst *ui;
     Settings* setSecond_Desk;
     void setWindowStyleSheet();
+    void FormInCenter();
 private:
     bool voiceButtonState;
 };

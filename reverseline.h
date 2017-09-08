@@ -23,6 +23,7 @@ private:
     Ui::ReverseLine *ui;
     myLabel *reverse_setting_label;
     myLabel *rearVision_setting_label;
+
 };
 
 #endif // REVERSELINE_H

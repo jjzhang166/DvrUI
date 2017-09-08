@@ -45,3 +45,23 @@ void TimeSetting::setDatesTimes()
 //    emit send_data_to_main(setting_results);
 //    QDialog::accept();
 //}
+
+void TimeSetting::on_setButton_clicked()
+{
+    QString date=ui->dateEdit->text();
+    QString time=ui->timeEdit->text();
+    qDebug()<<date<<time;
+    QString temp=QString(tr("当前时间为："))+date+"  "+time;
+    ui->label->setText(temp);
+    setDateAndTime();
+}
+void TimeSetting::setDateAndTime()
+{
+    QDateTime dt = QDateTime::currentDateTime();
+    dt.setDate(ui->dateEdit->date());
+    dt.setTime(ui->timeEdit->time());
+    time_t tt = (time_t)dt.toTime_t();
+#if defined(Q_OS_LINUX)
+    stime(&tt);
+#endif
+}

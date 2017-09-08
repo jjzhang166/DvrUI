@@ -17,102 +17,10 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>0</y>
+     <y>33</y>
      <width>900</width>
-     <height>550</height>
+     <height>517</height>
     </rect>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>900</width>
-     <height>550</height>
-    </size>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>900</width>
-     <height>550</height>
-    </size>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QScrollBar:vertical {
-	width:20px; 
-	background-color:rgba(0,0,0,0%); 
-	padding-top:10px; 
-	padding-bottom:10px;
-}
-
-QScrollBar:horizontal {
-	height:20px; 
-	background-color:rgba(0,0,0,0%); 
-	padding-left:10px; padding-right:10px;
-}
-
-QScrollBar::handle:vertical {
-	width:20px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA); 
-}
-
-QScrollBar::handle:horizontal {
-	height:20px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA); 
-}
-
-QScrollBar::handle:vertical:hover {
-	width:20px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
-}
-
-QScrollBar::handle:horizontal:hover {
-	height:20px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
-}
-
-QScrollBar::add-line:vertical {
-	height:20px;
-	width:20px;
-	subcontrol-position: bottom; 
-	subcontrol-origin: margin;
-	border-image:url(:/icon/add-line_vertical.png);
-}
-
-QScrollBar::add-line:horizontal {
-	height:20px;
-	width:20px;
-	subcontrol-position: right;
-	subcontrol-origin: margin;
-	border-image:url(:/icon/add-line_horizontal.png);
-}
-
-QScrollBar::sub-line:vertical {
-	height:20px;
-	width:20px;
-	subcontrol-position: top; 
-	subcontrol-origin: margin;
-	border-image:url(:/icon/sub-line_vertical.png);
-}
-
-QScrollBar::sub-line:horizontal {
-	height:20px;
-	width:20px;
-	subcontrol-position: left;
-	subcontrol-origin: margin;
-	border-image:url(:/icon/sub-line_horizontal.png);
-}
-
-QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical {
-	width:20px;
-	background: #C0C0C0;
-}
-
-QScrollBar::add-page:horizontal,QScrollBar::sub-page:horizontal {
-	height:20px;
-	background: #C0C0C0;
-}
-
-QScrollArea {
-	border: 0px ; 
-}</string>
    </property>
    <property name="widgetResizable">
     <bool>true</bool>
@@ -122,54 +30,269 @@ QScrollArea {
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>900</width>
-      <height>550</height>
+      <width>898</width>
+      <height>515</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="1">
-      <widget class="QLabel" name="pictureLabel">
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </widget>
   </widget>
-  <widget class="QPushButton" name="closeButton">
+  <widget class="QWidget" name="widget" native="true">
    <property name="geometry">
     <rect>
-     <x>850</x>
-     <y>10</y>
-     <width>30</width>
-     <height>30</height>
+     <x>0</x>
+     <y>0</y>
+     <width>900</width>
+     <height>33</height>
     </rect>
    </property>
    <property name="minimumSize">
     <size>
-     <width>30</width>
-     <height>30</height>
+     <width>900</width>
+     <height>33</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
-     <width>30</width>
-     <height>30</height>
+     <width>900</width>
+     <height>33</height>
     </size>
    </property>
    <property name="styleSheet">
-    <string notr="true">QPushButton:hover{
-	background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, stop:0 rgba(238, 0, 0, 128), stop:1 rgba(238, 44, 44, 255));
+    <string notr="true">QWidget{
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
+}</string>
+   </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>0</y>
+      <width>500</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>500</width>
+      <height>33</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>500</width>
+      <height>33</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel{
+	border-radius:0px;
+	color: #F0F0F0;
+	background-color:rgba(0,0,0,0);
+	border-style:none;
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnMenu_Close">
+    <property name="geometry">
+     <rect>
+      <x>868</x>
+      <y>0</y>
+      <width>32</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>32</width>
+      <height>33</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>32</width>
+      <height>33</height>
+     </size>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="toolTip">
+     <string>关闭</string>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+	border-radius:0px;
+	color: #F0F0F0;
+	background-color:rgba(0,0,0,0);
+	border-style:none;
 }
-</string>
-   </property>
-   <property name="text">
-    <string>×</string>
-   </property>
+QPushButton:hover{
+	background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, stop:0 rgba(238, 0, 0, 128), stop:1 rgba(238, 44, 44, 255));
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnMenu_Min">
+    <property name="geometry">
+     <rect>
+      <x>804</x>
+      <y>0</y>
+      <width>32</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>32</width>
+      <height>33</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>32</width>
+      <height>33</height>
+     </size>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="toolTip">
+     <string>最小化</string>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+	border-radius:0px;
+	color: #F0F0F0;
+	background-color:rgba(0,0,0,0);
+	border-style:none;
+}
+QPushButton:hover{
+	background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, stop:0 rgba(25, 134, 199, 0), stop:1 #50A3F0);
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnMenu_Max">
+    <property name="geometry">
+     <rect>
+      <x>836</x>
+      <y>0</y>
+      <width>32</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>32</width>
+      <height>33</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>32</width>
+      <height>33</height>
+     </size>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="toolTip">
+     <string>最大化</string>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+	border-radius:0px;
+	color: #F0F0F0;
+	background-color:rgba(0,0,0,0);
+	border-style:none;
+}
+QPushButton:hover{
+	background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, stop:0 rgba(25, 134, 199, 0), stop:1 #50A3F0);
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lab_Ico">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>30</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>30</width>
+      <height>33</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel{
+	border-radius:0px;
+	color: #F0F0F0;
+	background-color:rgba(0,0,0,0);
+	border-style:none;
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

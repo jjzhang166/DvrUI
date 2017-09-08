@@ -43,5 +43,9 @@
         <file>icon/sub-line_vertical.png</file>
         <file>icon/add-line_horizontal.png</file>
         <file>icon/add-line_vertical.png</file>
+        <file>icon/no_shotvideo.png</file>
+        <file>icon/error (2).png</file>
+        <file>icon/info.png</file>
+        <file>icon/question.png</file>
     </qresource>
 </RCC>

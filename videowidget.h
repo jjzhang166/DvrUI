@@ -27,7 +27,7 @@ public:
 public slots:
     void play_video(QModelIndex pos);
 private slots:
-    void on_change_viewmode_clicked();
+//    void on_change_viewmode_clicked();
 signals:
     void hide_moviedesktop();
     void on_unhide_moviedesktop();

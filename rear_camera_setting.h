@@ -23,6 +23,7 @@ signals:
     void unHideSettings();
 private:
     Ui::Rear_Camera_Setting *ui;
+    void FormInCenter();
 };
 
 #endif // REAR_CAMERA_SETTING_H

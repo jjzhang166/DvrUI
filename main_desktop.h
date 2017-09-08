@@ -159,7 +159,7 @@ private://界面类
 private:
     void setButtonVisible();
     void setButtonDisvisible();
-
+    void FormInCenter();
 
 //摄像头数据显示部分
 public:

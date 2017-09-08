@@ -2,6 +2,7 @@
 #define MOVIEDESK_H
 
 #include <QDialog>
+#include <QDesktopWidget>
 #include "editwidget.h"
 #include "videowidget.h"
 #include "picturewidget.h"
@@ -35,6 +36,8 @@ private:
     pictureWidget* picturewidget;
     slave_PictureWidget* slave_picturewidget;
     slave_VideoWidget* slave_videowidget;
+
+    void FormInCenter();
 public slots:
     void on_hide_moviedesktop();
     void on_unhide_moviedesktop();

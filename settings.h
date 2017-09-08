@@ -36,6 +36,7 @@ private://tabbar管理
     TimeSetting *timesettings;
 private:
     Ui::Settings *ui;
+    void FormInCenter();
 
 
 };

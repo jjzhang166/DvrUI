@@ -23,7 +23,7 @@ public:
     friend class results;
     explicit TimeSetting(QWidget *parent = 0);
     ~TimeSetting();
-
+    void setDateAndTime();
 private:
     Ui::TimeSetting *ui;
 //    void accept();//回传数据到主界面
@@ -31,6 +31,8 @@ public slots:
     void setDatesTimes();
 //signals:
 //    void send_data_to_main(results);
+private slots:
+    void on_setButton_clicked();
 };
 
 #endif // TIMESETTING_H

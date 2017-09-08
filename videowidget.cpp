@@ -13,7 +13,7 @@ videoWidget::videoWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 //    ui->listWidget_file=new QListWidget(this);
-    show_model=false;
+    show_model=true;//true为显示icon模式，false为显示list模式
     ui->listWidget_file->clear();
     #if defined(Q_OS_LINUX)
         m_DirIterator=new QDirIterator(linux_path,QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
@@ -55,6 +55,7 @@ videoWidget::videoWidget(QWidget *parent) :
 }
 void videoWidget::show_file_by_iconview(QDirIterator* m_DirIterator)
 {
+    ui->listWidget_file->setIconSize(QSize(100,100));
     while (m_DirIterator->hasNext()) {
         QString tempFile=m_DirIterator->next();
         qDebug()<<"当前文件信息为："<<tempFile;
@@ -69,15 +70,23 @@ void videoWidget::show_file_by_iconview(QDirIterator* m_DirIterator)
         qDebug()<<"去掉后缀后的文件名："<<tempFileName_NoSuffix;
         QString file_path="";
         gen_shot_picture(tempFileName_NoSuffix,file_path,tempFileName);
-        QPixmap objPixmap(file_path);
-        tempFile=tempFile.remove(win_path,Qt::CaseSensitive);
-        QListWidgetItem *pItem = new QListWidgetItem(QIcon(objPixmap.scaled(QSize(90,70))),tempFile);
+//        file_path="";
+        QListWidgetItem *pItem;
+//        tempFile=tempFile.remove(win_path,Qt::CaseSensitive);
+        if(file_path==""){//如果没有得到缩略图
+            pItem=new QListWidgetItem(QIcon(":/icon/no_shotvideo.png"),tempFileName);
+        }else{
+            //生成了缩略图
+            QPixmap objPixmap(file_path);
+            pItem = new QListWidgetItem(QIcon(objPixmap.scaled(QSize(90,70))),tempFileName);
+        }
         pItem->setSizeHint(QSize(90,90));            //设置单元项的宽度和高度
         ui->listWidget_file->addItem(pItem);              //添加QListWidgetItem
     }
 }
 void videoWidget::show_file_by_listview(QDirIterator* m_DirIterator)
 {
+    ui->listWidget_file->setIconSize(QSize(22,22));
     while (m_DirIterator->hasNext()) {
         QString tempFile=m_DirIterator->next();
         qDebug()<<"当前文件信息为："<<tempFile;
@@ -99,6 +108,7 @@ void videoWidget::show_file_by_listview(QDirIterator* m_DirIterator)
         ui->listWidget_file->addItem(pItem);              //添加QListWidgetItem
     }
 }
+//windows下生成缩略图的方法
 void videoWidget::gen_shot_picture(QString tempFileName_NoSuffix,QString& file_path,QString tempFileName)
 {
     #if defined(Q_OS_LINUX)
@@ -155,17 +165,18 @@ void videoWidget::deal_picture_views_signal()
 {
     emit on_unhide_moviedesktop();
 }
-void videoWidget::on_change_viewmode_clicked()
-{
-    if(show_model){
-        ui->listWidget_file->setViewMode(QListView::ListMode);
-        show_file_by_listview(m_DirIterator);
-        ui->listWidget_file->setIconSize(QSize(22,22));
-        show_model=false;
-    }else{
-        ui->listWidget_file->setViewMode(QListView::IconMode);
-        show_file_by_iconview(m_DirIterator);
-        ui->listWidget_file->setIconSize(QSize(100,100));
-        show_model=true;
-    }
-}
+//列表和icon模式的切换，还未调试好
+//void videoWidget::on_change_viewmode_clicked()
+//{
+//    if(show_model){
+//        ui->listWidget_file->setViewMode(QListView::ListMode);
+//        show_file_by_listview(m_DirIterator);
+//        ui->listWidget_file->setIconSize(QSize(22,22));
+//        show_model=false;
+//    }else{
+//        ui->listWidget_file->setViewMode(QListView::IconMode);
+//        show_file_by_iconview(m_DirIterator);
+//        ui->listWidget_file->setIconSize(QSize(100,100));
+//        show_model=true;
+//    }
+//}

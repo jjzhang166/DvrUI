@@ -2,6 +2,7 @@
 #include "ui_about.h"
 #include <QMessageBox>
 #include <QListView>
+#include "frmmessagebox.h"
 About::About(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::About)
@@ -29,8 +30,10 @@ About::~About()
 }
 void About::on_formatButton_clicked()
 {
-    QMessageBox::StandardButton ret =QMessageBox::question(this,tr("format question"),tr("sure to format?"),QMessageBox::Ok|QMessageBox::Cancel,QMessageBox::Cancel);
-    if(ret==QMessageBox::Ok){
+//    QMessageBox::StandardButton ret =QMessageBox::question(this,tr("format question"),tr("sure to format?"),QMessageBox::Ok|QMessageBox::Cancel,QMessageBox::Cancel);
+    frmMessageBox* mesg=new frmMessageBox();
+    mesg->SetMessage(QString(tr("确定格式化？")), 1);
+    if(1==mesg->exec()){
         timer=new QTimer(this);
         connect(timer,SIGNAL(timeout()),this,SLOT(set_pro_value()));
         timer->start(10);

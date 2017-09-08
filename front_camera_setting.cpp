@@ -2,18 +2,28 @@
 #include "ui_front_camera_setting.h"
 #include "preview.h"
 #include "ui_preview.h"
-
+#include <QDesktopWidget>
 Front_camera_setting::Front_camera_setting(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Front_camera_setting)
 {
     ui->setupUi(this);
+    FormInCenter();
     connect(ui->returnButton,SIGNAL(clicked(bool)),this,SLOT(on_returnButton_clicked(bool)));
     connect(ui->upperButton,SIGNAL(clicked(bool)),this,SLOT(on_upperButton_clicked(bool)),Qt::UniqueConnection);
     connect(ui->downButton,SIGNAL(clicked(bool)),this,SLOT(on_downButton_clicked(bool)),Qt::UniqueConnection);
     connect(ui->sureButton,SIGNAL(clicked(bool)),this,SLOT(on_sureButton_clicked(bool)),Qt::UniqueConnection);
 }
-
+void Front_camera_setting::FormInCenter()
+{
+    int frmX = this->width();
+    int frmY = this->height();
+    QDesktopWidget w;
+    int deskWidth = w.width();
+    int deskHeight = w.height();
+    QPoint movePoint(deskWidth / 2 - frmX / 2, deskHeight / 2 - frmY / 2);
+    this->move(movePoint);
+}
 Front_camera_setting::~Front_camera_setting()
 {
     delete ui;

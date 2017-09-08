@@ -48,7 +48,9 @@ SOURCES += \
     dashboard.cpp \
     myspeed.cpp \
     slave_picturewidget.cpp \
-    slave_videowidget.cpp
+    slave_videowidget.cpp \
+    cprojectionpicture.cpp \
+    frmmessagebox.cpp
 
 HEADERS += \
         main_desktop.h \
@@ -74,7 +76,9 @@ HEADERS += \
     dashboard.h \
     myspeed.h \
     slave_picturewidget.h \
-    slave_videowidget.h
+    slave_videowidget.h \
+    cprojectionpicture.h \
+    frmmessagebox.h
 
 FORMS += \
         main_desktop.ui \
@@ -97,10 +101,12 @@ FORMS += \
     picturewidget.ui \
     dashboard.ui \
     slave_picturewidget.ui \
-    slave_videowidget.ui
+    slave_videowidget.ui \
+    frmmessagebox.ui
 
 RESOURCES += \
-    image/image.qrc
+    image/image.qrc \
+    image/font.qrc
 
 #unix:!macx: LIBS += -L$$PWD/../sdk/ -lsdk -L$$PWD/../sdk/libs/ -lsdk_func -lmdas \
 unix:!macx: LIBS += -L$$PWD/../sdk/ -lsdk -L$$PWD/../sdk/libs/ -lmdas -lsdk_compose  -lsdk_disp  -lsdk_dvr   -lsdk_player  -lsdk_tr \

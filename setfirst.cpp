@@ -1,17 +1,18 @@
 #include "setfirst.h"
 #include "ui_setfirst.h"
-
+#include <QDesktopWidget>
 
 SetFirst::SetFirst(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SetFirst)
 {
     ui->setupUi(this);
-    int w,h;
-    w=(1024-this->width())/2;
-    h=(600-this->height())/2;
+//    int w,h;
+//    w=(1024-this->width())/2;
+//    h=(600-this->height())/2;
 
-    this->mapToParent(QPoint(w,h));
+//    this->mapToParent(QPoint(w,h));
+    FormInCenter();
     //设置界面的样式
     setWindowStyleSheet();
     ui->comboBox->setView(new QListView());
@@ -47,6 +48,17 @@ SetFirst::SetFirst(QWidget *parent) :
 SetFirst::~SetFirst()
 {
     delete ui;
+}
+//窗体居中显示
+void SetFirst::FormInCenter()
+{
+    int frmX = this->width();
+    int frmY = this->height();
+    QDesktopWidget w;
+    int deskWidth = w.width();
+    int deskHeight = w.height();
+    QPoint movePoint(deskWidth / 2 - frmX / 2, deskHeight / 2 - frmY / 2);
+    this->move(movePoint);
 }
 void SetFirst::on_click_setttingsButton(bool)
 {

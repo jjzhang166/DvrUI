@@ -23,6 +23,7 @@ public slots:
 private:
     Ui::dashBoard *ui;
     mySpeed *myspeed;
+    void FormInCenter();
 };
 
 #endif // DASHBOARD_H
