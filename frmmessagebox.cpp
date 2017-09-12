@@ -69,10 +69,10 @@ void frmMessageBox::SetMessage(const QString &msg, int type)
 
     ui->labInfo->setText(msg);
 }
-void frmMessageBox::close()
-{
-    this->close();
-}
+//void frmMessageBox::close()
+//{
+//    this->close();
+//}
 void frmMessageBox::on_btnOk_clicked()
 {
     done(1);

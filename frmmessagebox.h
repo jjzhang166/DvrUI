@@ -16,7 +16,7 @@ public:
     ~frmMessageBox();
 
     void SetMessage(const QString &msg, int type);
-    void close();
+//    void close();
 protected:
     void mouseMoveEvent(QMouseEvent *e);
     void mousePressEvent(QMouseEvent *e);
