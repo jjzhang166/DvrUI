@@ -17,7 +17,7 @@
 #include "setfirst.h"
 #include "dashboard.h"
 #include "moviedesk.h"
-
+#include "reverselinewidget.h"
 
 
 #if defined(Q_OS_LINUX)//行车记录模块视频显示
@@ -154,6 +154,7 @@ private://界面类
     SetFirst *setting_desktop;
     dashBoard *dashboards;
     movieDesk *moviedesk;
+    reverseLineWidget* reverseLinewidget;
 //public slots://返回值
 //    void recieve_setting_data(results);
 private:

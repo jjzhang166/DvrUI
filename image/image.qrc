@@ -47,5 +47,10 @@
         <file>icon/error (2).png</file>
         <file>icon/info.png</file>
         <file>icon/question.png</file>
+        <file>icon/mute.png</file>
+        <file>icon/Pause.png</file>
+        <file>icon/play.png</file>
+        <file>icon/voice.png</file>
+        <file>icon/Stop.png</file>
     </qresource>
 </RCC>

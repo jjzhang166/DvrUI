@@ -1,7 +1,16 @@
 #include "setfirst.h"
 #include "ui_setfirst.h"
 #include <QDesktopWidget>
-
+#if defined(Q_OS_LINUX)
+#include <ls_ctrl.h>
+#include <asoundlib.h>
+#endif
+extern int recordTime;
+//设置开机录像，录音等功能
+extern int open_recordVideo_front,open_recordVideo_rear;
+extern int open_recordAudio_front,open_recordAudio_rear;
+extern int open_reverseLine_front,open_reverseLine_rear;
+extern int open_adas_front,open_adas_rear;
 SetFirst::SetFirst(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SetFirst)
@@ -10,7 +19,6 @@ SetFirst::SetFirst(QWidget *parent) :
 //    int w,h;
 //    w=(1024-this->width())/2;
 //    h=(600-this->height())/2;
-
 //    this->mapToParent(QPoint(w,h));
     FormInCenter();
     //设置界面的样式
@@ -20,16 +28,21 @@ SetFirst::SetFirst(QWidget *parent) :
     //连接前后两级页面
     connect(ui->settingsButton,SIGNAL(clicked(bool)),this,SLOT(on_click_setttingsButton(bool)));
     connect(ui->returnButton,SIGNAL(clicked(bool)),this,SLOT(on_click_returnButton(bool)));
-
-
     //设置音量和亮度调节
     //设置滚动条和显示数字联动
+    //亮度的调节范围为0-20
+    //声音的调节范围为0-100
+#if defined(Q_OS_LINUX)
+    lcd_blk_ctrl_init();
+#endif
+    ui->voiceSlider->setRange(0,100);
+    ui->lightSlider->setRange(0,20);
     connect(ui->voiceSlider,SIGNAL(valueChanged(int)),this,SLOT(on_slider_valuechanged(int)));
     connect(ui->lightSlider,SIGNAL(valueChanged(int)),this,SLOT(on_slider_valuechanged(int)));
     ui->voiceSlider->setValue(50);
-    ui->lightSlider->setValue(50);
+    ui->lightSlider->setValue(10);
     ui->voiceLabel->setText(tr("50"));
-    ui->lightLabel->setText(tr("50"));
+    ui->lightLabel->setText(tr("10"));
 
     //设置QSpinBox设置录像时间
     ui->movieTimeSetting->setRange(1,5);
@@ -43,6 +56,28 @@ SetFirst::SetFirst(QWidget *parent) :
     ui->reverseButton->setCheckable(true);
     ui->movieButton->setCheckable(true);
     ui->voiceButton->setCheckable(true);
+
+
+    if(open_adas_front){
+        ui->ADASButton->setChecked(true);
+    }else{
+        ui->ADASButton->setChecked(false);
+    }
+    if(open_recordVideo_front){
+        ui->movieButton->setChecked(true);
+    }else{
+        ui->movieButton->setChecked(false);
+    }
+    if(open_recordAudio_front){
+        ui->audioButton->setChecked(true);
+    }else{
+        ui->audioButton->setChecked(false);
+    }
+    if(open_reverseLine_front){
+        ui->reverseButton->setChecked(true);
+    }else{
+        ui->reverseButton->setChecked(false);
+    }
 
 }
 SetFirst::~SetFirst()
@@ -75,12 +110,19 @@ void SetFirst::on_slider_valuechanged(int n_value)
 {
     QObject* sender = QObject::sender();
     if(sender==ui->voiceSlider){
-        qDebug()<<"调节声音";
+        qDebug()<<"change the voice"<<n_value;
         ui->voiceButton->setChecked(false);
+    #if defined(Q_OS_LINUX)
+        QString cmd="tinymix 1 "+ QString::number(n_value,10);
+        system((char*)cmd.toStdString().c_str());
         ui->voiceLabel->setText(QString("%1").arg(n_value));
+    #endif
     }
     else if(sender==ui->lightSlider){
-        qDebug()<<"调节亮度";
+        qDebug()<<"change the light:"<<n_value;
+    #if defined(Q_OS_LINUX)
+        lcd_blk_ctrl(n_value);
+    #endif
         ui->lightLabel->setText(QString("%1").arg(n_value));
     }
     else{
@@ -91,36 +133,60 @@ void SetFirst::on_audioButton_clicked()
 {
     if(ui->audioButton->isChecked()){
         qDebug()<<"录音按钮处于按下状态";
+    #if defined(Q_OS_LINUX)
+        config_set_recordAudio(0,1);
+    #endif
     }
     else{
         qDebug()<<"录音按钮处于弹起状态";
+    #if defined(Q_OS_LINUX)
+        config_set_recordAudio(0,0);
+    #endif
     }
 }
 void SetFirst::on_ADASButton_clicked()
 {
     if(ui->ADASButton->isChecked()){
         qDebug()<<"ADAS按钮处于按下状态";
+    #if defined(Q_OS_LINUX)
+        config_set_adas(0,1);
+    #endif
     }
     else{
         qDebug()<<"ADAS按钮处于弹起状态";
+    #if defined(Q_OS_LINUX)
+        config_set_adas(0,0);
+    #endif
     }
 }
 void SetFirst::on_movieButton_clicked()
 {
     if(ui->movieButton->isChecked()){
         qDebug()<<"录像按钮处于按下状态";
+    #if defined(Q_OS_LINUX)
+        config_set_recordVideo(0,1);
+    #endif
     }
     else{
         qDebug()<<"录像按钮处于弹起状态";
+    #if defined(Q_OS_LINUX)
+        config_set_recordVideo(0,0);
+    #endif
     }
 }
 void SetFirst::on_reverseButton_clicked()
 {
     if(ui->reverseButton->isChecked()){
         qDebug()<<"倒车线按钮处于按下状态";
+    #if defined(Q_OS_LINUX)
+        config_set_reverseLine(0,1);
+    #endif
     }
     else{
         qDebug()<<"倒车线按钮处于弹起状态";
+    #if defined(Q_OS_LINUX)
+        config_set_reverseLine(0,0);
+    #endif
     }
 }
 
@@ -147,6 +213,7 @@ void SetFirst::on_movieTimeSetting_valueChanged(int value)
 {
     qDebug() << "Value : "  << value;
     qDebug() << "Text : "  << ui->movieTimeSetting->text();
+    recordTime=value;
 }
 void SetFirst::setWindowStyleSheet()
 {

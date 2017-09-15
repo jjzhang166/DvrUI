@@ -7,9 +7,11 @@
 #include <QFontDatabase>
 #include <QPushButton>
 #include <QDesktopWidget>
+
 extern QString which_filename_to_play;
 extern main_desktop* pStaticMaindesktop;
-
+static int test=100;
+const int interval=10;//每次快进10s
 Video_Player::Video_Player(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Video_Player)
@@ -17,9 +19,18 @@ Video_Player::Video_Player(QWidget *parent) :
     ui->setupUi(this);
     setAttribute(Qt::WA_TranslucentBackground, true);
     qDebug()<<"将要播放的视频名称为："<<which_filename_to_play;
-    ui->progressSlider->setRange(0,100);
+    ui->playButton->setIcon(QIcon(":/icon/Pause.png"));
+    ui->playButton->setIconSize(QSize(51,51));
+    ui->stopButton->setIcon(QIcon(":/icon/Stop.png"));
+    ui->stopButton->setIconSize(QSize(51,51));
+    ui->muteButton->setIcon(QIcon(":/icon/voice.png"));
+    ui->muteButton->setIconSize(QSize(51,51));
+    ui->voiceSlider->setRange(0,100);
+    ui->voiceSlider->setValue(30);
     show_title();
     FormInCenter();
+    isMuted=false;//初始化为关闭静音
+    isPlaying=true;//开始播放
     #if defined(Q_OS_LINUX)
     QDirIterator m_DirIterator(QString("/mnt/sdcard/mmcblk1p1/frontVideo/"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
     while (m_DirIterator.hasNext()) {
@@ -38,13 +49,21 @@ Video_Player::Video_Player(QWidget *parent) :
                         return ;
                       ap->setUserCb(end, this);
                       ap->setViewWindow(0, 0, 1024, 600);
-                      int total=ap->getDuration()/1000;
-                      printf("----------------------the video totaltime is %d\n",total);
-                      QString totalTime=QDateTime::fromTime_t(total).toString("mm:ss");
-                      ui->totalTimeLabel->setText(totalTime);
+                      int linux_duration=ap->getDuration()/1000;
+                      ui->progressSlider->setRange(0,linux_duration);
+                      printf("----------------------the video totaltime is %d\n",linux_duration);
+                      QString totalTime=QDateTime::fromTime_t(linux_duration).toString("mm:ss");
                       printf("----------------------the video totaltime is %s\n",(char*)totalTime.toStdString().c_str());
                       ap->play();
+                      this->duration=linux_duration;
+                      qDebug()<<"total time is"<<duration;
                       ui->label->setText(QString(tr("当前播放："))+tempFileName);
+                      connect(ui->voiceSlider,SIGNAL(valueChanged(int)),this,SLOT(setVolume(int)));
+                      connect(ui->progressSlider,SIGNAL(sliderMoved(int)),this,SLOT(seek(int)));
+                      //每10ms钟获取当前的播放位置，并更新slider和label
+                      timer = new QTimer(this);
+                      connect(timer,SIGNAL(timeout()),this,SLOT(timerUpdate()));
+                      timer->start(10);
                 #endif
                 astatus = ASTATUS_PLAYING;
             #endif
@@ -54,7 +73,7 @@ Video_Player::Video_Player(QWidget *parent) :
             continue;
         }
     }
-    printf("---------------------------------cant find the correct video\n");
+    //printf("---------------------------------cant find the correct video\n");
     #else
         QDirIterator m_DirIterator(QString("E:/tech_practise/DvrUI/DvrUI/video/"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
         while (m_DirIterator.hasNext()) {
@@ -72,15 +91,20 @@ Video_Player::Video_Player(QWidget *parent) :
 
                 player->setMedia(QMediaContent(QUrl::fromLocalFile(tempFile)));
                 player->play();
+//                ui->playButton->setStyleSheet("QPushButton::{border-image: url(:/icon/Pause.png);}");
+
                 ui->label->setText(QString(tr("当前播放："))+tempFileName);
+                ui->progressSlider->setRange(0,player->duration()/1000);
+                connect(ui->voiceSlider,SIGNAL(valueChanged(int)),player,SLOT(setVolume(int)));
+                connect(ui->progressSlider,SIGNAL(sliderMoved(int)),this,SLOT(seek(int)));
+                connect(player, SIGNAL(durationChanged(qint64)), SLOT(durationChanged(qint64)));
+                connect(player, SIGNAL(positionChanged(qint64)), SLOT(positionChanged(qint64)));
                 break;
             }
             else{
                 continue;
             }
         }
-
-
     #endif
     qDebug()<<"退出循环";
     connect(this,SIGNAL(main_desktop_visible()),pStaticMaindesktop,SLOT(on_main_desktop_visible()));
@@ -90,50 +114,20 @@ Video_Player::Video_Player(QWidget *parent) :
   int Video_Player::end(int32_t msgType, void *user) //结束MPlayer
   {
     Video_Player *p = (Video_Player*)user;
-
-
     //if (msgType == NOTIFY_PLAYBACK_COMPLETE)
     {
       printf("call end \r\n");
       //p->setStyleSheet(QStringLiteral("background-color: rgb(112, 200, 11);"));
-
     }
   }
 #endif
   //设置窗口为透明的，重载了paintEvent
-  void Video_Player::paintEvent(QPaintEvent *event)
-  {
-      QPainter painter(this);
-      painter.fillRect(this->rect(), QColor(0, 0, 10, 90));  //QColor最后一个参数80代表背景的透明度
-  }
-void Video_Player::show_title()
+void Video_Player::paintEvent(QPaintEvent *event)
 {
-    int fontId = QFontDatabase::addApplicationFont(":/font/fontawesome-webfont.ttf");
-    QString fontName = QFontDatabase::applicationFontFamilies(fontId).at(0);
-    QFont iconFont = QFont(fontName);
-    iconFont.setPointSize(10);
-    ui->btnMenu_Close->setFont(iconFont);
-    ui->btnMenu_Close->setText(QChar(0xf00d));
-    ui->btnMenu_Max->setFont(iconFont);
-    ui->btnMenu_Max->setText( QChar(0xf096));
-    ui->btnMenu_Min->setFont(iconFont);
-    ui->btnMenu_Min->setText( QChar(0xf068));
-    iconFont.setPointSize(12);
-    ui->lab_Ico->setFont(iconFont);
-    ui->lab_Ico->setText( QChar(0xf015));
-    ui->label->setFont(iconFont);
+    QPainter painter(this);
+    painter.fillRect(this->rect(), QColor(0, 0, 10, 90));  //QColor最后一个参数80代表背景的透明度
 }
-//窗体居中显示
-void Video_Player::FormInCenter()
-{
-    int frmX = this->width();
-    int frmY = this->height();
-    QDesktopWidget w;
-    int deskWidth = w.width();
-    int deskHeight = w.height();
-    QPoint movePoint(deskWidth / 2 - frmX / 2, deskHeight / 2 - frmY / 2);
-    this->move(movePoint);
-}
+
 Video_Player::~Video_Player()
 {
     delete ui;
@@ -142,30 +136,94 @@ Video_Player::~Video_Player()
         astatus = ASTATUS_STOPPED;
     #endif
 }
+
+void Video_Player::setVolume(int n_value)
+{
+    QString cmd="tinymix 1 "+ QString::number(n_value,10);
+    system((char*)cmd.toStdString().c_str());
+}
+void Video_Player::timerUpdate()
+{
+//    qDebug()<<"update label in every 10ms";
+#if defined(Q_OS_LINUX)
+    int currentTime=ap->getCurrentPosition()/1000;
+//    qDebug()<<"current video time is"<<currentTime;
+    ui->progressSlider->setValue(currentTime);
+    updateDurationInfo(currentTime);
+#endif
+}
+
+void Video_Player::durationChanged(qint64 duration)
+{
+    this->duration = duration/1000;
+    ui->progressSlider->setMaximum(duration / 1000);
+}
+
+void Video_Player::positionChanged(qint64 progress)
+{
+    if (!ui->progressSlider->isSliderDown()) {
+        ui->progressSlider->setValue(progress / 1000);
+    }
+    updateDurationInfo(progress / 1000);
+}
+void Video_Player::updateDurationInfo(qint64 currentInfo)
+{
+//    qDebug()<<"update the time label";
+    QString tStr;
+    if (currentInfo || duration) {
+        QTime currentTime((currentInfo/3600)%60, (currentInfo/60)%60, currentInfo%60, (currentInfo*1000)%1000);
+        QTime totalTime((duration/3600)%60, (duration/60)%60, duration%60, (duration*1000)%1000);
+        QString format = "mm:ss";
+        if (duration > 3600)
+            format = "hh:mm:ss";
+        tStr = currentTime.toString(format) + " / " + totalTime.toString(format);
+    }
+    ui->nowTimeLabel->setText(tStr);
+}
 void Video_Player::seek(int seconds)
 {
+#if defined(Q_OS_LINUX)
+    qDebug()<<"ready to seek";
+    timer->stop();
 
-//    player->setPosition(seconds * 1000);
+    ap->seekto(seconds);
+//    ap->seekto(test);
+//    test+=80;
+    updateDurationInfo(seconds);
+    timer->start(10);
+#else
+    player->setPosition(seconds * 1000);
+#endif
 }
 
 void Video_Player::on_playButton_clicked()
 {
-    qDebug()<<"start video";
+//    qDebug()<<"start video";
 #if defined(Q_OS_LINUX)
-    #if defined(USE_AUTPLAYER)
+    if(isPlaying){
+        qDebug()<<"pause video";
         ap->pause();
-    #endif
-        if (astatus == ASTATUS_PAUSED)
-        {
-          astatus = ASTATUS_PLAYING;
-        }
-        else
-        {
-          astatus = ASTATUS_PAUSED;
-
-        }
+        ui->playButton->setIcon(QIcon(":/icon/play.png"));
+        isPlaying=false;
+    }else{
+        qDebug()<<"start video";
+        ap->play();
+        ui->playButton->setIcon(QIcon(":/icon/Pause.png"));
+        isPlaying=true;
+    }
 #else
-    player->play();
+    if(isPlaying){
+        qDebug()<<"pause video";
+        player->pause();
+        ui->playButton->setIcon(QIcon(":/icon/play.png"));
+        isPlaying=false;
+    }else{
+        qDebug()<<"start video";
+        player->play();
+        ui->playButton->setIcon(QIcon(":/icon/Pause.png"));
+        isPlaying=true;
+    }
+
 #endif
 }
 
@@ -177,6 +235,7 @@ void Video_Player::on_stopButton_clicked()
         ap->stop();
     #endif
     astatus = ASTATUS_STOPPED;
+
 #else
     player->stop();
 #endif
@@ -184,35 +243,37 @@ void Video_Player::on_stopButton_clicked()
 
 void Video_Player::on_muteButton_clicked()
 {
+#if !defined(Q_OS_LINUX)
     qDebug()<<"set muted";
-}
-
-void Video_Player::on_voiceSlider_sliderMoved(int position)
-{
-
-}
-
-
-
-
-//scrollArea->setStyleSheet("QScrollArea {background-color:transparent;}")
-
-//scrollArea->viewport()->setStyleSheet("background-color:transparent;");
-
-void Video_Player::on_progressSlider_valueChanged(int value)
-{
-    qDebug()<<"jump to"<<value;
-    int percent=value/100;
-
-    #if defined(Q_OS_LINUX)
-        #if defined(USE_AUTPLAYER)
-            int totalDuration=ap->getDuration()/1000;
-            int tempDuration=totalDuration*percent;
-            ap->seekto(tempDuration*1000);
-        #endif
-        astatus = ASTATUS_SEEKING;
-    #endif
-
+    if(!isMuted){
+        qDebug()<<"now is not muted";
+        player->setMuted(true);
+        ui->muteButton->setIcon(QIcon(":/icon/mute.png"));
+        ui->voiceSlider->setValue(0);
+        isMuted=true;
+    }else{
+        qDebug()<<"now is muted";
+        player->setMuted(false);
+        ui->voiceSlider->setValue(50);
+        ui->muteButton->setIcon(QIcon(":/icon/voice.png"));
+        isMuted=false;
+    }
+#else
+    qDebug()<<"set muted";
+    if(!isMuted){
+        qDebug()<<"now is not muted";
+//        ap->setMuted(true);
+        ui->muteButton->setIcon(QIcon(":/icon/mute.png"));
+        ui->voiceSlider->setValue(0);
+        isMuted=true;
+    }else{
+        qDebug()<<"now is muted";
+//        ap->setMuted(false);
+        ui->voiceSlider->setValue(50);
+        ui->muteButton->setIcon(QIcon(":/icon/voice.png"));
+        isMuted=false;
+    }
+#endif
 }
 
 void Video_Player::on_btnMenu_Min_clicked()
@@ -265,3 +326,70 @@ void Video_Player::on_btnMenu_Close_clicked()
     emit p_unhide_moviedesktop();
     emit main_desktop_visible();
 }
+void Video_Player::show_title()
+{
+    int fontId = QFontDatabase::addApplicationFont(":/font/fontawesome-webfont.ttf");
+    QString fontName = QFontDatabase::applicationFontFamilies(fontId).at(0);
+    QFont iconFont = QFont(fontName);
+    iconFont.setPointSize(10);
+    ui->btnMenu_Close->setFont(iconFont);
+    ui->btnMenu_Close->setText(QChar(0xf00d));
+    ui->btnMenu_Max->setFont(iconFont);
+    ui->btnMenu_Max->setText( QChar(0xf096));
+    ui->btnMenu_Min->setFont(iconFont);
+    ui->btnMenu_Min->setText( QChar(0xf068));
+    iconFont.setPointSize(12);
+    ui->lab_Ico->setFont(iconFont);
+    ui->lab_Ico->setText( QChar(0xf015));
+    ui->label->setFont(iconFont);
+}
+//窗体居中显示
+void Video_Player::FormInCenter()
+{
+    int frmX = this->width();
+    int frmY = this->height();
+    QDesktopWidget w;
+    int deskWidth = w.width();
+    int deskHeight = w.height();
+    QPoint movePoint(deskWidth / 2 - frmX / 2, deskHeight / 2 - frmY / 2);
+    this->move(movePoint);
+}
+
+void Video_Player::on_preMovieButton_clicked()
+{
+
+}
+
+void Video_Player::on_fastBackButton_clicked()
+{
+#if defined(Q_OS_LINUX)
+    //seekto 实现快退
+    int currentTime=ap->getCurrentPosition()/1000;
+    currentTime-=interval;
+    ap->seekto(currentTime);
+    ui->progressSlider->setValue(currentTime);
+    updateDurationInfo(currentTime);
+#else
+
+#endif
+}
+
+void Video_Player::on_fastFrontButton_clicked()
+{
+#if defined(Q_OS_LINUX)
+    //seekto 实现快进
+     int currentTime=ap->getCurrentPosition()/1000;
+     currentTime+=interval;
+     ap->seekto(currentTime);
+     ui->progressSlider->setValue(currentTime);
+     updateDurationInfo(currentTime);
+#else
+
+#endif
+}
+
+void Video_Player::on_nextMovieButton_clicked()
+{
+
+}
+

@@ -15,10 +15,10 @@ public:
     explicit Front_camera_setting(QWidget *parent = 0);
     ~Front_camera_setting();
 public slots:
-    void on_returnButton_clicked(bool);
-    void on_sureButton_clicked(bool);
-    void on_upperButton_clicked(bool);
-    void on_downButton_clicked(bool);
+    void on_returnButton_clicked();
+    void on_sureButton_clicked();
+    void on_upperButton_clicked();
+    void on_downButton_clicked();
 signals:
     void unHideSettings();
 private:

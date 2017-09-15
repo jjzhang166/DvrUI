@@ -5,6 +5,25 @@
 #include <QDebug>
 #include <settings.h>
 #include <QListView>
+#if defined(Q_OS_LINUX)
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "vencoder.h"
+#include "CdxMuxer.h"
+#include <time.h>
+
+#include "Rtc.h"
+#include "StorageManager.h"
+#include "DvrFactory.h"
+#include "CameraFileCfg.h"
+#include <sys/socket.h>
+#include <sys/un.h>
+#include "Fat.h"
+#include "DebugLevelThread.h"
+#include "DvrRecordManager.h"
+using namespace android;
+#endif
 namespace Ui {
 class SetFirst;
 }

@@ -5,6 +5,11 @@
 #include <QTimer>
 #include <QDebug>
 #include <QTime>
+#if defined(Q_OS_LINUX)
+#include "Fat.h"
+#define PATH_SDCARD  "/mnt/sdcard/mmcblk1p1/"
+#define PATH_SD_DEV  "/dev/mmcblk1p1"
+#endif
 namespace Ui {
 class About;
 }
@@ -23,6 +28,9 @@ private:
     Ui::About *ui;
     int test;//用于测试
     QTimer *timer;
+    #if defined(Q_OS_LINUX)
+        Fat *pfat;
+    #endif
 };
 
 #endif // ABOUT_H

@@ -7,6 +7,7 @@
 #include "video_widgets.h"
 #include <QMediaObject>
 #include <QPainter>
+#include <QTimer>
 #if defined(Q_OS_LINUX)
 #define USE_AUTPLAYER 1
 #endif
@@ -42,20 +43,38 @@ private slots:
 
     void on_muteButton_clicked();
 
-    void on_voiceSlider_sliderMoved(int position);
-
-    void on_progressSlider_valueChanged(int value);
-
     void on_btnMenu_Min_clicked();
 
     void on_btnMenu_Max_clicked();
 
     void on_btnMenu_Close_clicked();
 
+    void durationChanged(qint64 duration);
+
+    void positionChanged(qint64 progress);
+
+    void updateDurationInfo(qint64 currentInfo);
+
+    void setVolume(int);
+
+    void timerUpdate();
+
+    void on_preMovieButton_clicked();
+
+    void on_fastBackButton_clicked();
+
+    void on_fastFrontButton_clicked();
+
+    void on_nextMovieButton_clicked();
+
 protected:
     void paintEvent(QPaintEvent *event);
 private:
     Ui::Video_Player *ui;
+    bool isMuted;
+    bool isPlaying;
+    qint64 duration;//时间表时
+    QTimer *timer;
 //    QMediaPlayer::State playerState;
 //    video_widgets* my_video_widget;
     #if defined(USE_AUTPLAYER)

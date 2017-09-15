@@ -3,12 +3,21 @@
 #include <QDesktopWidget>
 #include "frmmessagebox.h"
 #include "videowidget.h"
+
 #if defined(Q_OS_LINUX)
 dvr_factory* pdvr;
 dvr_factory* pdvr1;
 #endif
 int g_recordstatus=0;
-
+//设置录像时间
+int recordTime=1;//初始化为一分钟
+//控制显示的范围
+extern int startA,startB,widthA,heightA;
+//设置开机录像，录音等功能
+int open_recordVideo_front,open_recordVideo_rear;
+int open_recordAudio_front,open_recordAudio_rear;
+int open_reverseLine_front,open_reverseLine_rear;
+int open_adas_front,open_adas_rear;
 main_desktop* pStaticMaindesktop=NULL;
 #if defined(Q_OS_LINUX)
 using namespace android;
@@ -123,26 +132,26 @@ void testaut_event_cb_func(NetlinkEvent *evt,void *usrdata){
 
               sleep(1);
         }
-            if(g_recordstatus==0){
-                pdvr->startRecord();
-                pdvr1->startRecord();
+//            if(g_recordstatus==0){
+//                pdvr->startRecord();
+//                pdvr1->startRecord();
 
-            }else
-                ALOGE("record status error");
+//            }else
+//                ALOGE("record status error");
         }
 
     }
     else if (action == NetlinkEvent::NlActionRemove)
     {
-        if (!strcmp(devtype, "disk"))
-        {
-            if(g_recordstatus==1){
-                pdvr->storage_state=0;//tmp
-                pdvr->stopRecord();
-                pdvr1->storage_state=0;//tmp
-                pdvr1->stopRecord();
-            }
-        }
+//        if (!strcmp(devtype, "disk"))
+//        {
+//            if(g_recordstatus==1){
+//                pdvr->storage_state=0;//tmp
+//                pdvr->stopRecord();
+//                pdvr1->storage_state=0;//tmp
+//                pdvr1->stopRecord();
+//            }
+//        }
     }
 }
 #endif
@@ -181,6 +190,10 @@ main_desktop::main_desktop(QWidget *parent) :
         sp<AudioCapThread> audiocap=new AudioCapThread();
         int hdl=audiocap->reqAudioSource(pdvr->__audio_data_cb_timestamp,(void *) pdvr);
         pdvr->setAudioOps(audiocap,hdl);
+
+        sp<AudioCapThread> audiocap1=new AudioCapThread();
+        int hdl1=audiocap1->reqAudioSource(pdvr1->__audio_data_cb_timestamp,(void *) pdvr1);
+        pdvr1->setAudioOps(audiocap1,hdl1);
          printf("--------------------------------AudioCapThread done\n");
     #endif
     #ifdef AUTEVENT_TEST//defined
@@ -197,6 +210,20 @@ main_desktop::main_desktop(QWidget *parent) :
     mcd->hwd_screen1_mode(tvmode);
     //mcd->hwd_tvout();
     config_set_startup(TEST_CAMERA_ID,1);
+    config_set_startup(1,1);
+    //if start record when machine is start
+    //read config.ini
+    open_recordVideo_front=config_get_recordVideo(0);
+    open_recordAudio_front=config_get_recordAudio(0);
+    open_reverseLine_front=config_get_reverseLine(0);
+    open_adas_front=config_get_adas(0);
+//    if(open_recordVideo_front){
+//        printf("----------------start record when machine is start\n");
+//        pdvr->startRecord();
+//        pdvr->setDuration(recordTime*60);
+
+//        //如何判断录像多久和文件是否生成
+//    }
     printf("------------------------------------camera initial done\n");
 #endif
     ui->setupUi(this);
@@ -227,7 +254,7 @@ main_desktop::main_desktop(QWidget *parent) :
     QPalette pa;
     pa.setColor(QPalette::WindowText,Qt::white);
     ui->time_Label->setPalette(pa);
-    ui->cameraView->setHidden(true);
+//    ui->cameraView->setHidden(true);
     //摄像头数据显示cameraView
     cameraState=true;//点击切换后切换到后置
 
@@ -239,6 +266,11 @@ main_desktop::main_desktop(QWidget *parent) :
     mouseMoveTime->start(8000);
 
 //    setProperty("noinput",true);
+    reverseLinewidget=new reverseLineWidget();
+    if(open_reverseLine_front)
+    {
+         reverseLinewidget->setParent(ui->widget);
+    }
 
     printf("main_desktop----------%p----\r\n",this);
     printf("-------------------------------------construction function done\n");
@@ -265,13 +297,11 @@ void main_desktop::startRecord()
     rt=pdvr1->recordInit("1");
     pdvr->SetDataCB(usr_datacb,pdvr);
     pdvr->setCallbacks(usernotifyCallback,userdataCallback,userdataCallbackTimestamp,pdvr /*dump*/);
-//    pdvr->prepare();
     pdvr->start();
     pdvr1->SetDataCB(usr_datacb,pdvr1);
     F_LOG;
     pdvr1->setCallbacks(usernotifyCallback,userdataCallback,userdataCallbackTimestamp,pdvr1 /*dump*/);
     F_LOG;
-//    pdvr1->prepare();
     pdvr1->start();
     sleep(5);
 
@@ -289,6 +319,7 @@ int main_desktop::startAllCameraWithPreview(int camera_no /* nouse now*/)
 #if defined(Q_OS_LINUX)
    startRecord();
    printf("startAllCameraWithPreview play %d\r\n",cur_camera);
+   startA=0;startB=150;widthA=1024;heightA=300;
    struct view_info vv= {0,0,1024,600};
    pdvr->startPriview(vv);
    pdvr1->startPriview(vv);
@@ -370,12 +401,6 @@ void main_desktop::on_main_desktop_visible()
         pdvr1->startPriview(vv);
     #endif
 }
-////暂时做成截图功能
-//void main_desktop::show_photoDesk()
-//{
-//    qDebug()<<"修改为截图功能";
-//}
-
 
 //截图的方法
 void main_desktop::on_cameraButton_clicked()
@@ -388,7 +413,6 @@ void main_desktop::on_cameraButton_clicked()
         Mutex::Autolock locker(&mObjectLock);
         status_t rt=pdvr->takePicture();
         if(NO_ERROR!=rt){
-//            QMessageBox::information(this, tr("拍照"), tr("拍照失败!"),QMessageBox::Ok);
             frmMessageBox *msg=new frmMessageBox;
             msg->SetMessage(QString(tr("拍照失败!")),2);
             QTimer::singleShot(1000, msg, SLOT(close()));
@@ -396,20 +420,10 @@ void main_desktop::on_cameraButton_clicked()
         }
         else
         {
-//            QMessageBox* box = new QMessageBox;
-//            QTimer::singleShot(1000, box, SLOT(close()));
-
-//            box->setWindowTitle(tr("拍照"));
-//            box->setStyleSheet(QStringLiteral("background-color: rgba(0, 200, 11,0);"));
-//            box->setIconPixmap(QPixmap(":/icon/information.png"));
-//            box->setText(tr("拍照成功"));
-//            box->move(300,240);
-//            box->show();
             frmMessageBox *msg=new frmMessageBox;
             msg->SetMessage(QString(tr("拍照成功!")),0);
             QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
-
         }
     #endif
     }else{
@@ -419,21 +433,11 @@ void main_desktop::on_cameraButton_clicked()
         Mutex::Autolock locker(&mObjectLock);
         status_t rt=pdvr1->takePicture();
         if(NO_ERROR!=rt){
-//            QMessageBox::information(this, tr("拍照"), tr("拍照失败!"),QMessageBox::Ok);
             frmMessageBox *msg=new frmMessageBox;
             msg->SetMessage(QString(tr("拍照失败!")),2);
             QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
         }else{
-//            QMessageBox* box = new QMessageBox;
-//            QTimer::singleShot(1000, box, SLOT(close()));
-
-//            box->setWindowTitle(tr("拍照"));
-//            box->setStyleSheet(QStringLiteral("background-color: rgba(0, 200, 11,0);"));
-//            box->setIconPixmap(QPixmap(":/icon/information.png"));
-//            box->setText(tr("拍照成功"));
-//            box->move(300,240);
-//            box->show();
             frmMessageBox *msg=new frmMessageBox;
             msg->SetMessage(QString(tr("拍照成功!")),0);
             QTimer::singleShot(1000, msg, SLOT(close()));
@@ -464,8 +468,6 @@ void main_desktop::on_cameraButton_clicked()
             msg->SetMessage(QString(tr("截屏失败！")),2);
             QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
-
-
         }else{
 //            QMessageBox::information(this,tr("成功"),"保存成功！",QMessageBox::Ok);
             frmMessageBox *msg=new frmMessageBox;
@@ -512,21 +514,18 @@ void main_desktop::on_recordButton_clicked()
 
         if(retrec<0){
             ALOGE("!!start record fail pls insert tf card");
-//            QMessageBox::warning(this,tr("提示"),tr("front camera recording error！"),QMessageBox::Yes);
             frmMessageBox *msg=new frmMessageBox;
-            msg->SetMessage(QString(tr("前摄像头无法录像!")),2);
+            msg->SetMessage(QString(tr("请插入SD卡！")),2);
             QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
             g_recordstatus=0;
         }else{
             g_recordstatus=1;
-//            QMessageBox::information(this,tr("提示"),tr("front camera start recording！"),QMessageBox::Yes);
             frmMessageBox *msg=new frmMessageBox;
             msg->SetMessage(QString(tr("前摄像头开始录像!")),0);
             QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
-            pdvr->setDuration(30);//录像时间30s
-            sleep(30);//等待录像结束
+            pdvr->setDuration(recordTime*60);//录像时间recordTime分钟
             pdvr->stopRecord();//结束录像
         }
     #endif
@@ -539,7 +538,7 @@ void main_desktop::on_recordButton_clicked()
             ALOGE("!!start record fail pls insert tf card");
 //            QMessageBox::warning(this,tr("提示"),tr("rear camera recording error！"),QMessageBox::Yes);
             frmMessageBox *msg=new frmMessageBox;
-            msg->SetMessage(QString(tr("后摄像头无法录像!")),2);
+            msg->SetMessage(QString(tr("请插入SD卡！")),2);
             QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
             g_recordstatus=0;
@@ -551,15 +550,18 @@ void main_desktop::on_recordButton_clicked()
 //            QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
 
-            pdvr1->setDuration(30);//录像时间30s
-            sleep(30);//等待录像结束
+            pdvr1->setDuration(recordTime*60);//录像时间30s
             pdvr1->stopRecord();//结束录像
         }
     #endif
     }
 #if !defined(Q_OS_LINUX)
     //在windows下
-     QMessageBox::information(this,tr("提示"),tr("start recording！"),QMessageBox::Yes);
+//     QMessageBox::information(this,tr("提示"),tr("start recording！"),QMessageBox::Yes);
+    frmMessageBox *msg=new frmMessageBox;
+    msg->SetMessage(QString(tr("正在录像!")),0);
+    QTimer::singleShot(1000, msg, SLOT(close()));
+    msg->exec();
 #endif
 
 }
@@ -608,7 +610,7 @@ void main_desktop::on_camera_change_Button_clicked()
         pdvr1->stopPriview();
         pdvr->startPriview(vv);
     #else
-        ui->cameraView->setStyleSheet(tr("background-image: url(:/picture.png);"));
+//        ui->cameraView->setStyleSheet(tr("background-image: url(:/picture.png);"));
     #endif
         cameraState=true;
     }
@@ -621,7 +623,7 @@ void main_desktop::on_camera_change_Button_clicked()
         pdvr->stopPriview();
         pdvr1->startPriview(vv);
     #else
-        ui->cameraView->setStyleSheet(tr("background-image: url(:/picture1.png);"));
+//        ui->cameraView->setStyleSheet(tr("background-image: url(:/picture1.png);"));
     #endif
         cameraState=false;
     }
