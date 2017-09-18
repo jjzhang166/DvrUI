@@ -57,13 +57,13 @@ Video_Player::Video_Player(QWidget *parent) :
                       ap->play();
                       this->duration=linux_duration;
                       qDebug()<<"total time is"<<duration;
-                      ui->label->setText(QString(tr("当前播放："))+tempFileName);
+                      ui->label->setText(QString(tr("now play:"))+tempFileName);
                       connect(ui->voiceSlider,SIGNAL(valueChanged(int)),this,SLOT(setVolume(int)));
                       connect(ui->progressSlider,SIGNAL(sliderMoved(int)),this,SLOT(seek(int)));
                       //每10ms钟获取当前的播放位置，并更新slider和label
                       timer = new QTimer(this);
                       connect(timer,SIGNAL(timeout()),this,SLOT(timerUpdate()));
-                      timer->start(10);
+                      timer->start(100);
                 #endif
                 astatus = ASTATUS_PLAYING;
             #endif
@@ -75,9 +75,9 @@ Video_Player::Video_Player(QWidget *parent) :
     }
     //printf("---------------------------------cant find the correct video\n");
     #else
-        QDirIterator m_DirIterator(QString("E:/tech_practise/DvrUI/DvrUI/video/"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
-        while (m_DirIterator.hasNext()) {
-            QString tempFile=m_DirIterator.next();
+        m_DirIterator=new QDirIterator(QString("E:/tech_practise/DvrUI/DvrUI/video/"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
+        while (m_DirIterator->hasNext()) {
+            QString tempFile=m_DirIterator->next();
             qDebug()<<tempFile;
             QString tempFileName=tempFile;
             tempFileName=tempFileName.remove(QString("E:/tech_practise/DvrUI/DvrUI/video/"),Qt::CaseSensitive);
@@ -92,7 +92,6 @@ Video_Player::Video_Player(QWidget *parent) :
                 player->setMedia(QMediaContent(QUrl::fromLocalFile(tempFile)));
                 player->play();
 //                ui->playButton->setStyleSheet("QPushButton::{border-image: url(:/icon/Pause.png);}");
-
                 ui->label->setText(QString(tr("当前播放："))+tempFileName);
                 ui->progressSlider->setRange(0,player->duration()/1000);
                 connect(ui->voiceSlider,SIGNAL(valueChanged(int)),player,SLOT(setVolume(int)));
@@ -155,12 +154,14 @@ void Video_Player::timerUpdate()
 
 void Video_Player::durationChanged(qint64 duration)
 {
+    qDebug()<<"------durationchanged";
     this->duration = duration/1000;
     ui->progressSlider->setMaximum(duration / 1000);
 }
 
 void Video_Player::positionChanged(qint64 progress)
 {
+    qDebug()<<"----------positionchanged";
     if (!ui->progressSlider->isSliderDown()) {
         ui->progressSlider->setValue(progress / 1000);
     }
@@ -183,14 +184,15 @@ void Video_Player::updateDurationInfo(qint64 currentInfo)
 void Video_Player::seek(int seconds)
 {
 #if defined(Q_OS_LINUX)
-    qDebug()<<"ready to seek";
+    qDebug()<<"ready to seekto"<<seconds<<"s";
     timer->stop();
-
+    int currentTime=ap->getCurrentPosition()/1000;
     ap->seekto(seconds);
-//    ap->seekto(test);
-//    test+=80;
+    if (!ui->progressSlider->isSliderDown()) {
+        ui->progressSlider->setValue(currentTime);
+    }
     updateDurationInfo(seconds);
-    timer->start(10);
+    timer->start(100);
 #else
     player->setPosition(seconds * 1000);
 #endif
@@ -341,7 +343,10 @@ void Video_Player::show_title()
     iconFont.setPointSize(12);
     ui->lab_Ico->setFont(iconFont);
     ui->lab_Ico->setText( QChar(0xf015));
+#if !defined(Q_OS_LINUX)
     ui->label->setFont(iconFont);
+    ui->nowTimeLabel->setFont(iconFont);
+#endif
 }
 //窗体居中显示
 void Video_Player::FormInCenter()
@@ -364,13 +369,23 @@ void Video_Player::on_fastBackButton_clicked()
 {
 #if defined(Q_OS_LINUX)
     //seekto 实现快退
+    timer->stop();
     int currentTime=ap->getCurrentPosition()/1000;
     currentTime-=interval;
     ap->seekto(currentTime);
     ui->progressSlider->setValue(currentTime);
     updateDurationInfo(currentTime);
+    timer->start(100);
 #else
-
+    int currentValue=ui->progressSlider->value();
+    currentValue-=interval;
+    if(currentValue<this->duration){
+        ui->progressSlider->setValue(currentValue);
+        updateDurationInfo(currentValue);
+        player->setPosition(currentValue*1000);
+    }else{
+        qDebug()<<"out of the media time";
+    }
 #endif
 }
 
@@ -378,18 +393,41 @@ void Video_Player::on_fastFrontButton_clicked()
 {
 #if defined(Q_OS_LINUX)
     //seekto 实现快进
+    timer->stop();
      int currentTime=ap->getCurrentPosition()/1000;
      currentTime+=interval;
      ap->seekto(currentTime);
      ui->progressSlider->setValue(currentTime);
      updateDurationInfo(currentTime);
+     timer->start(100);
 #else
-
+    int currentValue=ui->progressSlider->value();
+    currentValue+=interval;
+    if(currentValue<this->duration){
+        ui->progressSlider->setValue(currentValue);
+        updateDurationInfo(currentValue);
+        player->setPosition(currentValue*1000);
+    }else{
+        qDebug()<<"out of the media time";
+    }
 #endif
 }
 
 void Video_Player::on_nextMovieButton_clicked()
 {
+#if defined(Q_OS_LINUX)
 
+#else
+    if(m_DirIterator->hasNext()){
+        QString tempFile=m_DirIterator->next();
+        qDebug()<<tempFile;
+        QString tempFileName=tempFile;
+        tempFileName=tempFileName.remove(QString("E:/tech_practise/DvrUI/DvrUI/video/"),Qt::CaseSensitive);
+        player->setMedia(QMediaContent(QUrl::fromLocalFile(tempFile)));
+        player->play();
+        ui->label->setText(QString(tr("当前播放："))+tempFileName);
+        ui->progressSlider->setRange(0,player->duration()/1000);
+    }
+#endif
 }
 

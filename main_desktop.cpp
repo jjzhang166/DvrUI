@@ -3,6 +3,7 @@
 #include <QDesktopWidget>
 #include "frmmessagebox.h"
 #include "videowidget.h"
+#include "reverseline_setting.h"
 
 #if defined(Q_OS_LINUX)
 dvr_factory* pdvr;
@@ -13,12 +14,14 @@ int g_recordstatus=0;
 int recordTime=1;//初始化为一分钟
 //控制显示的范围
 extern int startA,startB,widthA,heightA;
+int rotate_angle=15;
 //设置开机录像，录音等功能
 int open_recordVideo_front,open_recordVideo_rear;
 int open_recordAudio_front,open_recordAudio_rear;
 int open_reverseLine_front,open_reverseLine_rear;
 int open_adas_front,open_adas_rear;
 main_desktop* pStaticMaindesktop=NULL;
+extern ReverseLine_Setting *pStatic_reverseLine;
 #if defined(Q_OS_LINUX)
 using namespace android;
 void usernotifyCallback(int32_t msgType, int32_t ext1, int32_t ext2, void* user){
@@ -266,6 +269,9 @@ main_desktop::main_desktop(QWidget *parent) :
     mouseMoveTime->start(8000);
 
 //    setProperty("noinput",true);
+#if !defined(Q_OS_LINUX)
+    open_reverseLine_front=1;
+#endif
     reverseLinewidget=new reverseLineWidget();
     if(open_reverseLine_front)
     {
@@ -277,6 +283,8 @@ main_desktop::main_desktop(QWidget *parent) :
 
 
     pStaticMaindesktop=this;
+
+    connect(pStatic_reverseLine,SIGNAL(reverseLine_repaint()),this,SLOT(on_reverseLine_repaint()));
 
 }
 //设置窗口为透明的，重载了paintEvent
@@ -656,4 +664,8 @@ void main_desktop::on_movieButton_clicked()
     moviedesk=new movieDesk();
     moviedesk->exec();
 
+}
+void main_desktop::on_reverseLine_repaint()
+{
+    reverseLinewidget->update();
 }

@@ -150,6 +150,8 @@ public slots://其它界面调出
     void on_cameraButton_clicked();//截图
 
     void on_lockButton_clicked();//锁屏
+
+    void on_reverseLine_repaint();
 private://界面类
     SetFirst *setting_desktop;
     dashBoard *dashboards;

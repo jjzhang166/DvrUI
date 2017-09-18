@@ -309,12 +309,12 @@ QPushButton:hover{
     </property>
    </widget>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>540</y>
-     <width>1001</width>
+     <width>1011</width>
      <height>53</height>
     </rect>
    </property>
@@ -338,7 +338,7 @@ QPushButton:hover{
 	border-style: none;
 	border: 0px;
 	color: #F0F0F0;
-	padding: 5px;	
+	padding: 5px;
 	border-radius:5px;
 	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
 }
@@ -358,6 +358,9 @@ QPushButton:hover{
 
 .QPushButton:pressed{ 
 	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
+}
+QPushButton{
+border-image:url(:/icon/skip-backward.png)
 }</string>
       </property>
       <property name="text">
@@ -404,6 +407,9 @@ QPushButton:hover{
 
 .QPushButton:pressed{ 
 	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
+}
+QPushButton{
+border-image:url(:/icon/fastback.png);
 }</string>
       </property>
       <property name="text">
@@ -496,6 +502,9 @@ QPushButton:hover{
 
 .QPushButton:pressed{ 
 	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
+}
+QPushButton{
+border-image:url(:/icon/forward.png)
 }</string>
       </property>
       <property name="text">
@@ -542,6 +551,9 @@ QPushButton:hover{
 
 .QPushButton:pressed{ 
 	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
+}
+QPushButton{
+border-image:url(:/icon/skip-forward.png)
 }</string>
       </property>
       <property name="text">
@@ -588,6 +600,9 @@ QPushButton:hover{
 
 .QPushButton:pressed{ 
 	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
+}
+QPushButton{
+border-image:url(:/icon/Stop.png)
 }</string>
       </property>
       <property name="text">
@@ -602,6 +617,18 @@ QPushButton:hover{
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>350</width>
+        <height>19</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>350</width>
+        <height>19</height>
+       </size>
       </property>
       <property name="styleSheet">
        <string notr="true">QSlider::groove:horizontal,QSlider::add-page:horizontal { 
@@ -637,14 +664,14 @@ QSlider::handle:horizontal:hover {
      <widget class="QLabel" name="nowTimeLabel">
       <property name="minimumSize">
        <size>
-        <width>0</width>
-        <height>0</height>
+        <width>150</width>
+        <height>51</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>177772</width>
-        <height>177772</height>
+        <width>150</width>
+        <height>51</height>
        </size>
       </property>
       <property name="styleSheet">
@@ -703,6 +730,18 @@ QSlider::handle:horizontal:hover {
     </item>
     <item row="0" column="9">
      <widget class="QSlider" name="voiceSlider">
+      <property name="minimumSize">
+       <size>
+        <width>98</width>
+        <height>19</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>98</width>
+        <height>19</height>
+       </size>
+      </property>
       <property name="styleSheet">
        <string notr="true">QSlider::groove:horizontal,QSlider::add-page:horizontal { 
 	background: #808080; 

@@ -8,6 +8,7 @@
 #include <QMediaObject>
 #include <QPainter>
 #include <QTimer>
+#include <QDirIterator>
 #if defined(Q_OS_LINUX)
 #define USE_AUTPLAYER 1
 #endif
@@ -75,6 +76,7 @@ private:
     bool isPlaying;
     qint64 duration;//时间表时
     QTimer *timer;
+    QDirIterator* m_DirIterator;
 //    QMediaPlayer::State playerState;
 //    video_widgets* my_video_widget;
     #if defined(USE_AUTPLAYER)

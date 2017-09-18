@@ -1,6 +1,7 @@
 #include "reverseline.h"
 #include "ui_reverseline.h"
-
+#include "settings.h"
+extern Settings* pStatic_settings;
 ReverseLine::ReverseLine(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ReverseLine)
@@ -20,6 +21,8 @@ ReverseLine::ReverseLine(QWidget *parent) :
     vbox1->addWidget(rearVision_setting_label);
     ui->groupBox->setLayout(vbox1);
     connect(rearVision_setting_label,SIGNAL(clicked()),this,SLOT(on_pictureLabel1_clicked()));
+
+    reverseline_setting=new ReverseLine_Setting();
 }
 
 ReverseLine::~ReverseLine()
@@ -29,6 +32,8 @@ ReverseLine::~ReverseLine()
 void ReverseLine::on_pictureLabel2_clicked()
 {
     qDebug()<<"打开倒车线设置界面";
+    reverseline_setting->showNormal();
+    pStatic_settings->setHidden(true);
 }
 void ReverseLine::on_pictureLabel1_clicked()
 {

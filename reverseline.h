@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QVBoxLayout>
 #include "mylabel.h"
+#include "reverseline_setting.h"
 namespace Ui {
 class ReverseLine;
 }
@@ -23,6 +24,7 @@ private:
     Ui::ReverseLine *ui;
     myLabel *reverse_setting_label;
     myLabel *rearVision_setting_label;
+    ReverseLine_Setting* reverseline_setting;
 
 };
 

@@ -51,7 +51,8 @@ SOURCES += \
     slave_videowidget.cpp \
     cprojectionpicture.cpp \
     frmmessagebox.cpp \
-    reverselinewidget.cpp
+    reverselinewidget.cpp \
+    reverseline_setting.cpp
 
 HEADERS += \
         main_desktop.h \
@@ -80,7 +81,8 @@ HEADERS += \
     slave_videowidget.h \
     cprojectionpicture.h \
     frmmessagebox.h \
-    reverselinewidget.h
+    reverselinewidget.h \
+    reverseline_setting.h
 
 FORMS += \
         main_desktop.ui \
@@ -104,7 +106,8 @@ FORMS += \
     dashboard.ui \
     slave_picturewidget.ui \
     slave_videowidget.ui \
-    frmmessagebox.ui
+    frmmessagebox.ui \
+    reverseline_setting.ui
 
 RESOURCES += \
     image/image.qrc \

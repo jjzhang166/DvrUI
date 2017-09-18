@@ -57,7 +57,7 @@ SetFirst::SetFirst(QWidget *parent) :
     ui->movieButton->setCheckable(true);
     ui->voiceButton->setCheckable(true);
 
-
+    qDebug()<<"the value of the config ini:"<<open_adas_front<<open_recordVideo_front<<open_recordAudio_front<<open_reverseLine_front;
     if(open_adas_front){
         ui->ADASButton->setChecked(true);
     }else{
@@ -113,6 +113,7 @@ void SetFirst::on_slider_valuechanged(int n_value)
         qDebug()<<"change the voice"<<n_value;
         ui->voiceButton->setChecked(false);
     #if defined(Q_OS_LINUX)
+        qDebug()<<"ready to change the voice";
         QString cmd="tinymix 1 "+ QString::number(n_value,10);
         system((char*)cmd.toStdString().c_str());
         ui->voiceLabel->setText(QString("%1").arg(n_value));
@@ -121,7 +122,8 @@ void SetFirst::on_slider_valuechanged(int n_value)
     else if(sender==ui->lightSlider){
         qDebug()<<"change the light:"<<n_value;
     #if defined(Q_OS_LINUX)
-        lcd_blk_ctrl(n_value);
+        qDebug()<<"ready to change the light";
+        lcd_blk_ctrl((unsigned long)n_value);
     #endif
         ui->lightLabel->setText(QString("%1").arg(n_value));
     }
@@ -132,60 +134,68 @@ void SetFirst::on_slider_valuechanged(int n_value)
 void SetFirst::on_audioButton_clicked()
 {
     if(ui->audioButton->isChecked()){
-        qDebug()<<"录音按钮处于按下状态";
+        qDebug()<<"AUDIO 1";
     #if defined(Q_OS_LINUX)
         config_set_recordAudio(0,1);
+        open_recordAudio_front=1;
     #endif
     }
     else{
-        qDebug()<<"录音按钮处于弹起状态";
+        qDebug()<<"AUDIO 0";
     #if defined(Q_OS_LINUX)
         config_set_recordAudio(0,0);
+        open_recordAudio_front=0;
     #endif
     }
 }
 void SetFirst::on_ADASButton_clicked()
 {
     if(ui->ADASButton->isChecked()){
-        qDebug()<<"ADAS按钮处于按下状态";
+        qDebug()<<"ADAS 1";
     #if defined(Q_OS_LINUX)
         config_set_adas(0,1);
+        open_adas_front=1;
     #endif
     }
     else{
-        qDebug()<<"ADAS按钮处于弹起状态";
+        qDebug()<<"ADAS 0";
     #if defined(Q_OS_LINUX)
         config_set_adas(0,0);
+        open_adas_front=0;
     #endif
     }
 }
 void SetFirst::on_movieButton_clicked()
 {
     if(ui->movieButton->isChecked()){
-        qDebug()<<"录像按钮处于按下状态";
+        qDebug()<<"RECORD 1";
     #if defined(Q_OS_LINUX)
         config_set_recordVideo(0,1);
+        open_recordVideo_front=1;
     #endif
     }
     else{
-        qDebug()<<"录像按钮处于弹起状态";
+        qDebug()<<"RECORD 0";
     #if defined(Q_OS_LINUX)
         config_set_recordVideo(0,0);
+        open_recordVideo_front=0;
     #endif
     }
 }
 void SetFirst::on_reverseButton_clicked()
 {
     if(ui->reverseButton->isChecked()){
-        qDebug()<<"倒车线按钮处于按下状态";
+        qDebug()<<"REVERSE 1";
     #if defined(Q_OS_LINUX)
         config_set_reverseLine(0,1);
+        open_reverseLine_front=1;
     #endif
     }
     else{
-        qDebug()<<"倒车线按钮处于弹起状态";
+        qDebug()<<"REVERSE 0";
     #if defined(Q_OS_LINUX)
         config_set_reverseLine(0,0);
+        open_reverseLine_front=0;
     #endif
     }
 }

@@ -52,5 +52,9 @@
         <file>icon/play.png</file>
         <file>icon/voice.png</file>
         <file>icon/Stop.png</file>
+        <file>icon/fastback.png</file>
+        <file>icon/forward.png</file>
+        <file>icon/skip-backward.png</file>
+        <file>icon/skip-forward.png</file>
     </qresource>
 </RCC>

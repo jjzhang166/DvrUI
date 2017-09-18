@@ -4,6 +4,7 @@
 #include "ui_setfirst.h"
 
 #include <QDesktopWidget>
+Settings* pStatic_settings;
 Settings::Settings(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Settings)
@@ -59,6 +60,8 @@ Settings::Settings(QWidget *parent) :
     connect(previews,SIGNAL(unhideSettings_signal()),this,SLOT(on_unhideSettings()));
     connect(adass,SIGNAL(unhideSettings_signal()),this,SLOT(on_unhideSettings()));
     connect(reverselines,SIGNAL(unhideSettings_signal()),this,SLOT(on_unhideSettings()));
+
+    pStatic_settings=this;
 }
 
     //窗体居中显示
