@@ -30,6 +30,7 @@
 #define VIEW_WEITH 1024
 #define VIEW_HEIGHT 600
 #define TEST_CAMERA_ID 0
+#define  Double_Camera_Test 0;
 
 #include <linux/videodev2.h>
 #include <sys/ioctl.h>

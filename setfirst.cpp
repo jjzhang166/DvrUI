@@ -20,11 +20,14 @@ SetFirst::SetFirst(QWidget *parent) :
 //    w=(1024-this->width())/2;
 //    h=(600-this->height())/2;
 //    this->mapToParent(QPoint(w,h));
-    FormInCenter();
+
     //设置界面的样式
+//    setWindowFlags(Qt::FramelessWindowHint);//无边框
+//    setWindowOpacity(0.7);
     setWindowStyleSheet();
     ui->comboBox->setView(new QListView());
     voiceButtonState=true;
+    FormInCenter();
     //连接前后两级页面
     connect(ui->settingsButton,SIGNAL(clicked(bool)),this,SLOT(on_click_setttingsButton(bool)));
     connect(ui->returnButton,SIGNAL(clicked(bool)),this,SLOT(on_click_returnButton(bool)));
@@ -34,6 +37,19 @@ SetFirst::SetFirst(QWidget *parent) :
     //声音的调节范围为0-100
 #if defined(Q_OS_LINUX)
     lcd_blk_ctrl_init();
+    qDebug()<<"--------------------begin light change";
+//    lcd_blk_ctrl(13);
+//    sleep(5);
+//    lcd_blk_ctrl(17);
+//    sleep(5);
+//    lcd_blk_ctrl(20);
+//    sleep(5);
+//    lcd_blk_ctrl(10);
+//    sleep(5);
+//    lcd_blk_ctrl(5);
+//    sleep(5);
+//    lcd_blk_ctrl(0);
+    qDebug()<<"----------------------end light change";
 #endif
     ui->voiceSlider->setRange(0,100);
     ui->lightSlider->setRange(0,20);

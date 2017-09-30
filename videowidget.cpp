@@ -5,6 +5,7 @@
 extern main_desktop* pStaticMaindesktop;
 // This is available in all editors.
 QString which_filename_to_play;
+int which_video_show_play;
 const QString win_path="E:/tech_practise/DvrUI/DvrUI/video/";
 const QString linux_path="/mnt/sdcard/mmcblk1p1/frontVideo/";
 videoWidget::videoWidget(QWidget *parent) :
@@ -148,7 +149,7 @@ void videoWidget::play_video(QModelIndex pos)
     qDebug()<<"filename"<<item->text();
     qDebug()<<"点击了"<<pos.row();
     which_filename_to_play=item->text();
-//    which_pic_show_big=pos.row();
+    which_video_show_play=pos.row();
     video_players=new Video_Player(this);
 //    this->hide();
     emit hide_moviedesktop();

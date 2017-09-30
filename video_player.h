@@ -9,11 +9,15 @@
 #include <QPainter>
 #include <QTimer>
 #include <QDirIterator>
+#include <QFileInfoList>
+#include <QDir>
+#include <QThread>
 #if defined(Q_OS_LINUX)
 #define USE_AUTPLAYER 1
 #endif
 #if defined(USE_AUTPLAYER)
 #include "AutPlayer.h"
+#include "outputCtrl.h"
 using namespace android;
 #endif
 static const int ASTATUS_STOPPED   = 0;
@@ -22,7 +26,6 @@ static const int ASTATUS_PREPARED  = 2;
 static const int ASTATUS_PLAYING   = 3;
 static const int ASTATUS_PAUSED    = 4;
 static const int ASTATUS_SEEKING   = 5;
-
 namespace Ui {
 class Video_Player;
 }
@@ -37,6 +40,14 @@ public:
 public slots:
     void seek(int seconds);
 
+private://用于检测是否有动作
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event) ;
+
+    void on_mouse_active();
+    QTimer *mouseMoveTime;//检测鼠标离开的时间
 private slots:
     void on_playButton_clicked();
 
@@ -68,15 +79,20 @@ private slots:
 
     void on_nextMovieButton_clicked();
 
+    void on_timeout_mouserMoveTime();
+
 protected:
     void paintEvent(QPaintEvent *event);
-private:
+public:
     Ui::Video_Player *ui;
+    int current_video;
     bool isMuted;
     bool isPlaying;
     qint64 duration;//时间表时
     QTimer *timer;
-    QDirIterator* m_DirIterator;
+    QDir dir;
+//    QDirIterator* m_DirIterator;
+    QFileInfoList file_list;
 //    QMediaPlayer::State playerState;
 //    video_widgets* my_video_widget;
     #if defined(USE_AUTPLAYER)
@@ -85,11 +101,11 @@ private:
         QVideoWidget* my_video_widget;
         QMediaPlayer *player;
     #endif
-    #if defined(USE_AUTPLAYER)
         static int end(int32_t msgType, void *user);
+        static int autCb_func(int32_t msgType, void *user,void*data,int len);
         int astatus;
-    #endif
 
+    QFileInfoList GetFileList(QDir dir);
 signals:
     void p_unhide_moviedesktop();
     void main_desktop_visible();

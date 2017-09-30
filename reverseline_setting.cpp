@@ -3,9 +3,11 @@
 #include <QDesktopWidget>
 #include <QDebug>
 #include "settings.h"
+#include "main_desktop.h"
 
 extern Settings* pStatic_settings;
 ReverseLine_Setting *pStatic_reverseLine=NULL;
+extern main_desktop* pStaticMaindesktop;
 extern int rotate_angle;
 const int interval=5;
 ReverseLine_Setting::ReverseLine_Setting(QWidget *parent) :
@@ -16,7 +18,7 @@ ReverseLine_Setting::ReverseLine_Setting(QWidget *parent) :
     FormInCenter();
     reverLinewidget=new reverseLineWidget();
     reverLinewidget->setParent(ui->widget);
-
+    connect(this,SIGNAL(reverseLine_repaint()),pStaticMaindesktop,SLOT(on_reverseLine_repaint()));
     pStatic_reverseLine=this;
 }
 

@@ -266,7 +266,7 @@ main_desktop::main_desktop(QWidget *parent) :
     setMouseTracking(true);
     mouseMoveTime = new QTimer();
     connect(mouseMoveTime,SIGNAL(timeout()),this,SLOT(on_mouse_no_active_10_second()));
-    mouseMoveTime->start(8000);
+    mouseMoveTime->start(3000);
 
 //    setProperty("noinput",true);
 #if !defined(Q_OS_LINUX)
@@ -284,7 +284,7 @@ main_desktop::main_desktop(QWidget *parent) :
 
     pStaticMaindesktop=this;
 
-    connect(pStatic_reverseLine,SIGNAL(reverseLine_repaint()),this,SLOT(on_reverseLine_repaint()));
+//    connect(pStatic_reverseLine,SIGNAL(reverseLine_repaint()),this,SLOT(on_reverseLine_repaint()));
 
 }
 //设置窗口为透明的，重载了paintEvent
@@ -301,6 +301,7 @@ void main_desktop::startRecord()
     Mutex::Autolock locker(&mObjectLock);
     char bufname[512];
     int rt=0;
+    qDebug()<<"-------------------------------initing";
     rt=pdvr->recordInit("0");
     rt=pdvr1->recordInit("1");
     pdvr->SetDataCB(usr_datacb,pdvr);
@@ -311,8 +312,8 @@ void main_desktop::startRecord()
     pdvr1->setCallbacks(usernotifyCallback,userdataCallback,userdataCallbackTimestamp,pdvr1 /*dump*/);
     F_LOG;
     pdvr1->start();
-    sleep(5);
-
+//    sleep(5);
+    qDebug()<<"-----------------------------initing done";
     pdvr->enableWaterMark();
     sprintf(bufname,"64,64,0,64,250,T3L SDK,64,450,ASTEROID V1 alpha");
     pdvr->setWaterMarkMultiple(bufname);
@@ -364,6 +365,7 @@ void main_desktop::timerUpdate(void)
 void main_desktop::on_mouse_no_active_10_second()
 {
     setButtonDisvisible();
+    ui->widget->move(QPoint(10,71));
 }
 //有操作出现
 void main_desktop::on_mouse_active()
@@ -585,23 +587,25 @@ void main_desktop::FormInCenter()
 }
 void main_desktop::setButtonVisible()
 {
-    ui->cameraButton->setVisible(true);
-    ui->camera_change_Button->setVisible(true);
-    ui->lockButton->setVisible(true);
-    ui->movieButton->setVisible(true);
-    ui->recordButton->setVisible(true);
-    ui->setFirstButton->setVisible(true);
-    ui->compassButton->setVisible(true);
+//    ui->cameraButton->setVisible(true);
+//    ui->camera_change_Button->setVisible(true);
+//    ui->lockButton->setVisible(true);
+//    ui->movieButton->setVisible(true);
+//    ui->recordButton->setVisible(true);
+//    ui->setFirstButton->setVisible(true);
+//    ui->compassButton->setVisible(true);
+    ui->widget_2->setVisible(true);
 }
 void main_desktop::setButtonDisvisible()
 {
-    ui->cameraButton->setVisible(false);
-    ui->camera_change_Button->setVisible(false);
-    ui->lockButton->setVisible(false);
-    ui->movieButton->setVisible(false);
-    ui->recordButton->setVisible(false);
-    ui->setFirstButton->setVisible(false);
-    ui->compassButton->setVisible(false);
+//    ui->cameraButton->setVisible(false);
+//    ui->camera_change_Button->setVisible(false);
+//    ui->lockButton->setVisible(false);
+//    ui->movieButton->setVisible(false);
+//    ui->recordButton->setVisible(false);
+//    ui->setFirstButton->setVisible(false);
+//    ui->compassButton->setVisible(false);
+    ui->widget_2->setVisible(false);
 }
 
 

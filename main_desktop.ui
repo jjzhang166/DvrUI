@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>600</height>
+    <height>618</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,100 +16,106 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <layout class="QGridLayout" name="gridLayout_5">
+  <layout class="QGridLayout" name="gridLayout_6">
    <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout_3" columnstretch="5,2,1">
+    <layout class="QGridLayout" name="gridLayout_4">
      <item row="0" column="0">
-      <spacer name="horizontalSpacer_9">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>598</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="1">
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QGridLayout" name="gridLayout_3" columnstretch="5,2,1">
        <item row="0" column="0">
-        <widget class="QLabel" name="time_Label">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <spacer name="horizontalSpacer_9">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
-         <property name="minimumSize">
+         <property name="sizeHint" stdset="0">
           <size>
-           <width>261</width>
-           <height>51</height>
+           <width>598</width>
+           <height>20</height>
           </size>
          </property>
-         <property name="maximumSize">
-          <size>
-           <width>261</width>
-           <height>51</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">color:rgb(244, 255, 29);
-font: 75 14pt &quot;Courier 10 Pitch&quot;;
-</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
+        </spacer>
        </item>
        <item row="0" column="1">
-        <widget class="QPushButton" name="pushButton_8">
-         <property name="minimumSize">
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="time_Label">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>261</width>
+             <height>51</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>261</width>
+             <height>51</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color:rgb(244, 255, 29);
+font: 75 14pt &quot;Courier 10 Pitch&quot;;
+</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="pushButton_8">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border-image:url(:/icon/gps.png)</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="2">
+        <spacer name="horizontalSpacer_10">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
           <size>
-           <width>50</width>
-           <height>50</height>
+           <width>40</width>
+           <height>20</height>
           </size>
          </property>
-         <property name="maximumSize">
-          <size>
-           <width>50</width>
-           <height>50</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border-image:url(:/icon/gps.png)</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
+        </spacer>
        </item>
       </layout>
      </item>
-     <item row="0" column="2">
-      <spacer name="horizontalSpacer_10">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
-    <layout class="QGridLayout" name="gridLayout_4" columnstretch="1">
-     <item row="0" column="0">
+     <item row="1" column="0">
       <widget class="QWidget" name="widget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
          <width>1000</width>
@@ -126,37 +132,46 @@ font: 75 14pt &quot;Courier 10 Pitch&quot;;
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="1">
-      <widget class="QPushButton" name="compassButton">
-       <property name="minimumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton{
+   <item row="1" column="0">
+    <widget class="QWidget" name="widget_2" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="compassButton">
+          <property name="minimumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton{
 	border-style: none;
 	border: 0px;
 	color: #F0F0F0;
@@ -181,41 +196,41 @@ font: 75 14pt &quot;Courier 10 Pitch&quot;;
 .QPushButton:pressed{ 
 	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
 }</string>
-       </property>
-       <property name="text">
-        <string>正北</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>78</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="3">
-      <widget class="QPushButton" name="cameraButton">
-       <property name="minimumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton:hover{ 
+          </property>
+          <property name="text">
+           <string>正北</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>78</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="3">
+         <widget class="QPushButton" name="cameraButton">
+          <property name="minimumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton:hover{ 
 	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
 }
 
@@ -226,41 +241,41 @@ QPushButton{
 border-image:url(:/icon/camera.png)
 }
 </string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>18</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="5">
-      <widget class="QPushButton" name="lockButton">
-       <property name="minimumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton:hover{ 
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>18</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="5">
+         <widget class="QPushButton" name="lockButton">
+          <property name="minimumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton:hover{ 
 	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
 }
 
@@ -270,166 +285,194 @@ QPushButton:pressed{
 QPushButton{
 border-image:url(:/icon/lock.png)
 }</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="6">
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>18</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="7">
-      <widget class="QPushButton" name="recordButton">
-       <property name="minimumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-image:url(:/icon/record.png)</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="8">
-      <spacer name="horizontalSpacer_5">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>18</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="9">
-      <widget class="QPushButton" name="setFirstButton">
-       <property name="minimumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-image:url(:/icon/setting_main.png)</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="10">
-      <spacer name="horizontalSpacer_6">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>18</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="11">
-      <widget class="QPushButton" name="movieButton">
-       <property name="minimumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-image:url(:/icon/video.png)</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="12">
-      <spacer name="horizontalSpacer_7">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>118</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="13">
-      <widget class="QPushButton" name="camera_change_Button">
-       <property name="minimumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>81</width>
-         <height>81</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-image:url(:/icon/Switch_Camera.png)</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="14">
-      <spacer name="horizontalSpacer_8">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>58</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="7">
+         <widget class="QPushButton" name="recordButton">
+          <property name="minimumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-image:url(:/icon/record.png)</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="8">
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>18</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="9">
+         <widget class="QPushButton" name="setFirstButton">
+          <property name="minimumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-image:url(:/icon/setting_main.png)</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="10">
+         <spacer name="horizontalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>18</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="11">
+         <widget class="QPushButton" name="movieButton">
+          <property name="minimumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-image:url(:/icon/video.png)</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="12">
+         <spacer name="horizontalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>118</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="13">
+         <widget class="QPushButton" name="camera_change_Button">
+          <property name="minimumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>81</width>
+            <height>81</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-image:url(:/icon/Switch_Camera.png)</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="14">
+         <spacer name="horizontalSpacer_8">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>58</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="6">
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>18</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>1</width>
+       <height>101</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>1</width>
+       <height>101</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
