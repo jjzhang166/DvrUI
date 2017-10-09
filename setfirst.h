@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include <QDebug>
-#include <settings.h>
+#include "settings.h"
 #include <QListView>
 #if defined(Q_OS_LINUX)
 #include <stdio.h>
@@ -36,8 +36,8 @@ public:
     explicit SetFirst(QWidget *parent = 0);
     ~SetFirst();
 public slots://界面切换
-    void on_click_setttingsButton(bool);
-    void on_click_returnButton(bool);
+//    void on_click_setttingsButton();
+//    void on_click_returnButton();
     void on_audioButton_clicked();
     void on_ADASButton_clicked();
     void on_movieButton_clicked();
@@ -48,6 +48,10 @@ private slots:
     void on_voiceButton_clicked();
 
     void on_movieTimeSetting_valueChanged(int value);
+
+    void on_settingsButton_clicked();
+
+    void on_returnButton_clicked();
 
 private:
     Ui::SetFirst *ui;

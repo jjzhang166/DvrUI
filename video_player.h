@@ -12,6 +12,7 @@
 #include <QFileInfoList>
 #include <QDir>
 #include <QThread>
+#include <QLabel>
 #if defined(Q_OS_LINUX)
 #define USE_AUTPLAYER 1
 #endif
@@ -37,6 +38,7 @@ class Video_Player : public QDialog
 public:
     explicit Video_Player(QWidget *parent = 0);
     ~Video_Player();
+    QLabel* subtitle_label;
 public slots:
     void seek(int seconds);
 
@@ -101,8 +103,6 @@ public:
         QVideoWidget* my_video_widget;
         QMediaPlayer *player;
     #endif
-        static int end(int32_t msgType, void *user);
-        static int autCb_func(int32_t msgType, void *user,void*data,int len);
         int astatus;
 
     QFileInfoList GetFileList(QDir dir);

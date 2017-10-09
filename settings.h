@@ -24,10 +24,12 @@ public:
     ~Settings();
 
 public slots:
-    void on_click_returnButton(bool);
     void on_hideSettings();
 
     void on_unhideSettings();
+private slots:
+    void on_returnButton_clicked();
+
 private://tabbar管理
     About *abouts;
     Preview *previews;
@@ -37,8 +39,6 @@ private://tabbar管理
 private:
     Ui::Settings *ui;
     void FormInCenter();
-
-
 };
 
 

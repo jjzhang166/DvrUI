@@ -16,21 +16,14 @@ SetFirst::SetFirst(QWidget *parent) :
     ui(new Ui::SetFirst)
 {
     ui->setupUi(this);
-//    int w,h;
-//    w=(1024-this->width())/2;
-//    h=(600-this->height())/2;
-//    this->mapToParent(QPoint(w,h));
 
-    //设置界面的样式
-//    setWindowFlags(Qt::FramelessWindowHint);//无边框
-//    setWindowOpacity(0.7);
     setWindowStyleSheet();
     ui->comboBox->setView(new QListView());
     voiceButtonState=true;
     FormInCenter();
     //连接前后两级页面
-    connect(ui->settingsButton,SIGNAL(clicked(bool)),this,SLOT(on_click_setttingsButton(bool)));
-    connect(ui->returnButton,SIGNAL(clicked(bool)),this,SLOT(on_click_returnButton(bool)));
+//    connect(ui->settingsButton,SIGNAL(clicked()),this,SLOT(on_settingsButton_clicked()));
+//    connect(ui->returnButton,SIGNAL(clicked()),this,SLOT(on_returnButton_clicked()));
     //设置音量和亮度调节
     //设置滚动条和显示数字联动
     //亮度的调节范围为0-20
@@ -111,16 +104,7 @@ void SetFirst::FormInCenter()
     QPoint movePoint(deskWidth / 2 - frmX / 2, deskHeight / 2 - frmY / 2);
     this->move(movePoint);
 }
-void SetFirst::on_click_setttingsButton(bool)
-{
-    setSecond_Desk=new Settings(this);
-    this->hide();
-    setSecond_Desk->showNormal();
-}
-void SetFirst::on_click_returnButton(bool)
-{
-    this->close();
-}
+
 //windows下可以显示选中的状态，linux下显示不出
 void SetFirst::on_slider_valuechanged(int n_value)
 {
@@ -279,4 +263,16 @@ void SetFirst::setWindowStyleSheet()
                                         "QSpinBox::down-button:pressed{subcontrol-position:left;image: url(:/icon/left_arrow.png);width: 32px;height: 32px;}"
                                         "QSpinBox{border: 1px solid rgb(100, 100, 100);text-align: center; border-radius: 4px;}");
 
+}
+
+void SetFirst::on_settingsButton_clicked()
+{
+    setSecond_Desk=new Settings(this);
+    this->hide();
+    setSecond_Desk->showNormal();
+}
+
+void SetFirst::on_returnButton_clicked()
+{
+    this->close();
 }

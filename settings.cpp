@@ -51,7 +51,7 @@ Settings::Settings(QWidget *parent) :
     ui->settingTab->insertTab(3,timesettings,tr("时间设置"));
     ui->settingTab->setCurrentIndex(0);
 
-    connect(ui->returnButton,SIGNAL(clicked(bool)),this,SLOT(on_click_returnButton(bool)));
+    connect(ui->returnButton,SIGNAL(clicked()),this,SLOT(on_returnButton_clicked()));
 
     connect(previews,SIGNAL(hideSettings()),this,SLOT(on_hideSettings()));
     connect(adass,SIGNAL(hideSettings()),this,SLOT(on_hideSettings()));
@@ -87,7 +87,9 @@ void Settings::on_unhideSettings()
 {
     this->setHidden(false);
 }
-void Settings::on_click_returnButton(bool)
+
+
+void Settings::on_returnButton_clicked()
 {
     this->close();
     //恢复显示setFirst页面

@@ -49,26 +49,6 @@
       <height>565</height>
      </rect>
     </property>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>450</y>
-       <width>691</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 10pt &quot;Arial&quot;;
-font: 75 9pt &quot;Aharoni&quot;;</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
    </widget>
   </widget>
   <widget class="QWidget" name="titlewidget" native="true">
@@ -805,6 +785,16 @@ QSlider::handle:horizontal:hover {
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QWidget" name="widget_2" native="true">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>450</y>
+     <width>721</width>
+     <height>71</height>
+    </rect>
+   </property>
   </widget>
  </widget>
  <resources/>

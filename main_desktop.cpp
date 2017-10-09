@@ -340,6 +340,10 @@ int main_desktop::startAllCameraWithPreview(int camera_no /* nouse now*/)
 main_desktop::~main_desktop()
 {
     delete ui;
+    delete setting_desktop;
+    delete dashboards;
+    delete moviedesk;
+    delete reverseLinewidget;
     #if defined(Q_OS_LINUX)
     //delete dvr;
     pdvr->enc_de_init();

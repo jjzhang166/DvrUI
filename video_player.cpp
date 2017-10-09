@@ -7,103 +7,91 @@
 #include <QFontDatabase>
 #include <QPushButton>
 #include <QDesktopWidget>
+#include <QPalette>
 Video_Player* pStaticVideoPlayer=NULL;
 #if defined(Q_OS_LINUX)
-int Video_Player::autCb_func(int32_t msgType, void *user,void*data,int len)
+#define AUDIO_PCM_OUTPUT 128
+#if  1
+int autCb_func(int32_t msgType, void *user,void* data,int len)
 {
-    #if 1
+#if defined(Q_OS_LINUX)
     SubtitleItem* pItem = (SubtitleItem*)data;
-    printf("autCb_func, text=%s\n",pItem->pText);
-    #else
-    unsigned int  nSubtitleId = (unsigned int)((uintptr_t*)data)[0];
-    uintptr_t pItem = (uintptr_t)((uintptr_t*)data)[1];
-    printf("autCb_func nSubtitleId=%d pItem=%x,%s\n",nSubtitleId,pItem,((SubtitleItem*)pItem)->pText);
-    #endif
-    #if 1
-    if(pItem == NULL)
-    {
-        logw("error pItem == NULL");
-        return -1;
-    }
-    //printf("autCb_func nSubtitleId=%d, pText=%s\n",nSubtitleId,pItem->pText);
-
-    //    printf("nRefVideoW=%d,nRefVideoH=%d\neAlignment=%d,nMarginL=%d,nMarginR=%d,nMarginV=%d\nnStartX=%d,nStartY=%d,nEndX=%d,nEndY=%d\n",
-    //        pItem->nReferenceVideoWidth,pItem->nReferenceVideoHeight,
-    //        pItem->eAlignment,pItem->nMarginL,pItem->nMarginR,pItem->nMarginV,
-    //        pItem->nStartX,pItem->nStartY,pItem->nEndX,pItem->nEndY);
-
-    //    printf("FontSize=%d,Bold=%d,bItalic=%d,bUnderlined=%d,nPrimaryColor=%d,nSecondaryColor=%d\n",
-    //            pItem->nFontSize, pItem->bBold,pItem->bItalic,pItem->bUnderlined,pItem->nPrimaryColor,pItem->nSecondaryColor);
-
-    printf("bText=%s,pTest=%s,nTextLength=%d\neTextFormat=%d w=%d h=%d",
-        (pItem->bText==0)? "bitmap":"text",pItem->pText,pItem->nTextLength,
-        pItem->eTextFormat,pItem->nBitmapWidth,pItem->nBitmapHeight);
     switch(msgType)
+    {
+        case AUDIO_PCM_OUTPUT:
+            break;
+
+        case SUBCTRL_SUBTITLE_AVAILABLE:
         {
-            case AUDIO_PCM_OUTPUT:
-                printf("AUDIO_PCM_OUTPUT\n");
-                //		if(NULL == fpw){
-                //			printf("fopen %s error\n",OUTPUT);
-                //			return -1;
-                //		}else{
-                //			fwrite((void *)data, 1,len, fpw);
-                            //fclose(fpw);
-                //			printf("fwrite pcm(%d) finish\n",++pcm_cnt);
-                //		}
-                 break;
-            case SUBCTRL_SUBTITLE_AVAILABLE:
+            printf("subtitle show,text=%s\n",pItem->pText);
+            if(pItem == NULL)
             {
-                printf("---------------subtitle available.\n");
-
-                if(pItem->bText==0){
-                    qDebug()<<"now is bitmap subtitle";
-                    pstaticAutplayer->subtitle_label->setHidden(false);
-                    QSize subtitle_size=QSize(pItem->nBitmapWidth,pItem->nBitmapHeight);
-                    QBitmap bitmap=QBitmap::fromData(subtitle_size,(uchar*)pItem->pBitmapData);
-                    pstaticAutplayer->subtitle_label->setPixmap(bitmap);
-                }else{
-                    qDebug()<<"now is text subtitle";
-                    if(pItem->pText!=NULL){
-                        pstaticAutplayer->subtitle_label->setHidden(false);
-                        pstaticAutplayer->subtitle_label->setText(pItem->pText);
-                    }
+                logw("error pItem == NULL");
+                return -1;
+            }
+            if(pItem->bText!=0)
+            {
+                if(pItem->pText!=NULL){
+                    QString str=QString(pItem->pText);
+                    pStaticVideoPlayer->subtitle_label->setVisible(true);
+                    printf("-----now is text subtitle--------\n");
+                    qDebug()<<"the subtitle is: "<<str;
+                    pStaticVideoPlayer->subtitle_label->setText(str);
+                    qDebug()<<"subtitle show done";
                 }
-                break;
+            }else{
+                printf("-----now is bitmap subtitle--------\n");
+                pStaticVideoPlayer->subtitle_label->setVisible(true);
+                int w,h;
+                w=pItem->nBitmapWidth;
+                h=pItem->nBitmapHeight;
+                QImage* img=new QImage((const uchar*)pItem->pBitmapData,w,h,QImage::Format_RGBA8888);
+                QImage imgScaled=img->scaled(pStaticVideoPlayer->subtitle_label->width(),pStaticVideoPlayer->subtitle_label->height(),Qt::KeepAspectRatio);
+                QPixmap pix=QPixmap();
+                pix.convertFromImage(imgScaled);
+                pStaticVideoPlayer->subtitle_label->setPixmap(pix);
             }
-            case SUBCTRL_SUBTITLE_EXPIRED:
-            {
-                printf("-----------subtitle expired\n");
-                if(pItem->bText==0){
-                    qDebug()<<"now is bitmap subtitle";
-                    pstaticAutplayer->subtitle_label->setHidden(true);
-                }else{
-                    qDebug()<<"now is text subtitle";
-                    if(pItem->pText!=NULL){
-                        pstaticAutplayer->subtitle_label->setHidden(true);
-                        pstaticAutplayer->subtitle_label->setText("");
-                    }
-                }
-
-                break;
-            }
-            case AWPLAYER_MEDIA_PREPARED:
-            case AWPLAYER_MEDIA_PLAYBACK_COMPLETE:
-            case AWPLAYER_MEDIA_SEEK_COMPLETE:
-            case AWPLAYER_MEDIA_LOG_RECORDER:
-            case AWPLAYER_MEDIA_BUFFERING_UPDATE:
-            case AWPLAYER_MEDIA_ERROR:
-            case AWPLAYER_MEDIA_INFO:
-            case AWPLAYER_MEDIA_SET_VIDEO_SIZE:
-                break;
-            default:
-            {
-                printf("message 0x%x not handled.\n", msgType);
-                break;
-            }
+            break;
         }
-    #endif
+        case SUBCTRL_SUBTITLE_EXPIRED:
+        {
+            printf("subtitle disable\n");
+            if(pItem == NULL)
+            {
+                printf("error: pItem == NULL");
+                return -1;
+            }
+            if(pItem->bText!=0)
+            {
+                printf("-----now is text subtitle--------\n");
+                pStaticVideoPlayer->subtitle_label->setVisible(true);
+                pStaticVideoPlayer->subtitle_label->setText(" ");
+
+            }else{
+                printf("-----now is bitmap subtitle--------\n");
+                pStaticVideoPlayer->subtitle_label->setVisible(false);
+            }
+            break;
+        }
+        case AWPLAYER_MEDIA_PREPARED:
+        case AWPLAYER_MEDIA_PLAYBACK_COMPLETE:
+        case AWPLAYER_MEDIA_SEEK_COMPLETE:
+        case AWPLAYER_MEDIA_LOG_RECORDER:
+        case AWPLAYER_MEDIA_BUFFERING_UPDATE:
+        case AWPLAYER_MEDIA_ERROR:
+        case AWPLAYER_MEDIA_INFO:
+        case AWPLAYER_MEDIA_SET_VIDEO_SIZE:
+            break;
+        default:
+        {
+            //logw("message 0x%x not handled.", messageId);
+            break;
+        }
+    }
+#endif
     return 0;
 }
+#endif
 #endif
 const QString win_path="E:/tech_practise/DvrUI/DvrUI/video/";
 const QString linux_path="/mnt/sdcard/mmcblk1p1/frontVideo/";
@@ -140,6 +128,14 @@ Video_Player::Video_Player(QWidget *parent) :
     connect(mouseMoveTime,SIGNAL(timeout()),this,SLOT(on_timeout_mouserMoveTime()));
     mouseMoveTime->start(3000);
     pStaticVideoPlayer=this;
+    subtitle_label=new QLabel();
+    subtitle_label->resize(QSize(801,61));
+    subtitle_label->setAlignment(Qt::AlignCenter);
+    QPalette pe;
+    pe.setColor(QPalette::WindowText,Qt::white);
+    subtitle_label->setPalette(pe);
+    subtitle_label->setParent(ui->widget_2);
+
 #if defined(Q_OS_LINUX)
     dir.setPath(linux_path);
     file_list=GetFileList(dir);
@@ -164,10 +160,6 @@ Video_Player::Video_Player(QWidget *parent) :
           this->duration=linux_duration;
           qDebug()<<"total time is"<<duration;
           ui->label->setText(QString(tr("now play:"))+file_name);
-          ui->label_2->setText(QString(tr("sutitle is now show here")));
-          QPalette pe;
-          pe.setColor(QPalette::WindowText,Qt::white);
-          ui->label_2->setPalette(pe);
           connect(ui->voiceSlider,SIGNAL(valueChanged(int)),this,SLOT(setVolume(int)));
           connect(ui->progressSlider,SIGNAL(sliderMoved(int)),this,SLOT(seek(int)));
           //每10ms钟获取当前的播放位置，并更新slider和label
@@ -205,16 +197,6 @@ Video_Player::Video_Player(QWidget *parent) :
     connect(this,SIGNAL(main_desktop_visible()),pStaticMaindesktop,SLOT(on_main_desktop_visible()));
 }
 
-
-  int Video_Player::end(int32_t msgType, void *user) //结束MPlayer
-  {
-    Video_Player *p = (Video_Player*)user;
-//    if (msgType == NOTIFY_PLAYBACK_COMPLETE)
-    {
-      printf("call end \r\n");
-      //p->setStyleSheet(QStringLiteral("background-color: rgb(112, 200, 11);"));
-    }
-  }
 
   //设置窗口为透明的，重载了paintEvent
 void Video_Player::paintEvent(QPaintEvent *event)
