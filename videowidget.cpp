@@ -7,7 +7,8 @@ extern main_desktop* pStaticMaindesktop;
 QString which_filename_to_play;
 int which_video_show_play;
 const QString win_path="E:/tech_practise/DvrUI/DvrUI/video/";
-const QString linux_path="/mnt/sdcard/mmcblk1p1/frontVideo/";
+//const QString linux_path="/mnt/sdcard/mmcblk1p1/frontVideo/";//sdcard
+const QString linux_path="/mnt/usb/sda4/";//U盘
 videoWidget::videoWidget(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::videoWidget)
@@ -16,10 +17,11 @@ videoWidget::videoWidget(QWidget *parent) :
 //    ui->listWidget_file=new QListWidget(this);
     show_model=true;//true为显示icon模式，false为显示list模式
     ui->listWidget_file->clear();
+
     #if defined(Q_OS_LINUX)
-        m_DirIterator=new QDirIterator(linux_path,QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
+        m_DirIterator=new QDirIterator(linux_path,QDir::Files,QDirIterator::Subdirectories);
     #else
-        m_DirIterator=new QDirIterator(win_path,QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
+        m_DirIterator=new QDirIterator(win_path,QDir::Files,QDirIterator::Subdirectories);
     #endif
     ui->listWidget_file->setObjectName(QString::fromUtf8("listWidget_file"));
 //    ui->listWidget_file->setGeometry(QRect(0,0,0,0));

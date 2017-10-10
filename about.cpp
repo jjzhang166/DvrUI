@@ -13,19 +13,19 @@ About::About(QWidget *parent) :
     ui->ROM_usage->setRange(0,100);
     connect(ui->formatButton,SIGNAL(clicked(bool)),this,SLOT(on_formatButton_clicked()),Qt::UniqueConnection);
 #if defined(Q_OS_LINUX)
-    QProcess process;
-    QString cmd=QString("df /mnt/sdcard/mmcblk1p1 | grep %1").arg(QString("/dev/mmcblk1p1"));
-    process.start(cmd);
-    process.waitForFinished();
-    QByteArray output = process.readAllStandardOutput();
-    QString str_output = output;
-    str_output=str_output.simplified();
-    QStringList list=str_output.split(' ');
-    qDebug()<<str_output<<"\n"<<"usage of sdcard"<<list[11];
-    QString t=list[11];
-    t=t.left(t.length()-1);
-    test=t.toInt();
-    qDebug()<<test;
+//    QProcess process;
+//    QString cmd=QString("df /mnt/sdcard/mmcblk1p1 | grep %1").arg(QString("/dev/mmcblk1p1"));
+//    process.start(cmd);
+//    process.waitForFinished();
+//    QByteArray output = process.readAllStandardOutput();
+//    QString str_output = output;
+//    str_output=str_output.simplified();
+//    QStringList list=str_output.split(' ');
+//    qDebug()<<str_output<<"\n"<<"usage of sdcard"<<list[11];
+//    QString t=list[11];
+//    t=t.left(t.length()-1);
+//    test=t.toInt();
+//    qDebug()<<test;
 
 #else
     #if 0
@@ -53,8 +53,8 @@ void About::on_formatButton_clicked()
     mesg->SetMessage(QString(tr("确定格式化？")), 1);
     if(1==mesg->exec()){
     #if defined(Q_OS_LINUX)
-        pfat=new Fat();
-        pfat->format(PATH_SD_DEV, PATH_SDCARD);
+//        pfat=new Fat();
+//        pfat->format(PATH_SD_DEV, PATH_SDCARD);
     #else
         qDebug()<<"格式化";
     #endif

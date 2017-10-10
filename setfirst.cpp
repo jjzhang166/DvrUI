@@ -19,7 +19,7 @@ SetFirst::SetFirst(QWidget *parent) :
 
     setWindowStyleSheet();
     ui->comboBox->setView(new QListView());
-    voiceButtonState=true;
+    voiceButtonState=false;
     FormInCenter();
     //连接前后两级页面
 //    connect(ui->settingsButton,SIGNAL(clicked()),this,SLOT(on_settingsButton_clicked()));
@@ -30,7 +30,7 @@ SetFirst::SetFirst(QWidget *parent) :
     //声音的调节范围为0-100
 #if defined(Q_OS_LINUX)
     lcd_blk_ctrl_init();
-    qDebug()<<"--------------------begin light change";
+//    qDebug()<<"--------------------begin light change";
 //    lcd_blk_ctrl(13);
 //    sleep(5);
 //    lcd_blk_ctrl(17);
@@ -42,9 +42,9 @@ SetFirst::SetFirst(QWidget *parent) :
 //    lcd_blk_ctrl(5);
 //    sleep(5);
 //    lcd_blk_ctrl(0);
-    qDebug()<<"----------------------end light change";
+//    qDebug()<<"----------------------end light change";
 #endif
-    ui->voiceSlider->setRange(0,100);
+    ui->voiceSlider->setRange(0,200);
     ui->lightSlider->setRange(0,20);
     connect(ui->voiceSlider,SIGNAL(valueChanged(int)),this,SLOT(on_slider_valuechanged(int)));
     connect(ui->lightSlider,SIGNAL(valueChanged(int)),this,SLOT(on_slider_valuechanged(int)));
@@ -92,6 +92,7 @@ SetFirst::SetFirst(QWidget *parent) :
 SetFirst::~SetFirst()
 {
     delete ui;
+    delete setSecond_Desk;
 }
 //窗体居中显示
 void SetFirst::FormInCenter()
@@ -212,7 +213,7 @@ void SetFirst::on_voiceButton_clicked()
     else{
         qDebug()<<"不是静音";
         ui->voiceButton->setStyleSheet("QPushButton{border-image:url(:/icon/sound.png)};");
-        ui->voiceSlider->setValue(30);
+        ui->voiceSlider->setValue(100);
         ui->voiceSlider->setEnabled(true);
         voiceButtonState=false;
     }
@@ -267,7 +268,8 @@ void SetFirst::setWindowStyleSheet()
 
 void SetFirst::on_settingsButton_clicked()
 {
-    setSecond_Desk=new Settings(this);
+    if(setSecond_Desk==NULL)
+        setSecond_Desk=new Settings(this);
     this->hide();
     setSecond_Desk->showNormal();
 }

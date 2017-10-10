@@ -18,9 +18,9 @@
 #include "dashboard.h"
 #include "moviedesk.h"
 #include "reverselinewidget.h"
+//#define os_test Q_OS_LINUX
 
-
-#if defined(Q_OS_LINUX)//行车记录模块视频显示
+#if defined(os_test)//行车记录模块视频显示
 #define PATH_SDCARD  "/mnt/sdcard/mmcblk1p1/"
 #define PATH_SD_DEV  "/dev/mmcblk1p1"
 #define HAVA_TWO_CAMERA 1  //While move to cfg
@@ -177,7 +177,7 @@ public:
         startAllCameraWithPreview(0);
     }
 
-    #if defined(Q_OS_LINUX)
+    #if defined(os_test)
     Mutex                           mObjectLock;
     #endif
     void startRecord();

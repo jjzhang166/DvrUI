@@ -49,6 +49,8 @@
       <height>565</height>
      </rect>
     </property>
+    <zorder>widget_2</zorder>
+    <zorder>widget_2</zorder>
    </widget>
   </widget>
   <widget class="QWidget" name="titlewidget" native="true">
@@ -331,6 +333,18 @@ QPushButton:hover{
     </size>
    </property>
    <layout class="QGridLayout" name="gridLayout">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetDefaultConstraint</enum>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="horizontalSpacing">
+     <number>0</number>
+    </property>
     <item row="0" column="0">
      <widget class="QPushButton" name="preMovieButton">
       <property name="minimumSize">
@@ -686,11 +700,19 @@ QSlider::handle:horizontal:hover {
         <height>51</height>
        </size>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="styleSheet">
        <string notr="true">color:rgb(255, 255, 255)</string>
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </item>
@@ -789,11 +811,16 @@ QSlider::handle:horizontal:hover {
   <widget class="QWidget" name="widget_2" native="true">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>450</y>
-     <width>721</width>
-     <height>71</height>
+     <x>10</x>
+     <y>467</y>
+     <width>1001</width>
+     <height>61</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
    </property>
   </widget>
  </widget>

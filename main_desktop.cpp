@@ -5,7 +5,7 @@
 #include "videowidget.h"
 #include "reverseline_setting.h"
 
-#if defined(Q_OS_LINUX)
+#if defined(os_test)
 dvr_factory* pdvr;
 dvr_factory* pdvr1;
 #endif
@@ -22,7 +22,7 @@ int open_reverseLine_front,open_reverseLine_rear;
 int open_adas_front,open_adas_rear;
 main_desktop* pStaticMaindesktop=NULL;
 extern ReverseLine_Setting *pStatic_reverseLine;
-#if defined(Q_OS_LINUX)
+#if defined(os_test)
 using namespace android;
 void usernotifyCallback(int32_t msgType, int32_t ext1, int32_t ext2, void* user){
     LOGE("msgType =%d-----data=%p-----%d)",msgType,user);
@@ -165,7 +165,7 @@ main_desktop::main_desktop(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::main_desktop)
 {
-#if defined(Q_OS_LINUX)
+#if defined(os_test)
 
     HwDisplay* mcd=NULL;
     int i;
@@ -269,7 +269,7 @@ main_desktop::main_desktop(QWidget *parent) :
     mouseMoveTime->start(3000);
 
 //    setProperty("noinput",true);
-#if !defined(Q_OS_LINUX)
+#if !defined(os_test)
     open_reverseLine_front=1;
 #endif
     reverseLinewidget=new reverseLineWidget();
@@ -296,7 +296,7 @@ void main_desktop::paintEvent(QPaintEvent *event)
 
 void main_desktop::startRecord()
 {
-#if defined(Q_OS_LINUX)
+#if defined(os_test)
     printf("startRecord--------------\r\n");
     Mutex::Autolock locker(&mObjectLock);
     char bufname[512];
@@ -325,7 +325,7 @@ int main_desktop::startAllCameraWithPreview(int camera_no /* nouse now*/)
 //    printf("startAllCameraWithPreview play %p\r\n",this);
     camera_no=camera_no;
 
-#if defined(Q_OS_LINUX)
+#if defined(os_test)
    startRecord();
    printf("startAllCameraWithPreview play %d\r\n",cur_camera);
    startA=0;startB=150;widthA=1024;heightA=300;
@@ -344,7 +344,7 @@ main_desktop::~main_desktop()
     delete dashboards;
     delete moviedesk;
     delete reverseLinewidget;
-    #if defined(Q_OS_LINUX)
+    #if defined(os_test)
     //delete dvr;
     pdvr->enc_de_init();
     F_LOG;
@@ -400,7 +400,7 @@ void main_desktop::on_main_desktop_disvisible()
 {
     qDebug()<<"main_desktop will hidden";
     this->setHidden(true);
-    #if defined(Q_OS_LINUX)
+    #if defined(os_test)
         pdvr->stopPriview();
         pdvr1->stopPriview();
     #endif
@@ -409,7 +409,7 @@ void main_desktop::on_main_desktop_visible()
 {
     this->setHidden(false);
     this->moviedesk->activateWindow();
-    #if defined(Q_OS_LINUX)
+    #if defined(os_test)
         struct view_info vv= {0,0,1024,600};
         pdvr->startPriview(vv);
         pdvr1->startPriview(vv);
@@ -422,7 +422,7 @@ void main_desktop::on_cameraButton_clicked()
     if(cameraState)
     {
         qDebug()<<"当前为前摄像头";
-    #if defined(Q_OS_LINUX)
+    #if defined(os_test)
         printf("----------------------front camera take pic\n");
         Mutex::Autolock locker(&mObjectLock);
         status_t rt=pdvr->takePicture();
@@ -442,7 +442,7 @@ void main_desktop::on_cameraButton_clicked()
     #endif
     }else{
         qDebug()<<"当前为后摄像头";
-    #if defined(Q_OS_LINUX)
+    #if defined(os_test)
         printf("----------------------rear camera take pic\n");
         Mutex::Autolock locker(&mObjectLock);
         status_t rt=pdvr1->takePicture();
@@ -459,7 +459,7 @@ void main_desktop::on_cameraButton_clicked()
         }
     #endif
     }
-#if !defined(Q_OS_LINUX)
+#if !defined(os_test)
 //在windows下为截图功能
 //    screenshot_pic=QScreen::grabWindow(this,0,0,600,200);
     setButtonDisvisible();
@@ -522,7 +522,7 @@ void main_desktop::on_recordButton_clicked()
     if(cameraState)
     {
         qDebug()<<"当前为前摄像头";
-    #if defined(Q_OS_LINUX)
+    #if defined(os_test)
         printf("----------------------front camera start recording\n");
         int retrec=pdvr->startRecord();
 
@@ -545,7 +545,7 @@ void main_desktop::on_recordButton_clicked()
     #endif
     }else{
         qDebug()<<"当前为后摄像头";
-    #if defined(Q_OS_LINUX)
+    #if defined(os_test)
         printf("----------------------rear camera start recording\n");
         int retrec=pdvr1->startRecord();
         if(retrec<0){
@@ -569,7 +569,7 @@ void main_desktop::on_recordButton_clicked()
         }
     #endif
     }
-#if !defined(Q_OS_LINUX)
+#if !defined(os_test)
     //在windows下
 //     QMessageBox::information(this,tr("提示"),tr("start recording！"),QMessageBox::Yes);
     frmMessageBox *msg=new frmMessageBox;
@@ -621,7 +621,7 @@ void main_desktop::on_camera_change_Button_clicked()
     if(!cameraState)
     {
         qDebug()<<"按下1";
-    #if defined(Q_OS_LINUX)
+    #if defined(os_test)
         struct view_info vv= {0,0,1024,600};
         pdvr1->stopPriview();
         pdvr->startPriview(vv);
@@ -633,7 +633,7 @@ void main_desktop::on_camera_change_Button_clicked()
     else
     {
         qDebug()<<"按下2";
-    #if defined(Q_OS_LINUX)
+    #if defined(os_test)
         struct view_info vv= {0,0,1024,600};
 
         pdvr->stopPriview();
@@ -648,7 +648,8 @@ void main_desktop::on_camera_change_Button_clicked()
 
 void main_desktop::on_compassButton_clicked()
 {
-    dashboards=new dashBoard(this);//this的目的是将两级窗口设置为父子窗口
+    if(dashboards==NULL)
+        dashboards=new dashBoard(this);//this的目的是将两级窗口设置为父子窗口
     QPalette pal(dashboards->palette());
     pal.setColor(QPalette::Background, Qt::black); //设置背景黑色
 
@@ -660,7 +661,8 @@ void main_desktop::on_compassButton_clicked()
 //打开设置界面
 void main_desktop::on_setFirstButton_clicked()
 {
-    setting_desktop=new SetFirst(this);
+    if(setting_desktop==NULL)
+        setting_desktop=new SetFirst(this);
 //    connect(setting_desktop,SIGNAL(send_data_to_main(results)),this,SLOT(recieve_setting_data(results)));
     setting_desktop->exec();
 }
@@ -668,10 +670,9 @@ void main_desktop::on_setFirstButton_clicked()
 void main_desktop::on_movieButton_clicked()
 {
     qDebug()<<"open movie";
-
-    moviedesk=new movieDesk();
+    if(moviedesk==NULL)
+        moviedesk=new movieDesk();
     moviedesk->exec();
-
 }
 void main_desktop::on_reverseLine_repaint()
 {

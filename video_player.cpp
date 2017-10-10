@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QDesktopWidget>
 #include <QPalette>
+#define SEEKTO 1
 Video_Player* pStaticVideoPlayer=NULL;
 #if defined(Q_OS_LINUX)
 #define AUDIO_PCM_OUTPUT 128
@@ -34,6 +35,8 @@ int autCb_func(int32_t msgType, void *user,void* data,int len)
                 if(pItem->pText!=NULL){
                     QString str=QString(pItem->pText);
                     pStaticVideoPlayer->subtitle_label->setVisible(true);
+                    pStaticVideoPlayer->subtitle_label->setAlignment(Qt::AlignCenter);
+//                    pStaticVideoPlayer->subtitle_label->resize(QSize(1024,61));
                     printf("-----now is text subtitle--------\n");
                     qDebug()<<"the subtitle is: "<<str;
                     pStaticVideoPlayer->subtitle_label->setText(str);
@@ -42,6 +45,7 @@ int autCb_func(int32_t msgType, void *user,void* data,int len)
             }else{
                 printf("-----now is bitmap subtitle--------\n");
                 pStaticVideoPlayer->subtitle_label->setVisible(true);
+                pStaticVideoPlayer->subtitle_label->setAlignment(Qt::AlignCenter);
                 int w,h;
                 w=pItem->nBitmapWidth;
                 h=pItem->nBitmapHeight;
@@ -66,7 +70,6 @@ int autCb_func(int32_t msgType, void *user,void* data,int len)
                 printf("-----now is text subtitle--------\n");
                 pStaticVideoPlayer->subtitle_label->setVisible(true);
                 pStaticVideoPlayer->subtitle_label->setText(" ");
-
             }else{
                 printf("-----now is bitmap subtitle--------\n");
                 pStaticVideoPlayer->subtitle_label->setVisible(false);
@@ -94,7 +97,8 @@ int autCb_func(int32_t msgType, void *user,void* data,int len)
 #endif
 #endif
 const QString win_path="E:/tech_practise/DvrUI/DvrUI/video/";
-const QString linux_path="/mnt/sdcard/mmcblk1p1/frontVideo/";
+//const QString linux_path="/mnt/sdcard/mmcblk1p1/frontVideo/";//sdcard
+const QString linux_path="/mnt/usb/sda4/";//upan
 extern QString which_filename_to_play;
 extern int which_video_show_play;
 extern main_desktop* pStaticMaindesktop;
@@ -123,18 +127,24 @@ Video_Player::Video_Player(QWidget *parent) :
 
     //一段时间没有操作后自动隐藏图标
     ui->widget->setVisible(true);
+    ui->widget_2->move(10,467);
+    ui->widget_2->setGeometry(10,467,1024,60);
     setMouseTracking(true);
     mouseMoveTime = new QTimer();
     connect(mouseMoveTime,SIGNAL(timeout()),this,SLOT(on_timeout_mouserMoveTime()));
     mouseMoveTime->start(3000);
     pStaticVideoPlayer=this;
     subtitle_label=new QLabel();
-    subtitle_label->resize(QSize(801,61));
+    subtitle_label->resize(QSize(600,60));
     subtitle_label->setAlignment(Qt::AlignCenter);
     QPalette pe;
     pe.setColor(QPalette::WindowText,Qt::white);
     subtitle_label->setPalette(pe);
     subtitle_label->setParent(ui->widget_2);
+    subtitle_label->move((ui->widget_2->width()-subtitle_label->width())/2,(ui->widget_2->height()-subtitle_label->height())/2);
+
+    ui->fastBackButton->setAutoRepeat(true);
+    ui->fastFrontButton->setAutoRepeat(true);
 
 #if defined(Q_OS_LINUX)
     dir.setPath(linux_path);
@@ -195,6 +205,9 @@ Video_Player::Video_Player(QWidget *parent) :
 #endif
     qDebug()<<"退出循环";
     connect(this,SIGNAL(main_desktop_visible()),pStaticMaindesktop,SLOT(on_main_desktop_visible()));
+    ui->voiceSlider->setRange(0,200);
+    ui->voiceSlider->setValue(100);
+
 }
 
 
@@ -216,8 +229,12 @@ Video_Player::~Video_Player()
 
 void Video_Player::setVolume(int n_value)
 {
-    QString cmd="tinymix 1 "+ QString::number(n_value,10);
+#if defined(Q_OS_LINUX)
+    qDebug()<<"player ready to change the voice";
+    //目前设置的是headphone的音量，
+    QString cmd="tinymix 2 "+ QString::number(n_value,10);
     system((char*)cmd.toStdString().c_str());
+#endif
 }
 void Video_Player::timerUpdate()
 {
@@ -361,7 +378,7 @@ void Video_Player::on_muteButton_clicked()
     }else{
         qDebug()<<"now is muted";
         player->setMuted(false);
-        ui->voiceSlider->setValue(50);
+        ui->voiceSlider->setValue(100);
         ui->muteButton->setIcon(QIcon(":/icon/voice.png"));
         isMuted=false;
     }
@@ -515,14 +532,23 @@ void Video_Player::on_preMovieButton_clicked()
 void Video_Player::on_fastBackButton_clicked()
 {
 #if defined(Q_OS_LINUX)
-    //seekto 实现快退
+    mouseMoveTime->stop();
     timer->stop();
     int currentTime=ap->getCurrentPosition()/1000;
+#if defined(SEEKTO)
+    //seekto 实现快退
     currentTime-=interval;
     ap->seekto(currentTime);
+#else
+    ap->setSpeed(-10000);
+//    sleep(0.1);
+//    currentTime-=10;
+//    ap->setSpeed(1);
+#endif
     ui->progressSlider->setValue(currentTime);
     updateDurationInfo(currentTime);
     timer->start(100);
+    mouseMoveTime->start(3000);
 #else
     int currentValue=ui->progressSlider->value();
     currentValue-=interval;
@@ -539,14 +565,23 @@ void Video_Player::on_fastBackButton_clicked()
 void Video_Player::on_fastFrontButton_clicked()
 {
 #if defined(Q_OS_LINUX)
-    //seekto 实现快进
+    mouseMoveTime->stop();
     timer->stop();
-     int currentTime=ap->getCurrentPosition()/1000;
+    int currentTime=ap->getCurrentPosition()/1000;
+    //seekto 实现快进
+#if defined(SEEKTO)
      currentTime+=interval;
      ap->seekto(currentTime);
+#else
+    ap->setSpeed(10000);
+//    sleep(0.1);
+//    currentTime+=10;
+//    ap->setSpeed(1);
+#endif
      ui->progressSlider->setValue(currentTime);
      updateDurationInfo(currentTime);
      timer->start(100);
+     mouseMoveTime->start(3000);
 #else
     int currentValue=ui->progressSlider->value();
     currentValue+=interval;
@@ -645,8 +680,12 @@ void Video_Player::on_mouse_active()
     mouseMoveTime->start();
 
     ui->widget->setVisible(true);
+    ui->widget_2->move(10,467);
 }
 void Video_Player::on_timeout_mouserMoveTime()
 {
     ui->widget->setVisible(false);
+    ui->widget_2->move(10,529);
 }
+
+
