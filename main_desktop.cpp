@@ -185,7 +185,7 @@ main_desktop::main_desktop(QWidget *parent) :
         };
         printf("--------------------------------NetlinkManager done\n");
     #endif
-    pgEmulatedCameraFactory=new HALCameraFactory();
+    pgEmulatedCameraFactory=new HALCameraFactory();//实例化cameraHardware和v4l2cameradevice
     pdvr=new dvr_factory();
     pdvr1=new dvr_factory();
     #ifdef AUDIO_TEST //defined
@@ -230,6 +230,7 @@ main_desktop::main_desktop(QWidget *parent) :
     printf("------------------------------------camera initial done\n");
 #endif
     ui->setupUi(this);
+    pStaticMaindesktop=this;
     FormInCenter();
     setAttribute(Qt::WA_TranslucentBackground, true);
     //设置窗口为固定大小
@@ -280,9 +281,10 @@ main_desktop::main_desktop(QWidget *parent) :
 
     printf("main_desktop----------%p----\r\n",this);
     printf("-------------------------------------construction function done\n");
+    setting_desktop=new SetFirst(this);
+    moviedesk=new movieDesk(this);
+    dashboards=new dashBoard(this);
 
-
-    pStaticMaindesktop=this;
 
 //    connect(pStatic_reverseLine,SIGNAL(reverseLine_repaint()),this,SLOT(on_reverseLine_repaint()));
 
@@ -647,9 +649,7 @@ void main_desktop::on_camera_change_Button_clicked()
 //打开dashborad界面
 
 void main_desktop::on_compassButton_clicked()
-{
-    if(dashboards==NULL)
-        dashboards=new dashBoard(this);//this的目的是将两级窗口设置为父子窗口
+{   
     QPalette pal(dashboards->palette());
     pal.setColor(QPalette::Background, Qt::black); //设置背景黑色
 
@@ -661,20 +661,20 @@ void main_desktop::on_compassButton_clicked()
 //打开设置界面
 void main_desktop::on_setFirstButton_clicked()
 {
-    if(setting_desktop==NULL)
-        setting_desktop=new SetFirst(this);
-//    connect(setting_desktop,SIGNAL(send_data_to_main(results)),this,SLOT(recieve_setting_data(results)));
     setting_desktop->exec();
 }
 //打开图片视频预览界面
 void main_desktop::on_movieButton_clicked()
 {
     qDebug()<<"open movie";
-    if(moviedesk==NULL)
-        moviedesk=new movieDesk();
-    moviedesk->exec();
+    moviedesk->show();
 }
 void main_desktop::on_reverseLine_repaint()
 {
     reverseLinewidget->update();
+}
+
+void main_desktop::on_pushButton_clicked()
+{
+
 }

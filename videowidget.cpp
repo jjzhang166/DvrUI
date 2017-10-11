@@ -153,15 +153,9 @@ void videoWidget::play_video(QModelIndex pos)
     which_filename_to_play=item->text();
     which_video_show_play=pos.row();
     video_players=new Video_Player(this);
-//    this->hide();
     emit hide_moviedesktop();
     connect(video_players,SIGNAL(p_unhide_moviedesktop()),this,SLOT(deal_picture_views_signal()));
     video_players->showNormal();
-//        player_video=new Player_Video();
-//    const QRect availableGeometry = QApplication::desktop()->availableGeometry(player_video);
-//    player_video->resize(availableGeometry.width() / 6, availableGeometry.height() / 4);
-//    player_video->exec();
-
     emit main_desktop_disvisible();
 }
 void videoWidget::deal_picture_views_signal()

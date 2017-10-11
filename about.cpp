@@ -5,27 +5,65 @@
 #include <QProcess>
 #include <QByteArray>
 #include "frmmessagebox.h"
+#if defined(Q_OS_LINUX)
+int is_dir_exist(const char *dir_path)
+{
+    if(dir_path==NULL)
+        return -1;
+    if(opendir(dir_path)==NULL)
+        return -1;
+    return 0;
+}
+#endif
 About::About(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::About)
 {
+    qDebug()<<"--------------here1";
     ui->setupUi(this);
     ui->ROM_usage->setRange(0,100);
-    connect(ui->formatButton,SIGNAL(clicked(bool)),this,SLOT(on_formatButton_clicked()),Qt::UniqueConnection);
+    connect(ui->formatButton,SIGNAL(clicked()),this,SLOT(on_formatButton_clicked()),Qt::UniqueConnection);
 #if defined(Q_OS_LINUX)
-//    QProcess process;
-//    QString cmd=QString("df /mnt/sdcard/mmcblk1p1 | grep %1").arg(QString("/dev/mmcblk1p1"));
-//    process.start(cmd);
-//    process.waitForFinished();
-//    QByteArray output = process.readAllStandardOutput();
-//    QString str_output = output;
-//    str_output=str_output.simplified();
-//    QStringList list=str_output.split(' ');
-//    qDebug()<<str_output<<"\n"<<"usage of sdcard"<<list[11];
-//    QString t=list[11];
-//    t=t.left(t.length()-1);
-//    test=t.toInt();
-//    qDebug()<<test;
+    if(!is_dir_exist(PATH_SDCARD))
+    {
+        qDebug()<<"--------------here2";
+        dev_type=0;
+        QProcess process;
+        QString cmd=QString("df /mnt/sdcard/mmcblk1p1 | grep %1").arg(QString("/dev/mmcblk1p1"));
+        qDebug()<<"--------------here3";
+        process.start(cmd);
+        process.waitForFinished();
+        QByteArray output = process.readAllStandardOutput();
+        QString str_output = output;
+        str_output=str_output.simplified();
+        QStringList list=str_output.split(' ');
+        qDebug()<<str_output<<"\n"<<"usage of sdcard"<<list[11];
+        QString t=list[11];
+        t=t.left(t.length()-1);
+        test=t.toInt();
+        qDebug()<<test;
+        qDebug()<<"--------------here4";
+    }else if(!is_dir_exist(PATH_USB)){
+        dev_type=1;
+        qDebug()<<"--------------here5";
+        QProcess process;
+        QString cmd=QString("df /mnt/usb/sda4/  | grep %1").arg(QString("/dev/sda4/"));
+        qDebug()<<"--------------here6";
+        process.start(cmd);
+        process.waitForFinished();
+        QByteArray output = process.readAllStandardOutput();
+        QString str_output = output;
+        str_output=str_output.simplified();
+        QStringList list=str_output.split(' ');
+        qDebug()<<str_output<<"\n"<<"usage of usb"<<list[11];
+        QString t=list[11];
+        t=t.left(t.length()-1);
+        test=t.toInt();
+        qDebug()<<test;
+        qDebug()<<"--------------here7";
+    }else{
+//        ui->formatButton->setEnabled(false);
+    }
 
 #else
     #if 0
@@ -53,8 +91,14 @@ void About::on_formatButton_clicked()
     mesg->SetMessage(QString(tr("确定格式化？")), 1);
     if(1==mesg->exec()){
     #if defined(Q_OS_LINUX)
-//        pfat=new Fat();
-//        pfat->format(PATH_SD_DEV, PATH_SDCARD);
+        if(dev_type==0){
+            pfat=new Fat();
+            pfat->format(PATH_SD_DEV, PATH_SDCARD);
+        }else{
+            pfat=new Fat();
+            pfat->format(PATH_USB_DEV,PATH_USB);
+        }
+
     #else
         qDebug()<<"格式化";
     #endif

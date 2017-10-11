@@ -7,8 +7,15 @@
 #include <QTime>
 #if defined(Q_OS_LINUX)
 #include "Fat.h"
+#include <unistd.h>
+#include<sys/types.h>
+#include<dirent.h>
+#include<sys/stat.h>
 #define PATH_SDCARD  "/mnt/sdcard/mmcblk1p1/"
 #define PATH_SD_DEV  "/dev/mmcblk1p1"
+#define PATH_USB "/mnt/usb/sda4/"
+#define PATH_USB_DEV "/dev/sda4/"
+
 #endif
 namespace Ui {
 class About;
@@ -31,6 +38,7 @@ private:
     #if defined(Q_OS_LINUX)
         Fat *pfat;
     #endif
+    int dev_type;
 };
 
 #endif // ABOUT_H

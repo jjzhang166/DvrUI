@@ -11,12 +11,18 @@ extern int open_recordVideo_front,open_recordVideo_rear;
 extern int open_recordAudio_front,open_recordAudio_rear;
 extern int open_reverseLine_front,open_reverseLine_rear;
 extern int open_adas_front,open_adas_rear;
+
+#if defined(Q_OS_LINUX)
+extern dvr_factory* pdvr;
+extern dvr_factory* pdvr1;
+#endif
+
 SetFirst::SetFirst(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SetFirst)
 {
     ui->setupUi(this);
-
+    qDebug()<<"-----------here0";
     setWindowStyleSheet();
     ui->comboBox->setView(new QListView());
     voiceButtonState=false;
@@ -44,14 +50,27 @@ SetFirst::SetFirst(QWidget *parent) :
 //    lcd_blk_ctrl(0);
 //    qDebug()<<"----------------------end light change";
 #endif
+
     ui->voiceSlider->setRange(0,200);
     ui->lightSlider->setRange(0,20);
+    ui->ColorEffectSlider->setRange(0,100);
+    ui->whiteBalanceSlider->setRange(0,100);
+    ui->ExposureCompensationSlider->setRange(0,100);
     connect(ui->voiceSlider,SIGNAL(valueChanged(int)),this,SLOT(on_slider_valuechanged(int)));
     connect(ui->lightSlider,SIGNAL(valueChanged(int)),this,SLOT(on_slider_valuechanged(int)));
-    ui->voiceSlider->setValue(50);
+    connect(ui->ColorEffectSlider,SIGNAL(valueChanged(int)),this,SLOT(on_slider_valuechanged(int)));
+    connect(ui->ExposureCompensationSlider,SIGNAL(valueChanged(int)),this,SLOT(on_slider_valuechanged(int)));
+    connect(ui->whiteBalanceSlider,SIGNAL(valueChanged(int)),this,SLOT(on_slider_valuechanged(int)));
+    ui->voiceSlider->setValue(100);
     ui->lightSlider->setValue(10);
-    ui->voiceLabel->setText(tr("50"));
+    ui->ColorEffectSlider->setValue(50);
+    ui->whiteBalanceSlider->setValue(50);
+    ui->ExposureCompensationSlider->setValue(50);
+    ui->voiceLabel->setText(tr("100"));
     ui->lightLabel->setText(tr("10"));
+    ui->ColorEffectLabel->setText("50");
+    ui->whiteBalanceLabel->setText("50");
+    ui->ExposureCompensationLabel->setText("50");
 
     //设置QSpinBox设置录像时间
     ui->movieTimeSetting->setRange(1,5);
@@ -87,7 +106,7 @@ SetFirst::SetFirst(QWidget *parent) :
     }else{
         ui->reverseButton->setChecked(false);
     }
-
+    setSecond_Desk=new Settings(this);
 }
 SetFirst::~SetFirst()
 {
@@ -112,7 +131,7 @@ void SetFirst::on_slider_valuechanged(int n_value)
     QObject* sender = QObject::sender();
     if(sender==ui->voiceSlider){
         qDebug()<<"change the voice"<<n_value;
-        ui->voiceButton->setChecked(false);
+//        ui->voiceButton->setChecked(false);
     #if defined(Q_OS_LINUX)
         qDebug()<<"ready to change the voice";
         QString cmd="tinymix 1 "+ QString::number(n_value,10);
@@ -127,10 +146,32 @@ void SetFirst::on_slider_valuechanged(int n_value)
         lcd_blk_ctrl((unsigned long)n_value);
     #endif
         ui->lightLabel->setText(QString("%1").arg(n_value));
+    }else if(sender==ui->ColorEffectSlider){
+        qDebug()<<"change the ColorEffect:"<<n_value;
+    #if defined(Q_OS_LINUX)
+        qDebug()<<"ready to change the contrast";
+        if(pdvr!=NULL);
+//            pdvr->setColorEffectData(n_value);
+    #endif
+    }else if(sender==ui->whiteBalanceSlider){
+        qDebug()<<"change the whiteBalance:"<<n_value;
+    #if defined(Q_OS_LINUX)
+        qDebug()<<"ready to change the whiteBalance";
+        if(pdvr!=NULL);
+//            pdvr->setWhiteBlanceData(n_value);
+    #endif
+    }else if(sender==ui->ExposureCompensationSlider){
+        qDebug()<<"change the saturation:"<<n_value;
+    #if defined(Q_OS_LINUX)
+        qDebug()<<"ready to change the saturation";
+        if(pdvr!=NULL);
+//            pdvr->setExposureCompensationData(n_value);
+    #endif
     }
     else{
         qDebug()<<"没有收到声音和亮度调节的信号";
     }
+
 }
 void SetFirst::on_audioButton_clicked()
 {
@@ -240,20 +281,20 @@ void SetFirst::setWindowStyleSheet()
 //      "QComboBox::down-arrow{image:url(:/icon/arrowdown.png);}"
 //      "QComboBox::drop-down{border:0px;}");
 
-    ui->voiceSlider->setStyleSheet("QSlider::groove:vertical{background: #cbcbcb;width: 6px;border-radius: 1px;padding-left:-1px;padding-right:-1px;padding-top:-1px;padding-bottom:-1px; }"
-                                   "QSlider::sub-page:vertical{background: #cbcbcb;border-radius: 2px;}"
-                                   "QSlider::add-page:vertical{background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #439cf4, stop:1 #439cf4);\
-                                   background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,stop: 0 #439cf4, stop: 1 #439cf4);\
-                                   width: 10px;border-radius: 2px;}"
-                                   "QSlider::handle:vertical{border-image: url(:/icon/circle-white.png);margin: -2px -7px -2px -7px; height: 17px;}"
-                                    "QSlider{border-color: #cbcbcb;}"  );
-    ui->lightSlider->setStyleSheet("QSlider::groove:vertical{background: #cbcbcb;width: 6px;border-radius: 1px;padding-left:-1px;padding-right:-1px;padding-top:-1px;padding-bottom:-1px; }"
-                                   "QSlider::sub-page:vertical{background: #cbcbcb;border-radius: 2px;}"
-                                   "QSlider::add-page:vertical{background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #439cf4, stop:1 #439cf4);\
-                                   background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,stop: 0 #439cf4, stop: 1 #439cf4);\
-                                   width: 10px;border-radius: 2px;}"
-                                   "QSlider::handle:vertical{border-image: url(:/icon/circle-white.png);margin: -2px -7px -2px -7px; height: 17px;}"
-                                    "QSlider{border-color: #cbcbcb;}"  );
+//    ui->voiceSlider->setStyleSheet("QSlider::groove:vertical{background: #cbcbcb;width: 6px;border-radius: 1px;padding-left:-1px;padding-right:-1px;padding-top:-1px;padding-bottom:-1px; }"
+//                                   "QSlider::sub-page:vertical{background: #cbcbcb;border-radius: 2px;}"
+//                                   "QSlider::add-page:vertical{background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #439cf4, stop:1 #439cf4);\
+//                                   background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,stop: 0 #439cf4, stop: 1 #439cf4);\
+//                                   width: 10px;border-radius: 2px;}"
+//                                   "QSlider::handle:vertical{border-image: url(:/icon/circle-white.png);margin: -2px -7px -2px -7px; height: 17px;}"
+//                                    "QSlider{border-color: #cbcbcb;}"  );
+//    ui->lightSlider->setStyleSheet("QSlider::groove:vertical{background: #cbcbcb;width: 6px;border-radius: 1px;padding-left:-1px;padding-right:-1px;padding-top:-1px;padding-bottom:-1px; }"
+//                                   "QSlider::sub-page:vertical{background: #cbcbcb;border-radius: 2px;}"
+//                                   "QSlider::add-page:vertical{background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #439cf4, stop:1 #439cf4);\
+//                                   background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,stop: 0 #439cf4, stop: 1 #439cf4);\
+//                                   width: 10px;border-radius: 2px;}"
+//                                   "QSlider::handle:vertical{border-image: url(:/icon/circle-white.png);margin: -2px -7px -2px -7px; height: 17px;}"
+//                                    "QSlider{border-color: #cbcbcb;}"  );
 
     /*spinbox 按下和抬起样式*/
     ui->movieTimeSetting->setStyleSheet("QSpinBox::up-button {subcontrol-origin:border;subcontrol-position:right;image: url(:/icon/right_arrow.png);width: 32px;height: 32px;}"
@@ -267,9 +308,7 @@ void SetFirst::setWindowStyleSheet()
 }
 
 void SetFirst::on_settingsButton_clicked()
-{
-    if(setSecond_Desk==NULL)
-        setSecond_Desk=new Settings(this);
+{       
     this->hide();
     setSecond_Desk->showNormal();
 }

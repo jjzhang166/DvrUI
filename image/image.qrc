@@ -56,5 +56,7 @@
         <file>icon/forward.png</file>
         <file>icon/skip-backward.png</file>
         <file>icon/skip-forward.png</file>
+        <file>icon/contrast.png</file>
+        <file>icon/Camera_2.png</file>
     </qresource>
 </RCC>

@@ -137,6 +137,8 @@ private slots://有动作时显示图标
     void on_mouse_no_active_10_second();
     void on_main_desktop_disvisible();
     void on_main_desktop_visible();
+    void on_pushButton_clicked();
+
 public slots://其它界面调出
     void on_recordButton_clicked();
 

@@ -8,7 +8,7 @@
 #include <QPushButton>
 #include <QDesktopWidget>
 #include <QPalette>
-#define SEEKTO 1
+//#define SEEKTO 1
 Video_Player* pStaticVideoPlayer=NULL;
 #if defined(Q_OS_LINUX)
 #define AUDIO_PCM_OUTPUT 128
@@ -266,6 +266,18 @@ void Video_Player::updateDurationInfo(qint64 currentInfo)
 {
 //    qDebug()<<"update the time label";
     QString tStr;
+
+#if defined(Q_OS_LINUX)
+    //如果播放到末尾，那么将按钮设置为play 然后更新progressslider和nowTimeLabel为初始值
+    int linux_duration=ap->getDuration()/1000;
+    if(linux_duration==(int)currentInfo)
+    {
+        currentInfo=0;
+        ui->progressSlider->setValue(0);
+        astatus = ASTATUS_PAUSED;
+        ui->playButton->setIcon(QIcon(":/icon/play.png"));
+    }
+#endif
     if (currentInfo || duration) {
         QTime currentTime((currentInfo/3600)%60, (currentInfo/60)%60, currentInfo%60, (currentInfo*1000)%1000);
         QTime totalTime((duration/3600)%60, (duration/60)%60, duration%60, (duration*1000)%1000);
@@ -532,18 +544,26 @@ void Video_Player::on_preMovieButton_clicked()
 void Video_Player::on_fastBackButton_clicked()
 {
 #if defined(Q_OS_LINUX)
+
+    int nowTime=ap->getCurrentPosition()/1000;//防止在视频刚开始时快退导致的问题
+    if(nowTime<20)//如果开始播放小于20s
+    {
+        qDebug()<<"------------------begin play less than 20s";
+        ap->seekto(1);//就把视频定位到1s
+        updateDurationInfo(1);
+        return ;
+    }
+    qDebug()<<"------------------begin play lager than 20s";
     mouseMoveTime->stop();
     timer->stop();
-    int currentTime=ap->getCurrentPosition()/1000;
 #if defined(SEEKTO)
     //seekto 实现快退
+    int currentTime=ap->getCurrentPosition()/1000;
     currentTime-=interval;
     ap->seekto(currentTime);
 #else
-    ap->setSpeed(-10000);
-//    sleep(0.1);
-//    currentTime-=10;
-//    ap->setSpeed(1);
+    ap->setSpeed(-10);
+    int currentTime=ap->getCurrentPosition()/1000;
 #endif
     ui->progressSlider->setValue(currentTime);
     updateDurationInfo(currentTime);
@@ -565,19 +585,28 @@ void Video_Player::on_fastBackButton_clicked()
 void Video_Player::on_fastFrontButton_clicked()
 {
 #if defined(Q_OS_LINUX)
+
+    int nowTime=ap->getCurrentPosition()/1000;
+    int linux_duration=ap->getDuration()/1000;
+    int lastTime=linux_duration-nowTime;
+    if(lastTime<30)
+    {
+        ap->seekto(linux_duration-2);
+        updateDurationInfo(linux_duration-2);
+        return ;
+    }
     mouseMoveTime->stop();
     timer->stop();
-    int currentTime=ap->getCurrentPosition()/1000;
-    //seekto 实现快进
 #if defined(SEEKTO)
+    //seekto 实现快进
+    int currentTime=ap->getCurrentPosition()/1000;
      currentTime+=interval;
      ap->seekto(currentTime);
 #else
-    ap->setSpeed(10000);
-//    sleep(0.1);
-//    currentTime+=10;
-//    ap->setSpeed(1);
+    ap->setSpeed(10);
+    int currentTime=ap->getCurrentPosition()/1000;
 #endif
+
      ui->progressSlider->setValue(currentTime);
      updateDurationInfo(currentTime);
      timer->start(100);

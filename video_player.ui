@@ -49,8 +49,6 @@
       <height>565</height>
      </rect>
     </property>
-    <zorder>widget_2</zorder>
-    <zorder>widget_2</zorder>
    </widget>
   </widget>
   <widget class="QWidget" name="titlewidget" native="true">

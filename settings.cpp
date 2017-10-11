@@ -39,16 +39,22 @@ Settings::Settings(QWidget *parent) :
     //设置按钮的ICON
 
     //为tabbar加入widget
+
     abouts=new About(this);
     ui->settingTab->addTab(abouts,tr("关于"));
+
     previews=new Preview(this);
     ui->settingTab->insertTab(0,previews,tr("预览设置"));
+
     adass=new ADAS(this);
     ui->settingTab->insertTab(1,adass,tr("ADAS"));
+
     reverselines=new ReverseLine(this);
     ui->settingTab->insertTab(2,reverselines,tr("倒车线设置"));
+
     timesettings=new TimeSetting(this);
     ui->settingTab->insertTab(3,timesettings,tr("时间设置"));
+
     ui->settingTab->setCurrentIndex(0);
 
     connect(ui->returnButton,SIGNAL(clicked()),this,SLOT(on_returnButton_clicked()));
