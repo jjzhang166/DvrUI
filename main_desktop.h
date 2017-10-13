@@ -20,7 +20,7 @@
 #include "reverselinewidget.h"
 //#define os_test Q_OS_LINUX
 
-#if defined(os_test)//行车记录模块视频显示
+#if defined(Q_OS_LINUX)//行车记录模块视频显示
 #define PATH_SDCARD  "/mnt/sdcard/mmcblk1p1/"
 #define PATH_SD_DEV  "/dev/mmcblk1p1"
 #define HAVA_TWO_CAMERA 1  //While move to cfg
@@ -90,11 +90,9 @@
 #include "DvrRecordManager.h"
 using namespace android;
 
-//#define DB_LEVEL_TEST
-//#define FORMATE_TEST
 #define RECORD_TEST 1
 #define AUDIO_TEST
-//#define AUTEVENT_TEST 1
+#define AUTEVENT_TEST 1
 
 #include "NetlinkManager.h"
 #include "NetlinkHandler.h"
@@ -178,7 +176,12 @@ public:
         //on_pushButton_play_clicked();
         startAllCameraWithPreview(0);
     }
-
+#ifdef AUTEVENT
+signals:
+    void usb_is_mount();
+    void usb_is_umount();
+//    static void  testaut_event_cb_func1(NetlinkEvent *evt,void *usrdata);
+#endif
     #if defined(os_test)
     Mutex                           mObjectLock;
     #endif

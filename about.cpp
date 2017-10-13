@@ -6,6 +6,7 @@
 #include <QByteArray>
 #include "frmmessagebox.h"
 #if defined(Q_OS_LINUX)
+
 int is_dir_exist(const char *dir_path)
 {
     if(dir_path==NULL)

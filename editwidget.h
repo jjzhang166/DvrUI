@@ -2,7 +2,8 @@
 #define EDITWIDGET_H
 
 #include <QDialog>
-
+#include <QFileDialog>
+#include <QString>
 namespace Ui {
 class editWidget;
 }
@@ -17,6 +18,9 @@ public:
 
 private:
     Ui::editWidget *ui;
+    QFileDialog* fileDialog;
+    void open_file();
+    QString fileName;
 };
 
 #endif // EDITWIDGET_H

@@ -52,7 +52,8 @@ SOURCES += \
     cprojectionpicture.cpp \
     frmmessagebox.cpp \
     reverselinewidget.cpp \
-    reverseline_setting.cpp
+    reverseline_setting.cpp \
+    midwindow.cpp
 
 HEADERS += \
         main_desktop.h \
@@ -82,7 +83,8 @@ HEADERS += \
     cprojectionpicture.h \
     frmmessagebox.h \
     reverselinewidget.h \
-    reverseline_setting.h
+    reverseline_setting.h \
+    midwindow.h
 
 FORMS += \
         main_desktop.ui \

@@ -83,18 +83,25 @@ private slots:
 
     void on_timeout_mouserMoveTime();
 
+    void find_correspond_subtitle_file(QFileInfo);
+
+
 protected:
     void paintEvent(QPaintEvent *event);
 public:
     Ui::Video_Player *ui;
     int current_video;
+    QString current_path;
     bool isMuted;
     bool isPlaying;
+    int seekto_is_ok;
     qint64 duration;//时间表时
     QTimer *timer;
     QDir dir;
 //    QDirIterator* m_DirIterator;
     QFileInfoList file_list;
+    QFileInfoList all_file_list;
+
 //    QMediaPlayer::State playerState;
 //    video_widgets* my_video_widget;
     #if defined(USE_AUTPLAYER)
@@ -106,12 +113,15 @@ public:
         int astatus;
 
     QFileInfoList GetFileList(QDir dir);
+    QFileInfoList GetAllFileList(QDir dir);
+
 signals:
     void p_unhide_moviedesktop();
     void main_desktop_visible();
 private:
     void show_title();
     void FormInCenter();
+
 };
 
 #endif // VIDEO_PLAYER_H

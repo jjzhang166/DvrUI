@@ -2,13 +2,17 @@
 #include "ui_videowidget.h"
 #include <QDesktopWidget>
 #include "main_desktop.h"
+#include "midwindow.h"
+#include "frmmessagebox.h"
 extern main_desktop* pStaticMaindesktop;
 // This is available in all editors.
-QString which_filename_to_play;
-int which_video_show_play;
+extern QFileInfo fileInfo_to_play;
 const QString win_path="E:/tech_practise/DvrUI/DvrUI/video/";
 //const QString linux_path="/mnt/sdcard/mmcblk1p1/frontVideo/";//sdcard
 const QString linux_path="/mnt/usb/sda4/";//U盘
+
+extern MidWindow* midwindow;
+
 videoWidget::videoWidget(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::videoWidget)
@@ -18,13 +22,25 @@ videoWidget::videoWidget(QWidget *parent) :
     show_model=true;//true为显示icon模式，false为显示list模式
     ui->listWidget_file->clear();
 
+    show_file();
+
+    connect(ui->listWidget_file,SIGNAL(clicked(QModelIndex)),this,SLOT(play_video(QModelIndex)));
+
+
+    connect(midwindow,SIGNAL(usb_insert()),this,SLOT(on_usb_mount()));
+    connect(midwindow,SIGNAL(usb_delete()),this,SLOT(on_usb_umount()));
+
+}
+void videoWidget::show_file()
+{
     #if defined(Q_OS_LINUX)
-        m_DirIterator=new QDirIterator(linux_path,QDir::Files,QDirIterator::Subdirectories);
+    //        m_DirIterator=new QDirIterator(linux_path,QDir::Files,QDirIterator::Subdirectories);
+    file_list=GetFileList(QDir(linux_path));
     #else
-        m_DirIterator=new QDirIterator(win_path,QDir::Files,QDirIterator::Subdirectories);
+    //        m_DirIterator=new QDirIterator(win_path,QDir::Files,QDirIterator::Subdirectories);
+    file_list=GetFileList(QDir(win_path));
     #endif
     ui->listWidget_file->setObjectName(QString::fromUtf8("listWidget_file"));
-//    ui->listWidget_file->setGeometry(QRect(0,0,0,0));
     ui->listWidget_file->setMovement(QListView::Static);
     //选择模式有:ExtendedSelection 按住ctrl多选,
     //SingleSelection 单选 MultiSelection 点击多选,
@@ -43,73 +59,105 @@ videoWidget::videoWidget(QWidget *parent) :
         ui->listWidget_file->setIconSize(QSize(100,100));
         //设置拖拉
         ui->listWidget_file->setDragEnabled(true);
-        show_file_by_iconview(m_DirIterator);
+        show_file_by_iconview(file_list);
     }else{
         //列表显示
         ui->listWidget_file->setViewMode(QListView::ListMode);
         ui->listWidget_file->setDragEnabled(false);
         ui->listWidget_file->setIconSize(QSize(22,22));
-        show_file_by_listview(m_DirIterator);
+        show_file_by_listview(file_list);
     }
-    qDebug()<<" 当前目录为："<<m_DirIterator->path();
-//    ui->listWidget_file->setGeometry(NULL,NULL,450,420);
-    connect(ui->listWidget_file,SIGNAL(clicked(QModelIndex)),this,SLOT(play_video(QModelIndex)));
-    connect(this,SIGNAL(main_desktop_disvisible()),pStaticMaindesktop,SLOT(on_main_desktop_disvisible()));
 }
-void videoWidget::show_file_by_iconview(QDirIterator* m_DirIterator)
+void videoWidget::on_usb_mount()
+{
+    qDebug()<<"videowidget get the signal usb insert";
+    show_file();
+}
+void videoWidget::on_usb_umount()
+{
+    qDebug()<<"videowidget get the signal usb delete";
+    ui->listWidget_file->clear();
+    frmMessageBox *msg=new frmMessageBox;
+    msg->SetMessage(QString(tr("usb is out!")),0);
+    QTimer::singleShot(2000, msg, SLOT(close()));
+    msg->exec();
+}
+
+QFileInfoList videoWidget::GetFileList(QDir dir)
+{
+    qDebug()<<"get all file name";
+    QStringList filters;
+    filters << "*.mp4" << "*.avi"<<"*.mkv"<<"*.VOB"<<"*.mp3"<<"*.m2ts";
+    dir.setNameFilters(filters);
+    QFileInfoList file_list=dir.entryInfoList();
+    for(int i=0;i<file_list.size();i++)
+    {
+        QFileInfo fileInfo=file_list.at(i);
+        fileInfo.absoluteFilePath();
+        qDebug()<<fileInfo.fileName();
+    }
+    return file_list;
+}
+void videoWidget::show_file_by_iconview(QFileInfoList file_list)
 {
     ui->listWidget_file->setIconSize(QSize(100,100));
-    while (m_DirIterator->hasNext()) {
-        QString tempFile=m_DirIterator->next();
-        qDebug()<<"当前文件信息为："<<tempFile;
-        #if defined(Q_OS_LINUX)
-            QString tempFileName=tempFile.remove(linux_path,Qt::CaseSensitive);
-        #else
-            QString tempFileName=tempFile.remove(win_path,Qt::CaseSensitive);
-        #endif
+    for(int i=0;i<file_list.size();i++)
+    {
+        QFileInfo file_info=file_list.at(i);
+        QString tempFilePath=file_info.absoluteFilePath();
+        int filename_index=tempFilePath.lastIndexOf("/");
+        QString tempFileName=tempFilePath.right(tempFilePath.size()-filename_index-1);
+        qDebug()<<"file name:"<<tempFileName;
         QString tempFileName_NoSuffix=tempFileName;
         int suffix_index=tempFileName_NoSuffix.lastIndexOf(".");
         tempFileName_NoSuffix.truncate(suffix_index);
         qDebug()<<"去掉后缀后的文件名："<<tempFileName_NoSuffix;
-        QString file_path="";
-        gen_shot_picture(tempFileName_NoSuffix,file_path,tempFileName);
-//        file_path="";
+        QString icon_file_path="";//用来获取缩略图的位置
+        gen_shot_picture(tempFileName_NoSuffix,icon_file_path,tempFileName);
+
         QListWidgetItem *pItem;
-//        tempFile=tempFile.remove(win_path,Qt::CaseSensitive);
-        if(file_path==""){//如果没有得到缩略图
+        if(icon_file_path==""){//如果没有得到缩略图
             pItem=new QListWidgetItem(QIcon(":/icon/no_shotvideo.png"),tempFileName);
         }else{
             //生成了缩略图
-            QPixmap objPixmap(file_path);
+            QPixmap objPixmap(icon_file_path);
             pItem = new QListWidgetItem(QIcon(objPixmap.scaled(QSize(90,70))),tempFileName);
         }
         pItem->setSizeHint(QSize(90,90));            //设置单元项的宽度和高度
         ui->listWidget_file->addItem(pItem);              //添加QListWidgetItem
     }
 }
-void videoWidget::show_file_by_listview(QDirIterator* m_DirIterator)
+void videoWidget::show_file_by_listview(QFileInfoList file_list)
 {
     ui->listWidget_file->setIconSize(QSize(22,22));
-    while (m_DirIterator->hasNext()) {
-        QString tempFile=m_DirIterator->next();
-        qDebug()<<"当前文件信息为："<<tempFile;
-        #if defined(Q_OS_LINUX)
-            QString tempFileName=tempFile.remove(linux_path,Qt::CaseSensitive);
-        #else
-            QString tempFileName=tempFile.remove(win_path,Qt::CaseSensitive);
-        #endif
+    for(int i=0;i<file_list.size();i++)
+    {
+        QFileInfo file_info=file_list.at(i);
+        QString tempFilePath=file_info.absoluteFilePath();
+        int filename_index=tempFilePath.lastIndexOf("/");
+        QString tempFileName=tempFilePath.right(tempFilePath.size()-filename_index-1);
+
+        qDebug()<<"file name:"<<tempFileName;
         QString tempFileName_NoSuffix=tempFileName;
         int suffix_index=tempFileName_NoSuffix.lastIndexOf(".");
         tempFileName_NoSuffix.truncate(suffix_index);
         qDebug()<<"去掉后缀后的文件名："<<tempFileName_NoSuffix;
-        QString file_path="";
-        gen_shot_picture(tempFileName_NoSuffix,file_path,tempFileName);
-        QPixmap objPixmap(file_path);
-        tempFile=tempFile.remove(win_path,Qt::CaseSensitive);
-        QListWidgetItem *pItem = new QListWidgetItem(QIcon(objPixmap.scaled(QSize(20,20))),tempFile);
-        pItem->setSizeHint(QSize(22,22));            //设置单元项的宽度和高度
+        QString icon_file_path="";//用来获取缩略图的位置
+        gen_shot_picture(tempFileName_NoSuffix,icon_file_path,tempFileName);
+
+        QListWidgetItem *pItem;
+        if(icon_file_path==""){//如果没有得到缩略图
+            pItem=new QListWidgetItem(QIcon(":/icon/no_shotvideo.png"),tempFileName);
+        }else{
+            //生成了缩略图
+            QPixmap objPixmap(icon_file_path);
+            QListWidgetItem *pItem = new QListWidgetItem(QIcon(objPixmap.scaled(QSize(20,20))),tempFileName);
+            pItem->setSizeHint(QSize(22,22));            //设置单元项的宽度和高度
+        }
+        pItem->setSizeHint(QSize(90,90));            //设置单元项的宽度和高度
         ui->listWidget_file->addItem(pItem);              //添加QListWidgetItem
     }
+
 }
 //windows下生成缩略图的方法
 void videoWidget::gen_shot_picture(QString tempFileName_NoSuffix,QString& file_path,QString tempFileName)
@@ -149,14 +197,20 @@ void videoWidget::play_video(QModelIndex pos)
 {
     QListWidgetItem* item=ui->listWidget_file->currentItem();
     qDebug()<<"filename"<<item->text();
-    qDebug()<<"点击了"<<pos.row();
-    which_filename_to_play=item->text();
-    which_video_show_play=pos.row();
+    qDebug()<<"which file:"<<pos.row();
+    QString file_name;
+    #if defined(Q_OS_LINUX)
+    file_name=linux_path+item->text();
+    #else
+    file_name=win_path+item->text();
+    #endif
+    fileInfo_to_play=QFileInfo(file_name);
+
     video_players=new Video_Player(this);
     emit hide_moviedesktop();
-    connect(video_players,SIGNAL(p_unhide_moviedesktop()),this,SLOT(deal_picture_views_signal()));
+    pStaticMaindesktop->setHidden(true);
+
     video_players->showNormal();
-    emit main_desktop_disvisible();
 }
 void videoWidget::deal_picture_views_signal()
 {

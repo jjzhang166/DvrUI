@@ -4,11 +4,12 @@
 #include "frmmessagebox.h"
 #include "videowidget.h"
 #include "reverseline_setting.h"
-
+#include "midwindow.h"
 #if defined(os_test)
 dvr_factory* pdvr;
 dvr_factory* pdvr1;
 #endif
+QFileInfo fileInfo_to_play;
 int g_recordstatus=0;
 //设置录像时间
 int recordTime=1;//初始化为一分钟
@@ -22,7 +23,11 @@ int open_reverseLine_front,open_reverseLine_rear;
 int open_adas_front,open_adas_rear;
 main_desktop* pStaticMaindesktop=NULL;
 extern ReverseLine_Setting *pStatic_reverseLine;
-#if defined(os_test)
+
+MidWindow* midwindow=NULL;
+
+
+#if defined(Q_OS_LINUX)
 using namespace android;
 void usernotifyCallback(int32_t msgType, int32_t ext1, int32_t ext2, void* user){
     LOGE("msgType =%d-----data=%p-----%d)",msgType,user);
@@ -98,7 +103,7 @@ void testaut_event_cb_func(NetlinkEvent *evt,void *usrdata){
                     sprintf(buf,"mount -t vfat /dev/%s /mnt/sdcard/mmcblk1p1 -o defaults,noatime,async,iocharset=cp936",devname);
                 else
                     sprintf(buf,"echo mount fail > /dev/ttyS0");
-                system(buf);
+//                system(buf);
             }
         } else {
             SLOGW("Kernel block uevent missing 'NPARTS'");
@@ -158,6 +163,97 @@ void testaut_event_cb_func(NetlinkEvent *evt,void *usrdata){
     }
 }
 #endif
+#ifdef AUTEVENT_TEST//检测usb和sdcard的热插拔事件
+void testaut_event_cb_func1(NetlinkEvent *evt,void *usrdata)
+{
+    qDebug()<<"---------------------callback  testaut_event_cb_func1";
+    ALOGV("event act=%d %s ",evt->getAction(),evt->getSubsystem());
+
+    int action = evt->getAction();
+    const char *devtype = evt->findParam("DEVTYPE");
+
+    if (action == NetlinkEvent::NlActionAdd)
+    {
+        qDebug()<<"-----------------some machine is here";
+        int major = atoi(evt->findParam("MAJOR"));
+        int minor = atoi(evt->findParam("MINOR"));
+        if (!strcmp(devtype, "disk"))
+        {
+            char buf[256];
+            const char *devname = evt->findParam("DEVNAME");
+            if(strstr(devname,"sd"))
+            {
+                sprintf(buf,"mount -t vfat /dev/%s /mnt/usb -o defaults,noatime,async,iocharset=cp936",devname);
+                qDebug()<<"---------------------------mount the usb";
+                midwindow->usb_insert();
+                qDebug()<<"midwindow is done";
+            }
+            else if(strstr(devname,"mmcblk1")){
+                sprintf(buf,"mount -t vfat /dev/%s /mnt/sdcard/mmcblk1p1 -o defaults,noatime,async,iocharset=cp936",devname);
+                qDebug()<<"---------------------------mount the sdcard";
+            }else
+            {
+                sprintf(buf,"echo mount fail > /dev/ttyS0");
+                qDebug()<<"---------------------------mount the other";
+            }
+        }
+//        if (!strcmp(devtype, "disk"))
+//        {
+//            ALOGW("line=%d,devtype=%s",__LINE__,devtype);
+//            //handleDiskAdded(dp, evt);
+//            const char *tmp = evt->findParam("NPARTS");
+//            if (tmp) {
+//            int npart = atoi(tmp);
+//            if(npart==0)
+//            {
+//                const char *devname = evt->findParam("DEVNAME");
+//                char buf[256];
+//                if(strstr(devname,"sd")){
+//                    sprintf(buf,"mount -t vfat /dev/%s /mnt/usb -o defaults,noatime,async,iocharset=cp936",devname);
+//                    qDebug()<<"---------------------------mount the usb";
+//                    midwindow->usb_insert();
+//                    qDebug()<<"midwindow is done";
+
+//                }
+
+//                else if(strstr(devname,"mmcblk1")){
+//                    sprintf(buf,"mount -t vfat /dev/%s /mnt/sdcard/mmcblk1p1 -o defaults,noatime,async,iocharset=cp936",devname);
+//                    qDebug()<<"---------------------------mount the sdcard";
+//                }
+//                else{
+//                    sprintf(buf,"echo mount fail > /dev/ttyS0");
+//                    qDebug()<<"---------------------------mount the other";
+//                }
+//                system(buf);
+//            }
+//        } else {
+//            SLOGW("Kernel block uevent missing 'NPARTS'");
+//        }
+//    }
+    }
+    else if (action == NetlinkEvent::NlActionRemove)
+    {
+        qDebug()<<"-----------------some machine is not here";
+        if (!strcmp(devtype, "disk"))
+        {
+            char buf[256];
+            const char *devname = evt->findParam("DEVNAME");
+            if(strstr(devname,"sd"))
+            {
+                qDebug()<<"-----------usb is out of machine";
+                midwindow->usb_delete();
+                system("cd /");
+                system("umount -f /mnt/usb/sd*");
+                system("rm -rf /mnt/usb");
+                qDebug()<<"midwindow is done";
+            }
+            else if(strstr(devname,"mmcblk1")){
+                qDebug()<<"usb is out of machine";
+            }
+        }
+    }
+}
+#endif
 #endif
 
 
@@ -202,12 +298,15 @@ main_desktop::main_desktop(QWidget *parent) :
     #ifdef AUTEVENT_TEST//defined
          AutEvent *pevent=AutEvent::Instance();
          pevent->setEventCb(testaut_event_cb_func,(void *)pdvr);
+         qDebug()<<"------------------------ready to callback";
+         pevent->setEventCb(testaut_event_cb_func1,(void *)0);
          if (nm->start()) {
              SLOGE("Unable to start NetlinkManager (%s)", strerror(errno));
          }
          //sleep(1000);
         printf("--------------------------------AutEvent done\n");
     #endif
+
     tvmode=config_get_tvout(TEST_CAMERA_ID);
     printf("--------------tvmode =%d \r\n",tvmode);
     mcd->hwd_screen1_mode(tvmode);
@@ -231,12 +330,15 @@ main_desktop::main_desktop(QWidget *parent) :
 #endif
     ui->setupUi(this);
     pStaticMaindesktop=this;
+
+
     FormInCenter();
     setAttribute(Qt::WA_TranslucentBackground, true);
     //设置窗口为固定大小
 //    this->setMaximumSize(610,215);
 //    this->setMinimumSize(610,215);
     isLocked=false;
+
     //设置按钮图标
     //对于当点击图标后按钮的变化的效果可以使用多张图片的方式进行
 //    ui->cameraButton->setStyleSheet(tr("background-image: url(:/image/image/camera.png);","background-color:transparent"));
@@ -281,11 +383,12 @@ main_desktop::main_desktop(QWidget *parent) :
 
     printf("main_desktop----------%p----\r\n",this);
     printf("-------------------------------------construction function done\n");
+    midwindow=new MidWindow();
     setting_desktop=new SetFirst(this);
     moviedesk=new movieDesk(this);
     dashboards=new dashBoard(this);
 
-
+    connect(moviedesk,SIGNAL(main_desktop_disvisible()),this,SLOT(on_main_desktop_disvisible()));
 //    connect(pStatic_reverseLine,SIGNAL(reverseLine_repaint()),this,SLOT(on_reverseLine_repaint()));
 
 }
