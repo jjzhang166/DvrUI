@@ -23,10 +23,9 @@ int open_reverseLine_front,open_reverseLine_rear;
 int open_adas_front,open_adas_rear;
 main_desktop* pStaticMaindesktop=NULL;
 extern ReverseLine_Setting *pStatic_reverseLine;
-
+QString linux_usb_path="/mnt/usb/sda4/";//U盘
+QString linux_sdcard_path;//sd卡
 MidWindow* midwindow=NULL;
-
-
 #if defined(Q_OS_LINUX)
 using namespace android;
 void usernotifyCallback(int32_t msgType, int32_t ext1, int32_t ext2, void* user){
@@ -35,7 +34,6 @@ void usernotifyCallback(int32_t msgType, int32_t ext1, int32_t ext2, void* user)
     if ((msgType&CAMERA_MSG_ERROR) ==CAMERA_MSG_ERROR)
     {
         LOGE("(msgType =CAMERA_MSG_ERROR)");
-
     }
     if ((msgType&CAMERA_MSG_DVR_NEW_FILE) ==CAMERA_MSG_DVR_NEW_FILE)
     {
@@ -97,12 +95,17 @@ void testaut_event_cb_func(NetlinkEvent *evt,void *usrdata){
                 const char *devname = evt->findParam("DEVNAME");
 
                 char buf[256];
-                if(strstr(devname,"sd"))
+                if(strstr(devname,"sd")){
                     sprintf(buf,"mount -t vfat /dev/%s /mnt/usb -o defaults,noatime,async,iocharset=cp936",devname);
-                else if(strstr(devname,"mmcblk1"))
+
+                }
+                else if(strstr(devname,"mmcblk1")){
                     sprintf(buf,"mount -t vfat /dev/%s /mnt/sdcard/mmcblk1p1 -o defaults,noatime,async,iocharset=cp936",devname);
-                else
+                }
+                else{
                     sprintf(buf,"echo mount fail > /dev/ttyS0");
+                }
+
 //                system(buf);
             }
         } else {
@@ -181,12 +184,15 @@ void testaut_event_cb_func1(NetlinkEvent *evt,void *usrdata)
         {
             char buf[256];
             const char *devname = evt->findParam("DEVNAME");
+
             if(strstr(devname,"sd"))
             {
                 sprintf(buf,"mount -t vfat /dev/%s /mnt/usb -o defaults,noatime,async,iocharset=cp936",devname);
                 qDebug()<<"---------------------------mount the usb";
                 midwindow->usb_insert();
                 qDebug()<<"midwindow is done";
+                linux_usb_path=QString("/mnt/usb/"+QString(QLatin1String(devname))+"4");
+                qDebug()<<"main_desktop u-disk is mounted in"<<linux_usb_path;
             }
             else if(strstr(devname,"mmcblk1")){
                 sprintf(buf,"mount -t vfat /dev/%s /mnt/sdcard/mmcblk1p1 -o defaults,noatime,async,iocharset=cp936",devname);
@@ -197,39 +203,6 @@ void testaut_event_cb_func1(NetlinkEvent *evt,void *usrdata)
                 qDebug()<<"---------------------------mount the other";
             }
         }
-//        if (!strcmp(devtype, "disk"))
-//        {
-//            ALOGW("line=%d,devtype=%s",__LINE__,devtype);
-//            //handleDiskAdded(dp, evt);
-//            const char *tmp = evt->findParam("NPARTS");
-//            if (tmp) {
-//            int npart = atoi(tmp);
-//            if(npart==0)
-//            {
-//                const char *devname = evt->findParam("DEVNAME");
-//                char buf[256];
-//                if(strstr(devname,"sd")){
-//                    sprintf(buf,"mount -t vfat /dev/%s /mnt/usb -o defaults,noatime,async,iocharset=cp936",devname);
-//                    qDebug()<<"---------------------------mount the usb";
-//                    midwindow->usb_insert();
-//                    qDebug()<<"midwindow is done";
-
-//                }
-
-//                else if(strstr(devname,"mmcblk1")){
-//                    sprintf(buf,"mount -t vfat /dev/%s /mnt/sdcard/mmcblk1p1 -o defaults,noatime,async,iocharset=cp936",devname);
-//                    qDebug()<<"---------------------------mount the sdcard";
-//                }
-//                else{
-//                    sprintf(buf,"echo mount fail > /dev/ttyS0");
-//                    qDebug()<<"---------------------------mount the other";
-//                }
-//                system(buf);
-//            }
-//        } else {
-//            SLOGW("Kernel block uevent missing 'NPARTS'");
-//        }
-//    }
     }
     else if (action == NetlinkEvent::NlActionRemove)
     {

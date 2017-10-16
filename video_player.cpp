@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QDesktopWidget>
 #include <QPalette>
+
 #include "moviedesk.h"
 #include "frmmessagebox.h"
 #if defined(Q_OS_LINUX)
@@ -17,6 +18,8 @@ extern int is_dir_exist(const char *dir_path);
 #define SEEKTO 1
 extern movieDesk* pStaticMovieDesk;
 Video_Player* pStaticVideoPlayer=NULL;
+static int subtitle_num_now=0;
+static int audio_num_now=0;
 #if defined(Q_OS_LINUX)
 #define AUDIO_PCM_OUTPUT 128
 #if  1
@@ -150,7 +153,6 @@ Video_Player::Video_Player(QWidget *parent) :
         }
     }else{
         qDebug()<<"path is not exist";
-//        this->close();
     }
 #else
     if(current_path==""){
@@ -207,27 +209,28 @@ Video_Player::Video_Player(QWidget *parent) :
           if (ret < 0)
           {
               qDebug()<<"setUrl is error-------------------";
+          }else{
+              ap->setUserCb(autCb_func, this);
+              ap->setViewWindow(0, 0, 1024, 600);
+              int linux_duration=ap->getDuration()/1000;
+              ui->progressSlider->setRange(0,linux_duration);
+              printf("----------------------the video totaltime is %d\n",linux_duration);
+              QString totalTime=QDateTime::fromTime_t(linux_duration).toString("mm:ss");
+              printf("----------------------the video totaltime is %s\n",(char*)totalTime.toStdString().c_str());
+              ap->play();
+              astatus = ASTATUS_PLAYING;
+              this->duration=linux_duration;
+              qDebug()<<"total time is"<<duration;
+              ui->label->setText(QString(tr("now play:"))+file_name);
           }
-
-          ap->setUserCb(autCb_func, this);
-          ap->setViewWindow(0, 0, 1024, 600);
-          int linux_duration=ap->getDuration()/1000;
-          ui->progressSlider->setRange(0,linux_duration);
-          printf("----------------------the video totaltime is %d\n",linux_duration);
-          QString totalTime=QDateTime::fromTime_t(linux_duration).toString("mm:ss");
-          printf("----------------------the video totaltime is %s\n",(char*)totalTime.toStdString().c_str());
-          ap->play();
-          this->duration=linux_duration;
-          qDebug()<<"total time is"<<duration;
-          ui->label->setText(QString(tr("now play:"))+file_name);
           connect(ui->voiceSlider,SIGNAL(valueChanged(int)),this,SLOT(setVolume(int)));
           connect(ui->progressSlider,SIGNAL(sliderMoved(int)),this,SLOT(seek(int)));
-          //每10ms钟获取当前的播放位置，并更新slider和label
-          timer = new QTimer(this);
-          connect(timer,SIGNAL(timeout()),this,SLOT(timerUpdate()));
-          timer->start(100);
+
     #endif
-    astatus = ASTATUS_PLAYING;
+    //每10ms钟获取当前的播放位置，并更新slider和label
+    timer = new QTimer(this);
+    connect(timer,SIGNAL(timeout()),this,SLOT(timerUpdate()));
+    timer->start(100);
     //printf("---------------------------------cant find the correct video\n");
 
 
@@ -314,7 +317,6 @@ void Video_Player::find_correspond_subtitle_file(QFileInfo fileInfo)
     #endif
     }else if(tmp_map.size()==0){
         qDebug()<<"can't find this video's subtitle";
-
     }
 }
 
@@ -498,18 +500,121 @@ void Video_Player::on_muteButton_clicked()
 
 void Video_Player::on_btnMenu_Min_clicked()
 {
-    #if defined(Q_OS_LINUX)
-        #if defined(USE_AUTPLAYER)
-            ap->stop();
-        #endif
-        astatus = ASTATUS_STOPPED;
-        timer->stop();
-    #else
-        player->stop();
-    #endif
-    this->close();
-        pStaticMaindesktop->setHidden(false);
-        pStaticMovieDesk->setHidden(false);
+    //实现QMenu选择字幕和音频文件
+    m_menu=new QMenu();
+    m_subtitleSelect=new QAction(m_menu);
+    m_audioFileSelect=new QAction(m_menu);
+    m_subtitleSelect->setText(QObject::tr("字幕选择"));
+    m_audioFileSelect->setText(QObject::tr("音频选择"));
+    m_menu->addAction(m_subtitleSelect);
+    m_menu->addAction(m_audioFileSelect);
+    QMenu* m_subMenu_subtitle=new QMenu();
+    QMenu* m_subMenu_audio=new QMenu();
+    m_subtitleSelect->setMenu(m_subMenu_subtitle);
+    m_audioFileSelect->setMenu(m_subMenu_audio);
+
+    QPoint pos(ui->btnMenu_Min->x()-40,ui->btnMenu_Min->y()+ui->btnMenu_Min->height());
+
+#if defined(Q_OS_LINUX)
+    int num_subtitle;
+#else
+    int num_subtitle=4;
+#endif
+    getAllSubtitle(num_subtitle);
+    for(int i=0;i<num_subtitle;i++)
+    {
+        QAction* file=new QAction(m_subMenu_subtitle);
+        QString str=QString(tr("字幕%1")).arg(i+1);
+        file->setText(str);
+        m_subMenu_subtitle->addAction(file);
+        if(i==subtitle_num_now-1)
+        {
+            file->setCheckable(true);
+            file->setChecked(true);
+        }
+    }
+#if defined(Q_OS_LINUX)
+    int num_audio;
+#else
+    int num_audio=3;
+#endif
+    getAllAudio(num_audio);
+    for(int i=0;i<num_audio;i++)
+    {
+        QAction* file=new QAction(m_subMenu_audio);
+        QString str=QString(tr("音频%1")).arg(i+1);
+        file->setText(str);
+        m_subMenu_audio->addAction(file);
+        if(i==audio_num_now-1)
+        {
+            file->setCheckable(true);
+            file->setChecked(true);
+        }
+    }
+    connect(m_subMenu_subtitle,SIGNAL(triggered(QAction*)),this,SLOT(setSubtitleNum(QAction*)));
+    connect(m_subMenu_audio,SIGNAL(triggered(QAction*)),this,SLOT(setAudioNum(QAction*)));
+    m_menu->exec(mapToGlobal(pos));
+
+}
+void Video_Player::setSubtitleNum(QAction* pAction)
+{
+    QString file=pAction->text();
+    pAction->setCheckable(true);
+    pAction->setChecked(true);
+    qDebug()<<"triggered the "<<file;
+    QString tmp;
+    for(int i=0;i<file.size();i++)
+    {
+        if(file[i].isDigit())
+        {
+            tmp+=file[i];
+        }
+    }
+    int num=tmp.toInt();
+    subtitle_num_now=num;
+    qDebug()<<"the subtitle "<<num<<" will be set";
+#if defined(Q_OS_LINUX)
+    ap->switchSubtitle(num);
+#endif
+}
+void Video_Player::getAllSubtitle(int& nums)
+{
+#if defined(Q_OS_LINUX)
+    qDebug()<<"get subtitle num";
+    MediaInfo* mediaInfo=ap->getMediaInfo();
+    nums=mediaInfo->nSubtitleStreamNum;
+    qDebug()<<"the video have "<<nums<<"subtitles";
+#endif
+}
+void Video_Player::setAudioNum(QAction* pAction)
+{
+    QString file=pAction->text();
+    pAction->setCheckable(true);
+    pAction->setChecked(true);
+    qDebug()<<"triggered the "<<file;
+    QString tmp;
+    for(int i=0;i<file.size();i++)
+    {
+        if(file[i].isDigit())
+        {
+            tmp+=file[i];
+        }
+    }
+    int num=tmp.toInt();
+    audio_num_now=num;
+    qDebug()<<"the audio "<<num<<" will be set";
+#if defined(Q_OS_LINUX)
+    ap->switchAudio(num);
+#endif
+}
+void Video_Player::getAllAudio(int& nums)
+{
+#if defined(Q_OS_LINUX)
+    qDebug()<<"get audio num";
+    MediaInfo* mediaInfo=ap->getMediaInfo();
+    nums=mediaInfo->nAudioStreamNum;
+    qDebug()<<"the video have "<<nums<<"audio file";
+#endif
 }
 
 void Video_Player::on_btnMenu_Max_clicked()
@@ -530,18 +635,20 @@ void Video_Player::on_btnMenu_Max_clicked()
 
 void Video_Player::on_btnMenu_Close_clicked()
 {
-    #if defined(Q_OS_LINUX)
-        #if defined(USE_AUTPLAYER)
-            ap->stop();
-        #endif
-        astatus = ASTATUS_STOPPED;
-        timer->stop();
-    #else
-        player->stop();
+
+#if defined(Q_OS_LINUX)
+    #if defined(USE_AUTPLAYER)
+        ap->stop();
     #endif
-    this->close();
+    astatus = ASTATUS_STOPPED;
+    timer->stop();
+#else
+    player->stop();
+#endif
+this->close();
     pStaticMaindesktop->setHidden(false);
     pStaticMovieDesk->setHidden(false);
+
 }
 void Video_Player::show_title()
 {
@@ -682,16 +789,6 @@ void Video_Player::on_fastBackButton_clicked()
 void Video_Player::on_fastFrontButton_clicked()
 {
 #if defined(Q_OS_LINUX)
-
-//    int nowTime=ap->getCurrentPosition()/1000;
-//    int linux_duration=ap->getDuration()/1000;
-//    int lastTime=linux_duration-nowTime;
-//    if(lastTime<30)
-//    {
-//        ap->seekto(linux_duration-2);
-//        updateDurationInfo(linux_duration-2);
-//        return ;
-//    }
     mouseMoveTime->stop();
     timer->stop();
 #if defined(SEEKTO)

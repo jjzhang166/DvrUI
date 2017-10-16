@@ -9,7 +9,8 @@ extern main_desktop* pStaticMaindesktop;
 extern QFileInfo fileInfo_to_play;
 const QString win_path="E:/tech_practise/DvrUI/DvrUI/video/";
 //const QString linux_path="/mnt/sdcard/mmcblk1p1/frontVideo/";//sdcard
-const QString linux_path="/mnt/usb/sda4/";//U盘
+extern QString linux_usb_path;//U盘
+extern QString linux_sdcard_path;//sd卡
 
 extern MidWindow* midwindow;
 
@@ -33,9 +34,11 @@ videoWidget::videoWidget(QWidget *parent) :
 }
 void videoWidget::show_file()
 {
+    qDebug()<<"video widget is showing file";
     #if defined(Q_OS_LINUX)
-    //        m_DirIterator=new QDirIterator(linux_path,QDir::Files,QDirIterator::Subdirectories);
-    file_list=GetFileList(QDir(linux_path));
+    //        m_DirIterator=new QDirIterator(linux_usb_path,QDir::Files,QDirIterator::Subdirectories);
+    qDebug()<<"now path is "<<linux_usb_path;
+    file_list=GetFileList(QDir(linux_usb_path));
     #else
     //        m_DirIterator=new QDirIterator(win_path,QDir::Files,QDirIterator::Subdirectories);
     file_list=GetFileList(QDir(win_path));
@@ -58,7 +61,7 @@ void videoWidget::show_file()
         ui->listWidget_file->setViewMode(QListView::IconMode);
         ui->listWidget_file->setIconSize(QSize(100,100));
         //设置拖拉
-        ui->listWidget_file->setDragEnabled(true);
+        ui->listWidget_file->setDragEnabled(false);
         show_file_by_iconview(file_list);
     }else{
         //列表显示
@@ -100,6 +103,8 @@ QFileInfoList videoWidget::GetFileList(QDir dir)
 }
 void videoWidget::show_file_by_iconview(QFileInfoList file_list)
 {
+    qDebug()<<"show_file_by_iconview";
+    qDebug()<<"file_list has "<<file_list.size()<<" files";
     ui->listWidget_file->setIconSize(QSize(100,100));
     for(int i=0;i<file_list.size();i++)
     {
@@ -124,7 +129,7 @@ void videoWidget::show_file_by_iconview(QFileInfoList file_list)
             pItem = new QListWidgetItem(QIcon(objPixmap.scaled(QSize(90,70))),tempFileName);
         }
         pItem->setSizeHint(QSize(90,90));            //设置单元项的宽度和高度
-        ui->listWidget_file->addItem(pItem);              //添加QListWidgetItem
+        ui->listWidget_file->addItem(pItem);         //添加QListWidgetItem
     }
 }
 void videoWidget::show_file_by_listview(QFileInfoList file_list)
@@ -200,7 +205,7 @@ void videoWidget::play_video(QModelIndex pos)
     qDebug()<<"which file:"<<pos.row();
     QString file_name;
     #if defined(Q_OS_LINUX)
-    file_name=linux_path+item->text();
+    file_name=linux_usb_path+item->text();
     #else
     file_name=win_path+item->text();
     #endif

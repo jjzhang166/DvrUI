@@ -182,7 +182,7 @@ signals:
     void usb_is_umount();
 //    static void  testaut_event_cb_func1(NetlinkEvent *evt,void *usrdata);
 #endif
-    #if defined(os_test)
+    #if defined(Q_OS_LINUX)
     Mutex                           mObjectLock;
     #endif
     void startRecord();

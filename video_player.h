@@ -13,12 +13,15 @@
 #include <QDir>
 #include <QThread>
 #include <QLabel>
+#include <QMenu>
+#include <QAction>
 #if defined(Q_OS_LINUX)
 #define USE_AUTPLAYER 1
 #endif
 #if defined(USE_AUTPLAYER)
 #include "AutPlayer.h"
 #include "outputCtrl.h"
+#include "mediaInfo.h"
 using namespace android;
 #endif
 static const int ASTATUS_STOPPED   = 0;
@@ -85,7 +88,13 @@ private slots:
 
     void find_correspond_subtitle_file(QFileInfo);
 
+    void getAllSubtitle(int&);
 
+    void getAllAudio(int&);
+
+    void setSubtitleNum(QAction*);
+
+    void setAudioNum(QAction*);
 protected:
     void paintEvent(QPaintEvent *event);
 public:
@@ -98,6 +107,9 @@ public:
     qint64 duration;//时间表时
     QTimer *timer;
     QDir dir;
+    QMenu *m_menu;
+    QAction *m_subtitleSelect;
+    QAction *m_audioFileSelect;
 //    QDirIterator* m_DirIterator;
     QFileInfoList file_list;
     QFileInfoList all_file_list;
