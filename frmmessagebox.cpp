@@ -11,12 +11,12 @@ frmMessageBox::frmMessageBox(QWidget *parent) :
     show_title();
     FormInCenter();
     this->mousePressed = false;
-    //设置窗体标题栏隐藏
+
     this->setWindowFlags(Qt::FramelessWindowHint);
-    //设置窗体关闭时自动释放内存
+
     this->setAttribute(Qt::WA_DeleteOnClose);
 
-    //关联关闭按钮
+
     connect(ui->btnMenu_Close, SIGNAL(clicked()), this, SLOT(close()));
     connect(ui->btnCancel, SIGNAL(clicked()), this, SLOT(close()));
 
@@ -41,7 +41,7 @@ void frmMessageBox::show_title()
     ui->lab_Ico->setText( QChar(0xf015));
     ui->lab_Title->setFont(iconFont);
 }
-//窗体居中显示
+
 void frmMessageBox::FormInCenter()
 {
     int frmX = this->width();
@@ -57,14 +57,14 @@ void frmMessageBox::SetMessage(const QString &msg, int type)
     if (type == 0) {
         ui->labIcoMain->setStyleSheet("border-image: url(:/icon/info.png);");
         ui->btnCancel->setVisible(false);
-        ui->lab_Title->setText("提示");
+        ui->lab_Title->setText("information");
     } else if (type == 1) {
         ui->labIcoMain->setStyleSheet("border-image: url(:/icon/question.png);");
-        ui->lab_Title->setText("询问");
+        ui->lab_Title->setText("question");
     } else if (type == 2) {
         ui->labIcoMain->setStyleSheet("border-image: url(:/icon/error (2).png);");
         ui->btnCancel->setVisible(false);
-        ui->lab_Title->setText("错误");
+        ui->lab_Title->setText("error");
     }
 
     ui->labInfo->setText(msg);

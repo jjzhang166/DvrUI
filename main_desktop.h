@@ -16,11 +16,11 @@
 //#include <settings.h>
 #include "setfirst.h"
 #include "dashboard.h"
-#include "moviedesk.h"
+#include "moviedesk1.h"
 #include "reverselinewidget.h"
-//#define os_test Q_OS_LINUX
+#define os_test Q_OS_LINUX
 
-#if defined(Q_OS_LINUX)//行车记录模块视频显示
+#if defined(Q_OS_LINUX)
 #define PATH_SDCARD  "/mnt/sdcard/mmcblk1p1/"
 #define PATH_SD_DEV  "/dev/mmcblk1p1"
 #define HAVA_TWO_CAMERA 1  //While move to cfg
@@ -123,49 +123,42 @@ private://用于检测是否有动作
     void on_mouse_active();
 private:
     Ui::main_desktop *ui;
-    bool cameraState;//摄像头前后状态：true=前置；false=后置
-    bool isLocked;//是否锁定屏幕
-    QTimer *mouseMoveTime;//检测鼠标离开的时间
+    bool cameraState;//camera state：true=front,false=rear
+
+    QTimer *mouseMoveTime;
     QPixmap screenshot_pic;
     void accept();
 public slots:
     void timerUpdate(void);
-//    void cameraChange();//前后摄像头切换
-private slots://有动作时显示图标
+//    void cameraChange();
+private slots:
     void on_mouse_no_active_10_second();
     void on_main_desktop_disvisible();
     void on_main_desktop_visible();
     void on_pushButton_clicked();
 
-public slots://其它界面调出
+public slots:
     void on_recordButton_clicked();
 
     void on_camera_change_Button_clicked();
-
-    void on_compassButton_clicked();
 
     void on_setFirstButton_clicked();
 
     void on_movieButton_clicked();
 
-    void on_cameraButton_clicked();//截图
-
-    void on_lockButton_clicked();//锁屏
+    void on_cameraButton_clicked();
 
     void on_reverseLine_repaint();
-private://界面类
+private:
     SetFirst *setting_desktop;
-    dashBoard *dashboards;
-    movieDesk *moviedesk;
+//    dashBoard *dashboards;
+    movieDesk1 *moviedesk;
     reverseLineWidget* reverseLinewidget;
-//public slots://返回值
-//    void recieve_setting_data(results);
+
 private:
     void setButtonVisible();
     void setButtonDisvisible();
     void FormInCenter();
-
-//摄像头数据显示部分
 public:
 
 

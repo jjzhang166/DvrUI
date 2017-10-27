@@ -16,9 +16,9 @@ void reverseLineWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
 
     painter.setWorldTransform(QTransform().translate(0,430).rotate(rotate_angle,Qt::XAxis).translate(0,-430));
-    //反走样，防锯齿
+
     painter.setRenderHint(QPainter::Antialiasing, true);
-    //设置颜色和宽度
+
     painter.setPen(QPen(QColor(231,255,15),5));
 
 //    painter.rotate(20,Qt::XAxis);

@@ -53,7 +53,8 @@ SOURCES += \
     frmmessagebox.cpp \
     reverselinewidget.cpp \
     reverseline_setting.cpp \
-    midwindow.cpp
+    midwindow.cpp \
+    moviedesk1.cpp
 
 HEADERS += \
         main_desktop.h \
@@ -84,7 +85,8 @@ HEADERS += \
     frmmessagebox.h \
     reverselinewidget.h \
     reverseline_setting.h \
-    midwindow.h
+    midwindow.h \
+    moviedesk1.h
 
 FORMS += \
         main_desktop.ui \
@@ -109,7 +111,8 @@ FORMS += \
     slave_picturewidget.ui \
     slave_videowidget.ui \
     frmmessagebox.ui \
-    reverseline_setting.ui
+    reverseline_setting.ui \
+    moviedesk1.ui
 
 RESOURCES += \
     image/image.qrc \

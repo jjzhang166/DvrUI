@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>660</width>
+    <width>677</width>
     <height>430</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">border-radius:5px;
+background-color:#564c4b;</string>
   </property>
   <layout class="QGridLayout" name="gridLayout" rowstretch="1,4,1,6,1">
    <item row="0" column="0">
@@ -138,7 +142,10 @@ font: 63 18pt &quot;Ubuntu&quot;;</string>
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">QComboBox::drop-down,QDateEdit::drop-down {
+            <string notr="true">background-color:rgb(38, 112, 197);
+border-radius:0px;
+
+QComboBox::drop-down,QDateEdit::drop-down {
 	subcontrol-origin: padding;
 	subcontrol-position: top right;
 	width: 15px; 

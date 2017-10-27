@@ -330,6 +330,9 @@ QPushButton:hover{
      <height>65</height>
     </size>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <layout class="QGridLayout" name="gridLayout">
     <property name="sizeConstraint">
      <enum>QLayout::SetDefaultConstraint</enum>
@@ -343,8 +346,8 @@ QPushButton:hover{
     <property name="horizontalSpacing">
      <number>0</number>
     </property>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="preMovieButton">
+    <item row="0" column="3">
+     <widget class="QPushButton" name="fastFrontButton">
       <property name="minimumSize">
        <size>
         <width>51</width>
@@ -362,9 +365,8 @@ QPushButton:hover{
 	border-style: none;
 	border: 0px;
 	color: #F0F0F0;
-	padding: 5px;
+	padding: 5px;	
 	border-radius:5px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
 }
 
 .QPushButton[focusPolicy=&quot;0&quot;] {
@@ -373,18 +375,15 @@ QPushButton:hover{
 	color: #F0F0F0;
 	padding: 0px;	
 	border-radius:3px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
 }
 
 .QPushButton:hover{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
 }
 
 .QPushButton:pressed{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
 }
 QPushButton{
-border-image:url(:/icon/skip-backward.png)
+border-image:url(:/icon/forward.png)
 }</string>
       </property>
       <property name="text">
@@ -413,7 +412,7 @@ border-image:url(:/icon/skip-backward.png)
 	color: #F0F0F0;
 	padding: 5px;	
 	border-radius:5px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+	 
 }
 
 .QPushButton[focusPolicy=&quot;0&quot;] {
@@ -422,15 +421,15 @@ border-image:url(:/icon/skip-backward.png)
 	color: #F0F0F0;
 	padding: 0px;	
 	border-radius:3px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
+	 
 }
 
 .QPushButton:hover{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
+	
 }
 
 .QPushButton:pressed{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
+
 }
 QPushButton{
 border-image:url(:/icon/fastback.png);
@@ -441,8 +440,8 @@ border-image:url(:/icon/fastback.png);
       </property>
      </widget>
     </item>
-    <item row="0" column="2">
-     <widget class="QPushButton" name="playButton">
+    <item row="0" column="0">
+     <widget class="QPushButton" name="preMovieButton">
       <property name="minimumSize">
        <size>
         <width>51</width>
@@ -456,79 +455,15 @@ border-image:url(:/icon/fastback.png);
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">QPushButton{
-	border-style: none;
-	border: 0px;
-	color: #F0F0F0;
-	padding: 5px;	
-	border-radius:5px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
-}
-
-.QPushButton[focusPolicy=&quot;0&quot;] {
-	border-style: none;
-	border: 0px;
-	color: #F0F0F0;
-	padding: 0px;	
-	border-radius:3px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
-}
+       <string notr="true">
 
 .QPushButton:hover{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
 }
 
 .QPushButton:pressed{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
-}</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3">
-     <widget class="QPushButton" name="fastFrontButton">
-      <property name="minimumSize">
-       <size>
-        <width>51</width>
-        <height>51</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>51</width>
-        <height>51</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QPushButton{
-	border-style: none;
-	border: 0px;
-	color: #F0F0F0;
-	padding: 5px;	
-	border-radius:5px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
-}
-
-.QPushButton[focusPolicy=&quot;0&quot;] {
-	border-style: none;
-	border: 0px;
-	color: #F0F0F0;
-	padding: 0px;	
-	border-radius:3px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
-}
-
-.QPushButton:hover{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
-}
-
-.QPushButton:pressed{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
 }
 QPushButton{
-border-image:url(:/icon/forward.png)
+border-image:url(:/icon/skip-backward.png)
 }</string>
       </property>
       <property name="text">
@@ -551,33 +486,11 @@ border-image:url(:/icon/forward.png)
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">QPushButton{
-	border-style: none;
-	border: 0px;
-	color: #F0F0F0;
-	padding: 5px;	
-	border-radius:5px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
-}
-
-.QPushButton[focusPolicy=&quot;0&quot;] {
-	border-style: none;
-	border: 0px;
-	color: #F0F0F0;
-	padding: 0px;	
-	border-radius:3px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
-}
-
-.QPushButton:hover{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
-}
-
+       <string notr="true">
 .QPushButton:pressed{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
 }
 QPushButton{
-border-image:url(:/icon/skip-forward.png)
+border-image:url(:/icon/skip-forward.png);
 }</string>
       </property>
       <property name="text">
@@ -606,7 +519,6 @@ border-image:url(:/icon/skip-forward.png)
 	color: #F0F0F0;
 	padding: 5px;	
 	border-radius:5px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
 }
 
 .QPushButton[focusPolicy=&quot;0&quot;] {
@@ -615,15 +527,12 @@ border-image:url(:/icon/skip-forward.png)
 	color: #F0F0F0;
 	padding: 0px;	
 	border-radius:3px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
 }
 
 .QPushButton:hover{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
 }
 
 .QPushButton:pressed{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
 }
 QPushButton{
 border-image:url(:/icon/Stop.png)
@@ -735,7 +644,6 @@ QSlider::handle:horizontal:hover {
 	color: #F0F0F0;
 	padding: 5px;	
 	border-radius:5px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
 }
 
 .QPushButton[focusPolicy=&quot;0&quot;] {
@@ -744,15 +652,12 @@ QSlider::handle:horizontal:hover {
 	color: #F0F0F0;
 	padding: 0px;	
 	border-radius:3px;
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3); 
 }
 
 .QPushButton:hover{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #50A3F0, stop:1 #489CEA);
 }
 
 .QPushButton:pressed{ 
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #0F7DBE, stop:1 #1582C3);
 }</string>
       </property>
       <property name="text">
@@ -804,6 +709,55 @@ QSlider::handle:horizontal:hover {
       </property>
      </widget>
     </item>
+    <item row="0" column="2">
+     <widget class="QPushButton" name="playButton">
+      <property name="minimumSize">
+       <size>
+        <width>51</width>
+        <height>51</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>51</width>
+        <height>51</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+	border-style: none;
+	border: 0px;
+	color: #F0F0F0;
+	padding: 5px;	
+	border-radius:5px;
+}
+
+.QPushButton[focusPolicy=&quot;0&quot;] {
+	border-style: none;
+	color: #F0F0F0;
+	padding: 0px;	
+	border-radius:3px;
+
+}
+
+.QPushButton:hover{ 
+}
+
+.QPushButton:pressed{ 
+}
+</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="widget_2" native="true">
@@ -819,6 +773,9 @@ QSlider::handle:horizontal:hover {
     <font>
      <pointsize>12</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
    </property>
   </widget>
  </widget>

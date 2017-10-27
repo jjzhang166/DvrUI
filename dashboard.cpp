@@ -13,7 +13,7 @@ dashBoard::dashBoard(QWidget *parent) :
     FormInCenter();
     myspeed=new mySpeed();
     ui->scrollArea->setWidget(myspeed);
-    connect(ui->pushButton,SIGNAL(clicked(bool)),SLOT(on_returnButton_clicked()));
+    connect(ui->pushButton,SIGNAL(clicked()),SLOT(on_returnButton_clicked()));
 }
 void dashBoard::FormInCenter()
 {

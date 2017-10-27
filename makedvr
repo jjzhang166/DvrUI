@@ -1,0 +1,5 @@
+#!/bin/sh
+#make -C ../sdk/
+export PATH=$PATH:../../../../out/sun8iw11p1/linux/common/buildroot/external-toolchain/bin/
+../../../../buildroot/dl/qt-everywhere-opensource-src-5.4.1/Qt-5.4.1/bin/qmake -o Makefile DvrUI.pro
+make -j32

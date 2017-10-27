@@ -36,14 +36,14 @@ void Rear_Camera_Setting::on_returnButton_clicked(bool)
 }
 void Rear_Camera_Setting::on_upperButton_clicked(bool)
 {
-    qDebug()<<"后置摄像头向上调整";
+    qDebug()<<"rear camera upper";
 }
 void Rear_Camera_Setting::on_downButton_clicked(bool)
 {
-    qDebug()<<"后置摄像头向下调";
+    qDebug()<<"rear camera down";
 }
 void Rear_Camera_Setting::on_sureButton_clicked(bool)
 {
-    qDebug()<<"确认对后置摄像头的调整";
+    qDebug()<<"sure to adjust camera";
     this->close();
 }

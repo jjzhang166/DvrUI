@@ -28,8 +28,8 @@ private slots:
 private:
     Ui::frmMessageBox *ui;
 
-    QPoint mousePoint;              //鼠标拖动自定义标题栏时的坐标
-    bool mousePressed;              //鼠标是否按下
+    QPoint mousePoint;
+    bool mousePressed;
     void show_title();
     void FormInCenter();
 };

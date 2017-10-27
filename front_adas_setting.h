@@ -23,7 +23,7 @@ signals:
 private:
     Ui::front_ADAS_setting *ui;
     int horizontal_values,vertical_values;
-    int model;//判断是画横线还是竖线；0为初始状态，1为画横线，2为画竖线
+    int model;
     void FormInCenter();
 };
 

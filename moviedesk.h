@@ -24,10 +24,13 @@ class movieDesk : public QDialog
 public:
     explicit movieDesk(QWidget *parent = 0);
     ~movieDesk();
+    void FormInCenter();
 public slots:
     void on_returnButton_clicked();
     void on_mainCameraButton_clicked();
     void on_viceButton_clicked();
+    void deal_fileDialog(int a);
+    void deal_fileDialog1();
 private:
     Ui::movieDesk *ui;
     int cur_index;
@@ -40,15 +43,21 @@ private:
     QFileDialog *fileDialog;
     Video_Player* player;
     Picture_view* pic_view;
-    void FormInCenter();
+    bool isMainCamera;
+    void on_usb_mount();
+    void on_usb_umount();
 public slots:
     void on_hide_moviedesktop();
     void on_unhide_moviedesktop();
     void open_file(QString);
 signals:
     void main_desktop_disvisible();
+private slots:
+    void on_videoButton_clicked();
+    void on_picButton_clicked();
+    void on_scanButton_clicked();
 };
-//将tabWidget设置为横向的
+
 
 
 #endif // MOVIEDESK_H

@@ -5,13 +5,15 @@
 #include <QGridLayout>
 #include <QFontDatabase>
 #include <QDesktopWidget>
-// This is available in all editors.
-extern int which_masterpic_show_big;
-extern QString which_masterfilename_show_big;
-extern int which_slavepic_show_big;
-extern QString which_slavefilename_show_big;
-extern bool pic_slave_or_master;
+#include "main_desktop.h"
+#include "moviedesk1.h"
+extern QFileInfo fileInfo_to_show;
+extern movieDesk1* pStaticMovieDesk;
+extern main_desktop* pStaticMaindesktop;
+#if defined(Q_OS_LINUX)
+extern int is_dir_exist(const char *dir_path);
 
+#endif
 
 Picture_view::Picture_view(QWidget *parent) :
     QDialog(parent),
@@ -19,63 +21,45 @@ Picture_view::Picture_view(QWidget *parent) :
 {
     ui->setupUi(this);
     show_title();
-//    int w,h;
-//    w=(1024-this->width())/2;
-//    h=(600-this->height())/2;
-//    this->mapToGlobal(QPoint(w,h));
+    current_pic=0;
     FormInCenter();
-//    pictureLabel = new QLabel(this);
-//    scrollArea=new QScrollArea(this);
-//    scrollArea->setWidget(pictureLabel);
-//    scrollArea->setBaseSize(QSize(260,260));
     pic_view=new CProjectionPicture();
-
-//    QGridLayout* layout;
-//    layout->addWidget(pic_view);
-//    layout->addLayout(ui->gridLayout,1,0);
-//    layout->setRowStretch(1,6);
-//    setLayout(layout);
     ui->scrollArea->setWidget(pic_view);
 
-    if(pic_slave_or_master){
-        qDebug()<<"显示主摄像头数据";
-        which_pic_show_big=which_masterpic_show_big;
-        which_filename_show_big=which_masterfilename_show_big;
-    }else{
-        qDebug()<<"显示副摄像头数据";
-        which_pic_show_big=which_slavepic_show_big;
-        which_filename_show_big=which_slavefilename_show_big;
-    }
-    qDebug()<<"需要打开第"<<which_pic_show_big<<"张图片";
-    qDebug()<<which_pic_show_big;
-    qDebug()<<"打开的文件名称为"<<which_filename_show_big;
+    qDebug()<<"the filename will play is"<<fileInfo_to_show.completeBaseName();
+    current_path=fileInfo_to_show.absolutePath();
+    qDebug()<<"current path is:"<<current_path;
     #if defined(Q_OS_LINUX)
-        if(pic_slave_or_master){
-            m_DirIterator=new QDirIterator(QString("/mnt/sdcard/mmcblk1p1/frontPicture/"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
+        if(!is_dir_exist((char*)current_path.toStdString().c_str()))
+        {
+            dir.setPath(current_path);
+            file_list=GetFileList(dir);
+            for(int i=0;i<file_list.size();i++)
+            {
+                if(file_list[i]==fileInfo_to_show){
+                    current_pic=i;
+                    break;
+                }
+            }
         }else{
-            m_DirIterator=new QDirIterator(QString("/mnt/sdcard/mmcblk1p1/rearPicture/"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
+            qDebug()<<"path is not exist";
         }
-
     #else
-        m_DirIterator=new QDirIterator(QString("../DvrUI/image"),QDir::Files|QDir::NoSymLinks,QDirIterator::Subdirectories);
+        if(current_path==""){
+            qDebug()<<"the wrong path";
+        }else{
+            dir.setPath(current_path);
+            file_list=GetFileList(dir);
+            for(int i=0;i<file_list.size();i++)
+            {
+                if(file_list[i]==fileInfo_to_show){
+                    current_pic=i;
+                    break;
+                }
+            }
+        }
     #endif
-    show_image(m_DirIterator);
-
-    //去掉scroll的边框
-//    QGridLayout *layout=new QGridLayout();
-//    scrollArea->setWidget(pictureLabel);
-//    scrollArea->setFrameShape(QFrame::NoFrame);
-//    pictureLabel->setAlignment(Qt::AlignCenter);  // 图片居中
-//    scrollArea->setBackgroundRole(QPalette::Dark);
-//    scrollArea->setWidgetResizable(true);  // 自动调整大小
-//    scrollArea->setFixedSize(180,180);
-//    scrollArea->setBaseSize(QSize(this->width()-25,this->height()));
-//    pictureLabel->setAlignment(Qt::AlignCenter);
-//    scrollArea->setAlignment(Qt::AlignCenter);  // 居中对齐
-//    scrollArea->setWidget(ui->closeButton);
-//    layout->addWidget(scrollArea,0,0);
-//    layout->addLayout(ui->gridLayout,0,1);
-//    setLayout(layout);
+    show_image(fileInfo_to_show);
 }
 
 Picture_view::~Picture_view()
@@ -100,43 +84,32 @@ void Picture_view::show_title()
     ui->label->setFont(iconFont);
 }
 
-void Picture_view::show_image(QDirIterator* m_DirIterator)
+QFileInfoList Picture_view::GetFileList(QDir dir)
 {
-    while (m_DirIterator->hasNext()) {
-        QString tempFile=m_DirIterator->next();
-        QString tempFileName=tempFile;
-        qDebug()<<"打开的图片名为："<<tempFileName;
-        #if defined(Q_OS_LINUX)
-        if(pic_slave_or_master){
-            tempFileName=tempFileName.remove(QString("/mnt/sdcard/mmcblk1p1/frontPicture/"),Qt::CaseSensitive);
-        }else{
-            tempFileName=tempFileName.remove(QString("/mnt/sdcard/mmcblk1p1/rearPicture/"),Qt::CaseSensitive);
-        }
-        #else
-            tempFileName=tempFileName.remove(QString("../DvrUI/image/"),Qt::CaseSensitive);
-        #endif
-
-        if(which_filename_show_big==tempFileName){
-            qDebug()<<"打开图片ing";
-            printf("-------------------------------open pic ing\n");
-            QImage pic;
-            pic.load(tempFile);
-
-            pic_view->setPicture(pic);
-            ui->label->setText(tempFileName);
-//            QPixmap objPixmap(tempFile);
-//            ui->pictureLabel->setPixmap(objPixmap);
-//            ui->pictureLabel->resize(QSize(objPixmap.width(),objPixmap.height()));
-//            ui->pictureLabel->resize(QSize(512,300));
-            break;
-        }
-        else{
-            continue;
-        }
+    qDebug()<<"get all video file name";
+    QStringList filters;
+    filters << "*.bmp"<<"*.jpg"<<"*.jpeg"<<"*.png"<<"*.BMP";
+    dir.setNameFilters(filters);
+    QFileInfoList file_list=dir.entryInfoList();
+    for(int i=0;i<file_list.size();i++)
+    {
+        QFileInfo fileInfo=file_list.at(i);
+        fileInfo.absoluteFilePath();
+//        qDebug()<<fileInfo.fileName();
     }
-//    ui->pictureLabel->setAlignment(Qt::AlignCenter);  // 图片居中
+    return file_list;
 }
-//窗体居中显示
+
+void Picture_view::show_image(QFileInfo fileInfo_to_show)
+{
+    printf("-------------------------------open pic ing\n");
+    QImage pic;
+    pic.load(fileInfo_to_show.absoluteFilePath());
+
+    pic_view->setPicture(pic);
+    ui->label->setText(fileInfo_to_show.completeBaseName());
+}
+
 void Picture_view::FormInCenter()
 {
     int frmX = this->width();
@@ -150,23 +123,54 @@ void Picture_view::FormInCenter()
 void Picture_view::on_btnMenu_Min_clicked()
 {
     this->close();
-//    pictureWidget* pPictureWidget=static_cast<pictureWidget*>(parentWidget());
-//    pPictureWidget->setHidden(false);
-    emit p_unhide_moviedesktop();
+    pStaticMaindesktop->setHidden(false);
+    pStaticMovieDesk->setHidden(false);
+
 }
 
 void Picture_view::on_btnMenu_Max_clicked()
 {
     this->close();
-//    pictureWidget* pPictureWidget=static_cast<pictureWidget*>(parentWidget());
-//    pPictureWidget->setHidden(false);
-    emit p_unhide_moviedesktop();
+    pStaticMaindesktop->setHidden(false);
+    pStaticMovieDesk->setHidden(false);
 }
 
 void Picture_view::on_btnMenu_Close_clicked()
 {
     this->close();
-//    pictureWidget* pPictureWidget=static_cast<pictureWidget*>(parentWidget());
-//    pPictureWidget->setHidden(false);
-    emit p_unhide_moviedesktop();
+    pStaticMaindesktop->setHidden(false);
+    pStaticMovieDesk->setHidden(false);
+}
+
+void Picture_view::on_prePicButton_clicked()
+{
+    if(current_pic-1>=0)
+    {
+        show_image(file_list.at(--current_pic));
+    }else{
+        qDebug()<<"no more pic";
+        return ;
+    }
+
+}
+
+void Picture_view::on_nextPicButton_clicked()
+{
+    if(current_pic+1<=file_list.size())
+    {
+        show_image(file_list.at(++current_pic));
+    }else{
+        qDebug()<<"no more pic";
+        return ;
+    }
+}
+
+void Picture_view::on_largerButton_clicked()
+{
+    pic_view->zoomIn();
+}
+
+void Picture_view::on_smallerButton_clicked()
+{
+    pic_view->zoomOut();
 }

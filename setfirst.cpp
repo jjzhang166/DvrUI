@@ -6,7 +6,7 @@
 #include <asoundlib.h>
 #endif
 extern int recordTime;
-//设置开机录像，录音等功能
+
 extern int open_recordVideo_front,open_recordVideo_rear;
 extern int open_recordAudio_front,open_recordAudio_rear;
 extern int open_reverseLine_front,open_reverseLine_rear;
@@ -23,17 +23,16 @@ SetFirst::SetFirst(QWidget *parent) :
 {
     ui->setupUi(this);
     qDebug()<<"-----------here0";
-    setWindowStyleSheet();
+
     ui->comboBox->setView(new QListView());
     voiceButtonState=false;
-    FormInCenter();
-    //连接前后两级页面
+//    this->setWindowFlags(Qt::FramelessWindowHint);
+    setWindowStyleSheet();
+
 //    connect(ui->settingsButton,SIGNAL(clicked()),this,SLOT(on_settingsButton_clicked()));
 //    connect(ui->returnButton,SIGNAL(clicked()),this,SLOT(on_returnButton_clicked()));
-    //设置音量和亮度调节
-    //设置滚动条和显示数字联动
-    //亮度的调节范围为0-20
-    //声音的调节范围为0-100
+
+
 #if defined(Q_OS_LINUX)
     lcd_blk_ctrl_init();
 //    qDebug()<<"--------------------begin light change";
@@ -72,13 +71,13 @@ SetFirst::SetFirst(QWidget *parent) :
     ui->whiteBalanceLabel->setText("50");
     ui->ExposureCompensationLabel->setText("50");
 
-    //设置QSpinBox设置录像时间
+
     ui->movieTimeSetting->setRange(1,5);
     ui->movieTimeSetting->setSingleStep(2);
     ui->movieTimeSetting->setValue(1);
-    ui->movieTimeSetting->setSuffix(tr("分钟"));
+    ui->movieTimeSetting->setSuffix(tr("min"));
 
-    //设置四个按钮的样式:按下和弹起操作
+
     ui->audioButton->setCheckable(true);
     ui->ADASButton->setCheckable(true);
     ui->reverseButton->setCheckable(true);
@@ -106,12 +105,24 @@ SetFirst::SetFirst(QWidget *parent) :
     }else{
         ui->reverseButton->setChecked(false);
     }
+    connect(this,SIGNAL(want_window_close()),this,SLOT(on_want_window_close()));
+    if(true)
+    {
+        emit want_window_close();
+    }
     setSecond_Desk=new Settings(this);
+    setSecond_Desk->FormInCenter();
 }
 SetFirst::~SetFirst()
 {
     delete ui;
     delete setSecond_Desk;
+}
+void SetFirst::on_want_window_close()
+{
+    qDebug()<<"here is on_want";
+    qDebug()<<"the window will close";
+    this->close();
 }
 //窗体居中显示
 void SetFirst::FormInCenter()
@@ -122,6 +133,7 @@ void SetFirst::FormInCenter()
     int deskWidth = w.width();
     int deskHeight = w.height();
     QPoint movePoint(deskWidth / 2 - frmX / 2, deskHeight / 2 - frmY / 2);
+    qDebug()<<frmX<<frmY<<"    "<<deskWidth<<deskHeight;
     this->move(movePoint);
 }
 
@@ -178,14 +190,18 @@ void SetFirst::on_audioButton_clicked()
     if(ui->audioButton->isChecked()){
         qDebug()<<"AUDIO 1";
     #if defined(Q_OS_LINUX)
+#if 0
         config_set_recordAudio(0,1);
+#endif
         open_recordAudio_front=1;
     #endif
     }
     else{
         qDebug()<<"AUDIO 0";
     #if defined(Q_OS_LINUX)
+        #if 0
         config_set_recordAudio(0,0);
+        #endif
         open_recordAudio_front=0;
     #endif
     }
@@ -195,14 +211,18 @@ void SetFirst::on_ADASButton_clicked()
     if(ui->ADASButton->isChecked()){
         qDebug()<<"ADAS 1";
     #if defined(Q_OS_LINUX)
+        #if 0
         config_set_adas(0,1);
+        #endif
         open_adas_front=1;
     #endif
     }
     else{
         qDebug()<<"ADAS 0";
     #if defined(Q_OS_LINUX)
+        #if 0
         config_set_adas(0,0);
+        #endif
         open_adas_front=0;
     #endif
     }
@@ -212,14 +232,18 @@ void SetFirst::on_movieButton_clicked()
     if(ui->movieButton->isChecked()){
         qDebug()<<"RECORD 1";
     #if defined(Q_OS_LINUX)
+        #if 0
         config_set_recordVideo(0,1);
+        #endif
         open_recordVideo_front=1;
     #endif
     }
     else{
         qDebug()<<"RECORD 0";
     #if defined(Q_OS_LINUX)
+        #if 0
         config_set_recordVideo(0,0);
+        #endif
         open_recordVideo_front=0;
     #endif
     }
@@ -229,14 +253,18 @@ void SetFirst::on_reverseButton_clicked()
     if(ui->reverseButton->isChecked()){
         qDebug()<<"REVERSE 1";
     #if defined(Q_OS_LINUX)
+        #if 0
         config_set_reverseLine(0,1);
+        #endif
         open_reverseLine_front=1;
     #endif
     }
     else{
         qDebug()<<"REVERSE 0";
     #if defined(Q_OS_LINUX)
+        #if 0
         config_set_reverseLine(0,0);
+        #endif
         open_reverseLine_front=0;
     #endif
     }
@@ -245,14 +273,14 @@ void SetFirst::on_reverseButton_clicked()
 void SetFirst::on_voiceButton_clicked()
 {
     if(!voiceButtonState){
-        qDebug()<<"按下为静音";
+
         ui->voiceButton->setStyleSheet("QPushButton{border-image:url(:/icon/no_sound.png)};");
         ui->voiceSlider->setValue(0);
         ui->voiceSlider->setEnabled(false);
         voiceButtonState=true;
     }
     else{
-        qDebug()<<"不是静音";
+
         ui->voiceButton->setStyleSheet("QPushButton{border-image:url(:/icon/sound.png)};");
         ui->voiceSlider->setValue(100);
         ui->voiceSlider->setEnabled(true);
@@ -271,8 +299,18 @@ void SetFirst::setWindowStyleSheet()
 {
 
     QPalette p=QPalette();
-    p.setColor(QPalette::Background,QColor(255,255,255));
-    this->setPalette(p);
+    p.setColor(QPalette::WindowText,Qt::white);
+
+    ui->label->setPalette(p);
+    ui->label_2->setPalette(p);
+    ui->voiceLabel->setPalette(p);
+    ui->lightLabel->setPalette(p);
+    ui->ColorEffectLabel->setPalette(p);
+    ui->ExposureCompensationLabel->setPalette(p);
+    ui->whiteBalanceLabel->setPalette(p);
+//    ui->ADASButton->setPalette(p);
+
+//    this->setStyleSheet("QWidget{border-radius:5px;}");
 
 //    ui->lightButton->setStyleSheet("QPushButton{border-image:url(:/icon/brightness.png)};");
 //    ui->voiceButton->setStyleSheet("QPushButton{border-image:url(:/icon/sound.png)};");

@@ -14,12 +14,17 @@
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color:rgb(101, 230, 255)
+   <string notr="true">background-color:rgb(104, 98, 98);
+border-radius:30px;
 </string>
   </property>
   <layout class="QGridLayout" name="gridLayout_10">
    <item row="0" column="0" rowspan="2">
     <widget class="QWidget" name="widget_4" native="true">
+     <property name="styleSheet">
+      <string notr="true">background-color:#564c4b;
+border-radius:10px;</string>
+     </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -125,7 +130,7 @@
    <item row="0" column="1" rowspan="2">
     <widget class="QWidget" name="widget" native="true">
      <property name="styleSheet">
-      <string notr="true">background-color:rgb(37, 172, 255)</string>
+      <string notr="true"/>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="1" column="0">
@@ -141,6 +146,11 @@
           <width>191</width>
           <height>191</height>
          </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color:#38a4d6;
+font: 12pt &quot;宋体&quot;;
+border-radius:5px;</string>
         </property>
         <property name="text">
          <string>ADAS</string>
@@ -161,6 +171,11 @@
           <height>191</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">background-color:#38a4d6;
+font: 75 12pt &quot;Aharoni&quot;;
+border-radius:5px;</string>
+        </property>
         <property name="text">
          <string>录音</string>
         </property>
@@ -179,6 +194,11 @@
           <width>191</width>
           <height>191</height>
          </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color:#38a4d6;
+font: 12pt &quot;宋体&quot;;
+border-radius:5px;</string>
         </property>
         <property name="text">
          <string>开机录像</string>
@@ -199,6 +219,11 @@
           <height>191</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">background-color:#38a4d6;
+font: 75 12pt &quot;Aharoni&quot;;
+border-radius:5px;</string>
+        </property>
         <property name="text">
          <string>倒车线</string>
         </property>
@@ -210,7 +235,8 @@
    <item row="0" column="2">
     <widget class="QWidget" name="widget_2" native="true">
      <property name="styleSheet">
-      <string notr="true">background-color:rgb(37, 172, 255)
+      <string notr="true">background-color:QColor(81,78,72);
+border-radius:10px;
 </string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
@@ -233,6 +259,10 @@
             <height>31</height>
            </size>
           </property>
+          <property name="styleSheet">
+           <string notr="true">
+font: 75 11pt &quot;Aharoni&quot;;</string>
+          </property>
           <property name="text">
            <string>录像时间设置</string>
           </property>
@@ -251,6 +281,12 @@
             <width>141</width>
             <height>41</height>
            </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:rgb(38, 112, 197);
+border-radius:0px;
+
+</string>
           </property>
          </widget>
         </item>
@@ -275,6 +311,11 @@
             <height>31</height>
            </size>
           </property>
+          <property name="styleSheet">
+           <string notr="true">font: 75 11pt &quot;Aharoni&quot;;
+
+</string>
+          </property>
           <property name="text">
            <string>分辨率设置</string>
           </property>
@@ -295,7 +336,10 @@
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">QComboBox::drop-down,QDateEdit::drop-down {
+           <string notr="true">background-color:rgb(38, 112, 197);
+border-radius:0px;
+
+QComboBox::drop-down,QDateEdit::drop-down {
 	subcontrol-origin: padding;
 	subcontrol-position: top right;
 	width: 15px; 
@@ -330,7 +374,8 @@ QComboBox::down-arrow,QDateEdit::down-arrow {
    <item row="1" column="2">
     <widget class="QWidget" name="widget_3" native="true">
      <property name="styleSheet">
-      <string notr="true">background-color:rgb(37, 172, 255)</string>
+      <string notr="true">background-color:QColor(81,78,72);
+border-radius:10px;</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_9">
       <item row="0" column="0">
@@ -626,6 +671,9 @@ QSlider::handle:horizontal {
              <height>31</height>
             </size>
            </property>
+           <property name="styleSheet">
+            <string notr="true">image: url(:/icon/ExposureCompensation.png);</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -711,6 +759,9 @@ QSlider::handle:horizontal {
              <width>31</width>
              <height>31</height>
             </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">image: url(:/icon/whiteBalance.png);</string>
            </property>
            <property name="text">
             <string/>

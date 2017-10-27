@@ -20,18 +20,19 @@ About::About(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::About)
 {
-    qDebug()<<"--------------here1";
+
     ui->setupUi(this);
+    this->setWindowFlags(Qt::FramelessWindowHint);
     ui->ROM_usage->setRange(0,100);
     connect(ui->formatButton,SIGNAL(clicked()),this,SLOT(on_formatButton_clicked()),Qt::UniqueConnection);
 #if defined(Q_OS_LINUX)
     if(!is_dir_exist(PATH_SDCARD))
     {
-        qDebug()<<"--------------here2";
+
         dev_type=0;
         QProcess process;
         QString cmd=QString("df /mnt/sdcard/mmcblk1p1 | grep %1").arg(QString("/dev/mmcblk1p1"));
-        qDebug()<<"--------------here3";
+
         process.start(cmd);
         process.waitForFinished();
         QByteArray output = process.readAllStandardOutput();
@@ -43,13 +44,13 @@ About::About(QWidget *parent) :
         t=t.left(t.length()-1);
         test=t.toInt();
         qDebug()<<test;
-        qDebug()<<"--------------here4";
+
     }else if(!is_dir_exist(PATH_USB)){
         dev_type=1;
-        qDebug()<<"--------------here5";
+
         QProcess process;
         QString cmd=QString("df /mnt/usb/sda4/  | grep %1").arg(QString("/dev/sda4/"));
-        qDebug()<<"--------------here6";
+
         process.start(cmd);
         process.waitForFinished();
         QByteArray output = process.readAllStandardOutput();
@@ -61,19 +62,17 @@ About::About(QWidget *parent) :
         t=t.left(t.length()-1);
         test=t.toInt();
         qDebug()<<test;
-        qDebug()<<"--------------here7";
+
     }else{
 //        ui->formatButton->setEnabled(false);
     }
 
 #else
     #if 0
-        /******
-         * 生成用于测试的随机数
-         *****/
+
         qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
         test =qrand()%100;
-        qDebug()<<"随机数"<<test;
+        qDebug()<<"random number"<<test;
     #endif
     test=66;
 #endif
@@ -89,7 +88,7 @@ void About::on_formatButton_clicked()
 {
 //    QMessageBox::StandardButton ret =QMessageBox::question(this,tr("format question"),tr("sure to format?"),QMessageBox::Ok|QMessageBox::Cancel,QMessageBox::Cancel);
     frmMessageBox* mesg=new frmMessageBox();
-    mesg->SetMessage(QString(tr("确定格式化？")), 1);
+    mesg->SetMessage(QString(tr("Sure to Format?")), 1);
     if(1==mesg->exec()){
     #if defined(Q_OS_LINUX)
         if(dev_type==0){
@@ -101,7 +100,7 @@ void About::on_formatButton_clicked()
         }
 
     #else
-        qDebug()<<"格式化";
+        qDebug()<<"format";
     #endif
     timer=new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(set_pro_value()));

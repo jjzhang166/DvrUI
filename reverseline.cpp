@@ -31,12 +31,12 @@ ReverseLine::~ReverseLine()
 }
 void ReverseLine::on_pictureLabel2_clicked()
 {
-    qDebug()<<"打开倒车线设置界面";
+    qDebug()<<"open reverseLine setting desk";
     reverseline_setting->showNormal();
     pStatic_settings->setHidden(true);
 }
 void ReverseLine::on_pictureLabel1_clicked()
 {
-    qDebug()<<"打开后视预览界面";
+    qDebug()<<"open rear mirro";
 }
 

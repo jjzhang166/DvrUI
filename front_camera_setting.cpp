@@ -3,8 +3,9 @@
 #include "preview.h"
 #include "ui_preview.h"
 #include <QDesktopWidget>
+#if 0
 extern int startA,startB,widthA,heightA;
-
+#endif
 static int interval=50;
 Front_camera_setting::Front_camera_setting(QWidget *parent) :
     QDialog(parent),
@@ -38,11 +39,12 @@ void Front_camera_setting::on_returnButton_clicked()
 }
 void Front_camera_setting::on_upperButton_clicked()
 {
-    qDebug()<<"前置摄像头向上调整";
+    qDebug()<<"camer upper";
     connect(ui->downButton,SIGNAL(clicked()),this,SLOT(on_downButton_clicked()),Qt::UniqueConnection);
     ui->downButton->setEnabled(true);
     #if defined(Q_OS_LINUX)
         printf("camera upper view\n");
+#if 0
         startA=0;widthA=1024;heightA=300;
 
 
@@ -55,16 +57,17 @@ void Front_camera_setting::on_upperButton_clicked()
             disconnect(ui->upperButton,SIGNAL(clicked()),this,SLOT(on_upperButton_clicked()));
             ui->upperButton->setEnabled(false);
         }
-
+#endif
     #endif
 }
 void Front_camera_setting::on_downButton_clicked()
 {
-    qDebug()<<"前置摄像头向下调";
+    qDebug()<<"camera down";
     connect(ui->upperButton,SIGNAL(clicked()),this,SLOT(on_upperButton_clicked()),Qt::UniqueConnection);
     ui->upperButton->setEnabled(true);
     #if defined(Q_OS_LINUX)
         printf("camera down view\n");
+#if 0
 //        interval-=50;
 //        printf("now interval is %d \n",interval);
         startA=0;widthA=1024;heightA=300;
@@ -75,11 +78,11 @@ void Front_camera_setting::on_downButton_clicked()
             disconnect(ui->downButton,SIGNAL(clicked()),this,SLOT(on_downButton_clicked()));
             ui->downButton->setEnabled(false);
         }
-
+#endif
     #endif
 }
 void Front_camera_setting::on_sureButton_clicked()
 {
-    qDebug()<<"确认对前置摄像头的调整";
+    qDebug()<<"sure camera adjust";
     this->close();
 }

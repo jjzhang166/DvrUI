@@ -33,7 +33,7 @@ public slots:
     void set_pro_value();
 private:
     Ui::About *ui;
-    int test;//用于测试
+    int test;//for test
     QTimer *timer;
     #if defined(Q_OS_LINUX)
         Fat *pfat;

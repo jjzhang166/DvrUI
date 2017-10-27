@@ -20,9 +20,9 @@ CProjectionPicture::CProjectionPicture(QWidget *parent)
     m_zoomDelta(0.2)
 {
     this->setFocusPolicy(Qt::ClickFocus);
-    grabGesture(Qt::PanGesture);//平移手势
-    grabGesture(Qt::PinchGesture);//缩放手势
-    grabGesture(Qt::SwipeGesture);//滑动手势
+    grabGesture(Qt::PanGesture);
+    grabGesture(Qt::PinchGesture);
+    grabGesture(Qt::SwipeGesture);
 }
 void CProjectionPicture::setPicture(QImage &image)
 {
@@ -116,27 +116,27 @@ void CProjectionPicture::resizeEvent(QResizeEvent*e)
     QWidget::resizeEvent(e);
 }
 
-//// 上/下/左/右键向各个方向移动、加/减键进行缩放
+
 //void CProjectionPicture::keyPressEvent(QKeyEvent *event)
 //{
 //    switch (event->key()) {
 //    qDebug() << event->key();
 //    case Qt::Key_Up:
-//        translate(QPointF(0, -5));  // 上移
+//        translate(QPointF(0, -5));
 //        break;
 //    case Qt::Key_Down:
-//        translate(QPointF(0, 5));  // 下移
+//        translate(QPointF(0, 5));
 //        break;
 //    case Qt::Key_Left:
-//        translate(QPointF(-5, 0));  // 左移
+//        translate(QPointF(-5, 0));
 //        break;
 //    case Qt::Key_Right:
-//        translate(QPointF(5, 0));  // 右移
+//        translate(QPointF(5, 0));
 //        break;
-//    case Qt::Key_Plus:  // 放大
+//    case Qt::Key_Plus:
 //        zoomIn();
 //        break;
-//    case Qt::Key_Minus:  // 缩小
+//    case Qt::Key_Minus:
 //        zoomOut();
 //        break;
 //    default:
@@ -145,7 +145,7 @@ void CProjectionPicture::resizeEvent(QResizeEvent*e)
 //    QWidget::keyPressEvent(event);
 //}
 
-//// 平移
+
 //void CProjectionPicture::mouseMoveEvent(QMouseEvent *event)
 //{
 //    if (m_bMouseTranslate){
@@ -181,7 +181,7 @@ void CProjectionPicture::resizeEvent(QResizeEvent*e)
 //    QWidget::mouseReleaseEvent(event);
 //}
 
-//// 放大/缩小
+
 //void CProjectionPicture::wheelEvent(QWheelEvent *event)
 //{
 //    qDebug() << "CProjectionPicture::wheelEvent";
@@ -208,14 +208,14 @@ void CProjectionPicture::zoomOut()
     zoom(1 - m_zoomDelta);
 }
 
-// 缩放 - scaleFactor：缩放的比例因子
+
 void CProjectionPicture::zoom(float scale)
 {
     scaleFactor *= scale;
     update();
 }
 
-// 平移
+
 void CProjectionPicture::translate(QPointF delta)
 {
     horizontalOffset += delta.x();

@@ -26,7 +26,7 @@ public:
     void setDateAndTime();
 private:
     Ui::TimeSetting *ui;
-//    void accept();//回传数据到主界面
+//    void accept();
 public slots:
     void setDatesTimes();
 //signals:

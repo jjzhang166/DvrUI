@@ -52,7 +52,7 @@ private://用于检测是否有动作
     void mouseReleaseEvent(QMouseEvent *event) ;
 
     void on_mouse_active();
-    QTimer *mouseMoveTime;//检测鼠标离开的时间
+    QTimer *mouseMoveTime;
 private slots:
     void on_playButton_clicked();
 
@@ -95,6 +95,7 @@ private slots:
     void setSubtitleNum(QAction*);
 
     void setAudioNum(QAction*);
+    void on_video_source_error();
 protected:
     void paintEvent(QPaintEvent *event);
 public:
@@ -104,7 +105,7 @@ public:
     bool isMuted;
     bool isPlaying;
     int seekto_is_ok;
-    qint64 duration;//时间表时
+    qint64 duration;
     QTimer *timer;
     QDir dir;
     QMenu *m_menu;
@@ -126,10 +127,14 @@ public:
 
     QFileInfoList GetFileList(QDir dir);
     QFileInfoList GetAllFileList(QDir dir);
+    QMap<QString,QFileInfo> get_subtitle_files(QFileInfo fileInfo);
+    void show_subtitle_file_name(QMap<QString,QFileInfo> tmp_map);
 
 signals:
     void p_unhide_moviedesktop();
     void main_desktop_visible();
+    void main_desktop_disvisible();
+    void video_source_error();
 private:
     void show_title();
     void FormInCenter();

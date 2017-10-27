@@ -1,58 +1,50 @@
 #include "moviedesk.h"
 #include "ui_moviedesk.h"
 #include <QMessageBox>
-movieDesk* pStaticMovieDesk=NULL;
-//用来判断预览的是哪个摄像头保存的数据，true为master false为slave
-bool pic_slave_or_master;
-bool video_slave_or_master;
-extern QString which_filename_to_play;
-extern int which_video_show_play;
+#include "midwindow.h"
+#include "frmmessagebox.h"
+//extern movieDesk* pStaticMovieDesk=NULL;
+#include <QButtonGroup>
 extern QFileInfo fileInfo_to_play;
+extern QFileInfo fileInfo_to_show;
+extern MidWindow* midwindow;
 movieDesk::movieDesk(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::movieDesk),cur_index(0)
 {
     ui->setupUi(this);
-    pStaticMovieDesk=this;
-//    int w,h;
-//    w=(1024-this->width())/2;
-//    h=(600-this->height())/2;
-//    this->mapToParent(QPoint(w,h));
-    FormInCenter();
+//    pStaticMovieDesk=this;
+    isMainCamera=true;
     connect(ui->returnButton,SIGNAL(clicked(bool)),SLOT(on_returnButton_clicked()));
 
-    //将Tab设置为横向
-    ui->tabWidget->setTabPosition(QTabWidget::West);
-//    ui->tabWidget->setTabShape( QTabWidget::Rounded );
-    ui->tabWidget->tabBar()->setStyle(new CustomTabStyle(90,60));
-
-    ui->tabWidget->clear();
-    #if 0
-    ui->tabWidget->setStyleSheet("QTabWidget::pane{ \
-            border-left: 1px solid #eeeeee;\
-        }");
-    #endif
-    //为tabbar加入widget
-    slave_picturewidget=new slave_PictureWidget(this);
-    slave_videowidget=new slave_VideoWidget(this);
-    videowidget=new videoWidget(this);
-//    editwidget=new editWidget();
-    fileDialog=new QFileDialog();
-    picturewidget=new pictureWidget(this);
+    slave_picturewidget=new slave_PictureWidget(ui->widget_1);
+    slave_videowidget=new slave_VideoWidget(ui->widget_1);
+    videowidget=new videoWidget(ui->widget_1);
+    fileDialog=new QFileDialog(ui->widget_1,Qt::SubWindow);
+    picturewidget=new pictureWidget(ui->widget_1);
+    QButtonGroup* btnGroup1=new QButtonGroup();
+    btnGroup1->addButton(ui->mainCameraButton);
+    btnGroup1->addButton(ui->viceButton);
+    QButtonGroup* btnGroup2=new QButtonGroup();
+    btnGroup2->addButton(ui->videoButton);
+    btnGroup2->addButton(ui->picButton);
+    btnGroup1->addButton(ui->scanButton);
 #if defined(Q_OS_LINUX)
     fileDialog->setDirectory("/");
 #else
     fileDialog->setDirectory("E:");
 #endif
+    ui->mainCameraButton->setCheckable(true);
+    ui->viceButton->setCheckable(true);
+    ui->videoButton->setCheckable(true);
+    ui->picButton->setCheckable(true);
+    ui->scanButton->setCheckable(true);
+
+    ui->scanButton->setChecked(true);
+    ui->mainCameraButton->setChecked(true);
+
     connect(fileDialog,SIGNAL(fileSelected(QString)),this,SLOT(open_file(QString)));
 
-    ui->tabWidget->addTab(videowidget,tr("视频"));
-    ui->tabWidget->insertTab(1,picturewidget,tr("图片"));
-    ui->tabWidget->insertTab(2,fileDialog,tr("浏览..."));
-    //此处加图标有问题
-    ui->tabWidget->tabBar()->setTabIcon(2,QIcon(QPixmap("./image/camera.png")));
-    ui->tabWidget->tabBar()->setTabIcon(1,QIcon(QPixmap("./image/camera.png")));
-    ui->tabWidget->tabBar()->setTabIcon(0,QIcon(QPixmap("./image/cameras.png")));
     connect(picturewidget,SIGNAL(hide_moviedesktop()),this,SLOT(on_hide_moviedesktop()));
     connect(picturewidget,SIGNAL(on_unhide_moviedesktop()),this,SLOT(on_unhide_moviedesktop()));
 
@@ -64,24 +56,59 @@ movieDesk::movieDesk(QWidget *parent) :
 
     connect(slave_videowidget,SIGNAL(hide_moviedesktop()),this,SLOT(on_hide_moviedesktop()));
     connect(slave_videowidget,SIGNAL(on_unhide_moviedesktop()),this,SLOT(on_unhide_moviedesktop()));
+
+    connect(fileDialog,SIGNAL(finished(int)),this,SLOT(deal_fileDialog(int)));
+    connect(fileDialog,SIGNAL(accepted()),this,SLOT(deal_fileDialog1()));
+
+    connect(midwindow,SIGNAL(usb_insert()),this,SLOT(on_usb_mount()));
+    connect(midwindow,SIGNAL(usb_delete()),this,SLOT(on_usb_umount()));
 }
 
 movieDesk::~movieDesk()
 {
     delete ui;
 }
+void movieDesk::on_usb_mount()
+{
+    qDebug()<<"filedialog get the signal usb insert";
+    frmMessageBox *msg=new frmMessageBox;
+    msg->SetMessage(QString(tr("usb is insert!")),0);
+    QTimer::singleShot(2000, msg, SLOT(close()));
+//    msg->exec();
+    fileDialog->update();
+}
+void movieDesk::on_usb_umount()
+{
+    qDebug()<<"filedialog get the signal usb delete";
+
+    frmMessageBox *msg=new frmMessageBox;
+    msg->SetMessage(QString(tr("usb is out!")),0);
+    QTimer::singleShot(2000, msg, SLOT(close()));
+//    msg->exec();
+    fileDialog->update();
+}
+
+void movieDesk::deal_fileDialog(int a)
+{
+    qDebug()<<"cancel is done"<<a;
+    fileDialog->show();
+}
+void movieDesk::deal_fileDialog1()
+{
+    qDebug()<<"accept is done";
+    fileDialog->show();
+}
 void movieDesk::open_file(QString fileName)
 {
-    QMessageBox::information(NULL, tr("Path"), tr("You selected ") + fileName);
+//    QMessageBox::information(NULL, tr("Path"), tr("You selected ") + fileName);
     QFileInfo fileInfo(fileName);
-    QString file_suffix=fileInfo.completeSuffix();
+     QString file_suffix=fileName.right(fileName.size()-fileName.lastIndexOf(".")-1);
     QString no_suffix_fileName=fileInfo.completeBaseName();
     QString file_path=fileInfo.absolutePath();
 
-    if(file_suffix=="mp4"||file_suffix=="avi"||file_suffix=="mkv"||file_suffix==".mp3")
+    if(file_suffix=="mp4"||file_suffix=="avi"||file_suffix=="mkv"||file_suffix=="mp3"||file_suffix=="FLV"||file_suffix=="flv"||file_suffix=="WMV"||
+            file_suffix=="MKV"||file_suffix=="MP4"||file_suffix=="AVI")
     {
-        qDebug()<<"herrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr";
-
         fileInfo_to_play=fileInfo;
         qDebug()<<"the path is"<<fileInfo.absolutePath();
         player=new Video_Player();
@@ -89,16 +116,19 @@ void movieDesk::open_file(QString fileName)
         emit main_desktop_disvisible();
 //        this->setHidden(true);
         player->show();
-    }else if(file_suffix=="jpg"||file_suffix=="jpeg"||file_suffix=="png"||file_suffix=="bmp")
+    }else if(file_suffix=="jpg"||file_suffix=="jpeg"||file_suffix=="png"||file_suffix=="bmp"||file_suffix=="BMP")
     {
+        fileInfo_to_show=fileInfo;
         pic_view=new Picture_view();
+        on_hide_moviedesktop();
+        emit main_desktop_disvisible();
         pic_view->show();
-    }else{
-        QMessageBox::information(NULL,tr("Information"), tr("Haven't support the file type ,thanks!"));
-    }
 
+    }else{
+        QMessageBox::information(NULL,tr("Information"), tr("Haven't support this file type ,thanks!"));
+    }
 }
-//窗体居中显示
+
 void movieDesk::FormInCenter()
 {
     int frmX = this->width();
@@ -115,31 +145,35 @@ void movieDesk::on_returnButton_clicked()
 }
 void movieDesk::on_mainCameraButton_clicked()
 {
-    qDebug()<<"调整为主摄像头";
-    pic_slave_or_master=true;
-    cur_index=ui->tabWidget->currentIndex();
-    ui->tabWidget->removeTab(0);
-    ui->tabWidget->removeTab(1);
-    ui->tabWidget->removeTab(2);
-    ui->tabWidget->addTab(videowidget,tr("视频"));
-    ui->tabWidget->insertTab(1,picturewidget,tr("图片"));
-    ui->tabWidget->insertTab(2,fileDialog,tr("浏览..."));
-
-    ui->tabWidget->setCurrentIndex(cur_index);
+    qDebug()<<"main camera data";
+    ui->mainCameraButton->setChecked(true);
+    ui->viceButton->setChecked(false);
+    if(ui->videoButton->isChecked())
+    {
+        on_videoButton_clicked();
+    }else if(ui->picButton->isChecked())
+    {
+        on_picButton_clicked();
+    }else
+    {
+        on_scanButton_clicked();
+    }
 }
 void movieDesk::on_viceButton_clicked()
 {
-    qDebug()<<"调整为副摄像头";
-    pic_slave_or_master=false;
-    cur_index=ui->tabWidget->currentIndex();
-    ui->tabWidget->removeTab(0);
-    ui->tabWidget->removeTab(1);
-    ui->tabWidget->removeTab(2);
-    ui->tabWidget->addTab(slave_videowidget,tr("视频"));
-    ui->tabWidget->insertTab(1,slave_picturewidget,tr("图片"));
-    ui->tabWidget->insertTab(2,fileDialog,tr("浏览..."));
-    ui->tabWidget->setCurrentIndex(cur_index);
-
+    qDebug()<<"vice camera data";
+    ui->mainCameraButton->setChecked(true);
+    ui->viceButton->setChecked(false);
+    if(ui->videoButton->isChecked())
+    {
+        on_videoButton_clicked();
+    }else if(ui->picButton->isChecked())
+    {
+        on_picButton_clicked();
+    }else
+    {
+        on_scanButton_clicked();
+    }
 }
 void movieDesk::on_hide_moviedesktop()
 {
@@ -148,4 +182,56 @@ void movieDesk::on_hide_moviedesktop()
 void movieDesk::on_unhide_moviedesktop()
 {
     this->setHidden(false);
+}
+
+void movieDesk::on_videoButton_clicked()
+{
+    slave_picturewidget->setHidden(true);
+    slave_videowidget->setHidden(true);
+    videowidget->setHidden(true);
+    fileDialog->setHidden(true);
+    picturewidget->setHidden(true);
+    ui->scanButton->setChecked(false);
+    ui->videoButton->setChecked(true);
+    ui->picButton->setChecked(false);
+
+    if(ui->mainCameraButton->isChecked())
+    {
+        videowidget->show();
+    }else if(ui->viceButton->isChecked()){
+        slave_videowidget->show();
+    }
+}
+
+void movieDesk::on_picButton_clicked()
+{
+    slave_picturewidget->setHidden(true);
+    slave_videowidget->setHidden(true);
+    videowidget->setHidden(true);
+    fileDialog->setHidden(true);
+    picturewidget->setHidden(true);
+    ui->scanButton->setChecked(false);
+    ui->videoButton->setChecked(false);
+    ui->picButton->setChecked(true);
+
+    if(ui->mainCameraButton->isChecked())
+    {
+        picturewidget->show();
+    }else if(ui->viceButton->isChecked()){
+        slave_picturewidget->show();
+    }
+}
+
+void movieDesk::on_scanButton_clicked()
+{
+    slave_picturewidget->setHidden(true);
+    slave_videowidget->setHidden(true);
+    videowidget->setHidden(true);
+    fileDialog->setHidden(true);
+    picturewidget->setHidden(true);
+    ui->scanButton->setChecked(true);
+    ui->videoButton->setChecked(false);
+    ui->picButton->setChecked(false);
+
+    fileDialog->show();
 }

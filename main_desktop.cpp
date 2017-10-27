@@ -10,20 +10,24 @@ dvr_factory* pdvr;
 dvr_factory* pdvr1;
 #endif
 QFileInfo fileInfo_to_play;
+QFileInfo fileInfo_to_show;
 int g_recordstatus=0;
-//设置录像时间
-int recordTime=1;//初始化为一分钟
-//控制显示的范围
+
+int recordTime=1;//set record time
+bool isTrue=true;
+
+#if 0
 extern int startA,startB,widthA,heightA;
+#endif
 int rotate_angle=15;
-//设置开机录像，录音等功能
+
 int open_recordVideo_front,open_recordVideo_rear;
 int open_recordAudio_front,open_recordAudio_rear;
 int open_reverseLine_front,open_reverseLine_rear;
 int open_adas_front,open_adas_rear;
 main_desktop* pStaticMaindesktop=NULL;
 extern ReverseLine_Setting *pStatic_reverseLine;
-QString linux_usb_path="/mnt/usb/sda4/";//U盘
+QString linux_usb_path="/mnt/usb/sda4/";//usb path init;
 QString linux_sdcard_path;//sd卡
 MidWindow* midwindow=NULL;
 #if defined(Q_OS_LINUX)
@@ -166,7 +170,7 @@ void testaut_event_cb_func(NetlinkEvent *evt,void *usrdata){
     }
 }
 #endif
-#ifdef AUTEVENT_TEST//检测usb和sdcard的热插拔事件
+#ifdef AUTEVENT_TEST//detect usb event
 void testaut_event_cb_func1(NetlinkEvent *evt,void *usrdata)
 {
     qDebug()<<"---------------------callback  testaut_event_cb_func1";
@@ -191,7 +195,7 @@ void testaut_event_cb_func1(NetlinkEvent *evt,void *usrdata)
                 qDebug()<<"---------------------------mount the usb";
                 midwindow->usb_insert();
                 qDebug()<<"midwindow is done";
-                linux_usb_path=QString("/mnt/usb/"+QString(QLatin1String(devname))+"4");
+                linux_usb_path=QString("/mnt/usb/"+QString(QLatin1String(devname))+"4/");
                 qDebug()<<"main_desktop u-disk is mounted in"<<linux_usb_path;
             }
             else if(strstr(devname,"mmcblk1")){
@@ -288,16 +292,18 @@ main_desktop::main_desktop(QWidget *parent) :
     config_set_startup(1,1);
     //if start record when machine is start
     //read config.ini
+#if 0
     open_recordVideo_front=config_get_recordVideo(0);
     open_recordAudio_front=config_get_recordAudio(0);
     open_reverseLine_front=config_get_reverseLine(0);
     open_adas_front=config_get_adas(0);
+#endif
 //    if(open_recordVideo_front){
 //        printf("----------------start record when machine is start\n");
 //        pdvr->startRecord();
 //        pdvr->setDuration(recordTime*60);
 
-//        //如何判断录像多久和文件是否生成
+//
 //    }
     printf("------------------------------------camera initial done\n");
 #endif
@@ -307,13 +313,13 @@ main_desktop::main_desktop(QWidget *parent) :
 
     FormInCenter();
     setAttribute(Qt::WA_TranslucentBackground, true);
-    //设置窗口为固定大小
+
+
 //    this->setMaximumSize(610,215);
 //    this->setMinimumSize(610,215);
-    isLocked=false;
 
-    //设置按钮图标
-    //对于当点击图标后按钮的变化的效果可以使用多张图片的方式进行
+
+
 //    ui->cameraButton->setStyleSheet(tr("background-image: url(:/image/image/camera.png);","background-color:transparent"));
 //    ui->camera_change_Button->setStyleSheet(tr("background-image: url(:/image/image/change.png);"));
 //    ui->lockButton->setStyleSheet(tr("background-image: url(:/image/image/lock.png);"));
@@ -321,7 +327,7 @@ main_desktop::main_desktop(QWidget *parent) :
 //    ui->recordButton->setStyleSheet(tr("background-image: url(:/image/image/record.png);"));
 //    ui->setFirstButton->setStyleSheet(tr("background-image: url(:/image/image/setting.png);"));
 
-    //设置系统时间和显示
+
     QTimer *timer = new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(timerUpdate()));
     timer->start(10);
@@ -334,15 +340,15 @@ main_desktop::main_desktop(QWidget *parent) :
     pa.setColor(QPalette::WindowText,Qt::white);
     ui->time_Label->setPalette(pa);
 //    ui->cameraView->setHidden(true);
-    //摄像头数据显示cameraView
-    cameraState=true;//点击切换后切换到后置
 
-    //一段时间没有操作后自动隐藏图标
+    cameraState=true;
+
+
     setButtonVisible();
     setMouseTracking(true);
     mouseMoveTime = new QTimer();
     connect(mouseMoveTime,SIGNAL(timeout()),this,SLOT(on_mouse_no_active_10_second()));
-    mouseMoveTime->start(3000);
+    mouseMoveTime->start(8000);
 
 //    setProperty("noinput",true);
 #if !defined(os_test)
@@ -358,18 +364,25 @@ main_desktop::main_desktop(QWidget *parent) :
     printf("-------------------------------------construction function done\n");
     midwindow=new MidWindow();
     setting_desktop=new SetFirst(this);
-    moviedesk=new movieDesk(this);
-    dashboards=new dashBoard(this);
+    moviedesk=new movieDesk1(this);
 
+    setting_desktop->FormInCenter();
+    moviedesk->FormInCenter();
+
+//    QPixmap pixmap(":/icon/lock.png");
+//    QPixmap fitpixmap=pixmap.scaled(81,81,Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+//    ui->lockButton->setIcon(QIcon(fitpixmap));
+//    ui->lockButton->setFlat(true);
+//    ui->lockButton->setStyleSheet("border:0px");
     connect(moviedesk,SIGNAL(main_desktop_disvisible()),this,SLOT(on_main_desktop_disvisible()));
 //    connect(pStatic_reverseLine,SIGNAL(reverseLine_repaint()),this,SLOT(on_reverseLine_repaint()));
 
 }
-//设置窗口为透明的，重载了paintEvent
+
 void main_desktop::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.fillRect(this->rect(), QColor(0, 0, 10, 90));  //QColor最后一个参数80代表背景的透明度
+    painter.fillRect(this->rect(), QColor(0, 0, 10, 90));
 }
 
 void main_desktop::startRecord()
@@ -406,7 +419,9 @@ int main_desktop::startAllCameraWithPreview(int camera_no /* nouse now*/)
 #if defined(os_test)
    startRecord();
    printf("startAllCameraWithPreview play %d\r\n",cur_camera);
+#if 0
    startA=0;startB=150;widthA=1024;heightA=300;
+#endif
    struct view_info vv= {0,0,1024,600};
    pdvr->startPriview(vv);
    pdvr1->startPriview(vv);
@@ -419,7 +434,6 @@ main_desktop::~main_desktop()
 {
     delete ui;
     delete setting_desktop;
-    delete dashboards;
     delete moviedesk;
     delete reverseLinewidget;
     #if defined(os_test)
@@ -439,17 +453,17 @@ main_desktop::~main_desktop()
 }
 void main_desktop::timerUpdate(void)
 {
-    QDateTime current_time = QDateTime::currentDateTime();//获取系统现在的时间
-    QString time= current_time.toString("hh:mm:ss ddd"); //设置显示格式
-    ui->time_Label->setText(time);//在标签上显示时间
+    QDateTime current_time = QDateTime::currentDateTime();
+    QString time= current_time.toString("hh:mm:ss ddd");
+    ui->time_Label->setText(time);
 }
-//无操作时隐藏图标
+
 void main_desktop::on_mouse_no_active_10_second()
 {
     setButtonDisvisible();
     ui->widget->move(QPoint(10,71));
 }
-//有操作出现
+
 void main_desktop::on_mouse_active()
 {
     mouseMoveTime->stop();
@@ -457,7 +471,7 @@ void main_desktop::on_mouse_active()
 
     setButtonVisible();
 }
-//重写QWidget的4个方法来保证有动作时显示，没动作时隐藏
+
 void main_desktop::mouseDoubleClickEvent(QMouseEvent *)
 {
     on_mouse_active();
@@ -494,112 +508,59 @@ void main_desktop::on_main_desktop_visible()
     #endif
 }
 
-//截图的方法
+
 void main_desktop::on_cameraButton_clicked()
 {
     if(cameraState)
     {
-        qDebug()<<"当前为前摄像头";
+        qDebug()<<"now is front camera";
     #if defined(os_test)
         printf("----------------------front camera take pic\n");
         Mutex::Autolock locker(&mObjectLock);
         status_t rt=pdvr->takePicture();
         if(NO_ERROR!=rt){
             frmMessageBox *msg=new frmMessageBox;
-            msg->SetMessage(QString(tr("拍照失败!")),2);
+            msg->SetMessage(QString(tr("take pic fail!")),2);
             QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
         }
         else
         {
             frmMessageBox *msg=new frmMessageBox;
-            msg->SetMessage(QString(tr("拍照成功!")),0);
+            msg->SetMessage(QString(tr("take pic success!")),0);
             QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
         }
     #endif
     }else{
-        qDebug()<<"当前为后摄像头";
+        qDebug()<<"now is rear camera";
     #if defined(os_test)
         printf("----------------------rear camera take pic\n");
         Mutex::Autolock locker(&mObjectLock);
         status_t rt=pdvr1->takePicture();
         if(NO_ERROR!=rt){
             frmMessageBox *msg=new frmMessageBox;
-            msg->SetMessage(QString(tr("拍照失败!")),2);
+            msg->SetMessage(QString(tr("take pic fail!")),2);
             QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
         }else{
             frmMessageBox *msg=new frmMessageBox;
-            msg->SetMessage(QString(tr("拍照成功!")),0);
+            msg->SetMessage(QString(tr("take pic success!")),0);
             QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
         }
     #endif
     }
-#if !defined(os_test)
-//在windows下为截图功能
-//    screenshot_pic=QScreen::grabWindow(this,0,0,600,200);
-    setButtonDisvisible();
-    ui->cameraButton->setVisible(false);
-    QScreen * pqscreen  = QGuiApplication::primaryScreen() ;
-    QPixmap pixmap = pqscreen->grabWindow( QApplication::activeWindow()->winId(), -2,-2,QApplication::activeWindow()->width() + 1, QApplication::activeWindow()->height() + 1);
 
-    //截图保存
-    QString filename=QDateTime::currentDateTime().toString("yyyy-MM-ddHH-mm-ss")+".bmp";
-    if(pixmap.isNull()){
-//        QMessageBox::information(this,tr("错误"),"截屏失败！",QMessageBox::Ok);
-        frmMessageBox *msg=new frmMessageBox;
-        msg->SetMessage(QString(tr("截屏失败！")),2);
-        QTimer::singleShot(1000, msg, SLOT(close()));
-        msg->exec();
-    }else{
-        if(!pixmap.save("E:/tech_practise/DvrUI/DvrUI/screen/"+filename,"BMP")){
-//            QMessageBox::information(this,tr("错误"),"无法保存！",QMessageBox::Ok);
-            frmMessageBox *msg=new frmMessageBox;
-            msg->SetMessage(QString(tr("截屏失败！")),2);
-            QTimer::singleShot(1000, msg, SLOT(close()));
-            msg->exec();
-        }else{
-//            QMessageBox::information(this,tr("成功"),"保存成功！",QMessageBox::Ok);
-            frmMessageBox *msg=new frmMessageBox;
-            msg->SetMessage(QString(tr("保存成功！")),0);
-            QTimer::singleShot(3000, msg, SLOT(close()));
-            msg->exec();
-        }
-    }
-    setButtonVisible();
-#endif
 }
-//锁定屏幕，使用锁定屏幕所有按钮的方法
-void main_desktop::on_lockButton_clicked()
-{
-    if(isLocked==false){
-        ui->cameraButton->setEnabled(false);
-        ui->camera_change_Button->setEnabled(false);
-        ui->movieButton->setEnabled(false);
-        ui->recordButton->setEnabled(false);
-        ui->setFirstButton->setEnabled(false);
-        ui->compassButton->setEnabled(false);
 
-        isLocked=true;
-    }else{
-        ui->cameraButton->setEnabled(true);
-        ui->camera_change_Button->setEnabled(true);
-        ui->movieButton->setEnabled(true);
-        ui->recordButton->setEnabled(true);
-        ui->setFirstButton->setEnabled(true);
-        ui->compassButton->setEnabled(true);
-        setButtonVisible();
-        isLocked=false;
-    }
-}
+
 
 void main_desktop::on_recordButton_clicked()
 {
     if(cameraState)
     {
-        qDebug()<<"当前为前摄像头";
+        qDebug()<<"now is front camera";
     #if defined(os_test)
         printf("----------------------front camera start recording\n");
         int retrec=pdvr->startRecord();
@@ -607,54 +568,47 @@ void main_desktop::on_recordButton_clicked()
         if(retrec<0){
             ALOGE("!!start record fail pls insert tf card");
             frmMessageBox *msg=new frmMessageBox;
-            msg->SetMessage(QString(tr("请插入SD卡！")),2);
+            msg->SetMessage(QString(tr("Please insert sdcard!")),2);
             QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
             g_recordstatus=0;
         }else{
             g_recordstatus=1;
             frmMessageBox *msg=new frmMessageBox;
-            msg->SetMessage(QString(tr("前摄像头开始录像!")),0);
+            msg->SetMessage(QString(tr("front camera start record!")),0);
             QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
-            pdvr->setDuration(recordTime*60);//录像时间recordTime分钟
-            pdvr->stopRecord();//结束录像
+            pdvr->setDuration(recordTime*60);
+            pdvr->stopRecord();
         }
     #endif
     }else{
-        qDebug()<<"当前为后摄像头";
+        qDebug()<<"now is rear camera";
     #if defined(os_test)
         printf("----------------------rear camera start recording\n");
         int retrec=pdvr1->startRecord();
         if(retrec<0){
             ALOGE("!!start record fail pls insert tf card");
-//            QMessageBox::warning(this,tr("提示"),tr("rear camera recording error！"),QMessageBox::Yes);
+
             frmMessageBox *msg=new frmMessageBox;
-            msg->SetMessage(QString(tr("请插入SD卡！")),2);
+            msg->SetMessage(QString(tr("Please insert sdcard!")),2);
             QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
             g_recordstatus=0;
         }else{
             g_recordstatus=1;
-//            QMessageBox::information(this,tr("提示"),tr("rear camera start recording！"),QMessageBox::Yes);
+
             frmMessageBox *msg=new frmMessageBox;
-            msg->SetMessage(QString(tr("后摄像头正在录像!")),0);
+            msg->SetMessage(QString(tr("rear camera is recording!")),0);
 //            QTimer::singleShot(1000, msg, SLOT(close()));
             msg->exec();
 
-            pdvr1->setDuration(recordTime*60);//录像时间30s
-            pdvr1->stopRecord();//结束录像
+            pdvr1->setDuration(recordTime*60);
+            pdvr1->stopRecord();
         }
     #endif
     }
-#if !defined(os_test)
-    //在windows下
-//     QMessageBox::information(this,tr("提示"),tr("start recording！"),QMessageBox::Yes);
-    frmMessageBox *msg=new frmMessageBox;
-    msg->SetMessage(QString(tr("正在录像!")),0);
-    QTimer::singleShot(1000, msg, SLOT(close()));
-    msg->exec();
-#endif
+
 
 }
 void main_desktop::FormInCenter()
@@ -691,14 +645,13 @@ void main_desktop::setButtonDisvisible()
 }
 
 
-//前后摄像头切换
+
 void main_desktop::on_camera_change_Button_clicked()
 {
-    //如果现在是前置->切换为后置
-    //如果为后置->切换为前置
+
     if(!cameraState)
     {
-        qDebug()<<"按下1";
+
     #if defined(os_test)
         struct view_info vv= {0,0,1024,600};
         pdvr1->stopPriview();
@@ -710,7 +663,6 @@ void main_desktop::on_camera_change_Button_clicked()
     }
     else
     {
-        qDebug()<<"按下2";
     #if defined(os_test)
         struct view_info vv= {0,0,1024,600};
 
@@ -722,24 +674,12 @@ void main_desktop::on_camera_change_Button_clicked()
         cameraState=false;
     }
 }
-//打开dashborad界面
 
-void main_desktop::on_compassButton_clicked()
-{   
-    QPalette pal(dashboards->palette());
-    pal.setColor(QPalette::Background, Qt::black); //设置背景黑色
-
-    dashboards->setAutoFillBackground(true);
-    dashboards->setPalette(pal);
-
-    dashboards->showNormal();
-}
-//打开设置界面
 void main_desktop::on_setFirstButton_clicked()
 {
     setting_desktop->exec();
 }
-//打开图片视频预览界面
+
 void main_desktop::on_movieButton_clicked()
 {
     qDebug()<<"open movie";
@@ -752,5 +692,18 @@ void main_desktop::on_reverseLine_repaint()
 
 void main_desktop::on_pushButton_clicked()
 {
-
+    if(isTrue){
+#if defined(os_test)
+    pdvr->stopPriview();
+    pdvr1->stopPriview();
+#endif
+    isTrue=false;
+    }else{
+#if defined(os_test)
+    struct view_info vv= {0,0,1024,600};
+    pdvr->startPriview(vv);
+    pdvr1->startPriview(vv);
+#endif
+    isTrue=true;
+    }
 }

@@ -20,12 +20,12 @@ mySpeed::mySpeed(QWidget *parent)
     m_value=0;
 
     m_updateTimer = new QTimer(this);
-    m_updateTimer->setInterval(100);//间隔
+    m_updateTimer->setInterval(100);
     connect(m_updateTimer,SIGNAL(timeout()),this,SLOT(UpdateAngle()));
-      m_updateTimer->start();//启动定时器
+      m_updateTimer->start();
 
-     setWindowFlags(Qt::FramelessWindowHint);//无窗体
-     setAttribute(Qt::WA_TranslucentBackground);//背景透明
+     setWindowFlags(Qt::FramelessWindowHint);
+     setAttribute(Qt::WA_TranslucentBackground);
      resize(150,150);
 }
 
@@ -84,17 +84,17 @@ void mySpeed::drawScale(QPainter *painter)
 {
     painter->save();
     painter->rotate(m_startAngle);
-    int steps = (m_scaleMajor * m_scaleMinor); //相乘后的值是分的份数
-    double angleStep = (360.0 - m_startAngle - m_endAngle) / steps;  //每一个份数的角度
+    int steps = (m_scaleMajor * m_scaleMinor);
+    double angleStep = (360.0 - m_startAngle - m_endAngle) / steps;
     painter->setPen(m_foreground); //
     QPen pen = painter->pen();
     for (int i = 0; i <= steps; i++)
     {
-        if (i % m_scaleMinor == 0)//整数刻度显示加粗
+        if (i % m_scaleMinor == 0)
         {
             pen.setWidth(1);
             painter->setPen(pen);
-            painter->drawLine(0, 62, 0, 72); //两个参数应该是两个坐标值
+            painter->drawLine(0, 62, 0, 72);
         }
         else
         {
@@ -106,17 +106,14 @@ void mySpeed::drawScale(QPainter *painter)
     }
     painter->restore();
 }
- /*
 
-QFontMetricsF这个类用于获取字体的像素信息，例如字体的高度，一个给定字符串的像素宽度等等。
 
-*/
 void mySpeed::drawTitle(QPainter *painter)
 {
     painter->save();
     painter->setPen(m_foreground);
     //painter->setBrush(m_foreground);
-    QString str(m_title); //显示仪表的功能
+    QString str(m_title);
     QFontMetricsF fm(this->font());
     double w = fm.size(Qt::TextSingleLine,str).width();
     painter->drawText(-w / 2, -30, str);
@@ -135,29 +132,29 @@ void mySpeed::drawIndicator(QPainter *painter)
 {
     painter->save();
     QPolygon pts;
-    pts.setPoints(3, -2,0, 2,0, 0,60);	/* (-2,0)/(2,0)/(0,60) *///第一个参数是 ，坐标的个数。后边的是坐标
+    pts.setPoints(3, -2,0, 2,0, 0,60);
 
     painter->rotate(m_startAngle);
     double degRotate =  (360.0 - m_startAngle - m_endAngle)/(m_maxValue - m_minValue)*(m_value - m_minValue);
 
-    //画指针
-    painter->rotate(degRotate);  //顺时针旋转坐标系统
-    QRadialGradient haloGradient(0, 0, 60, 0, 0);  //辐射渐变
+
+    painter->rotate(degRotate);
+    QRadialGradient haloGradient(0, 0, 60, 0, 0);
     haloGradient.setColorAt(0, QColor(60,60,60));
-    haloGradient.setColorAt(1, QColor(160,160,160)); //灰
-    painter->setPen(Qt::white); //定义线条文本颜色  设置线条的颜色
-    painter->setBrush(haloGradient);//刷子定义形状如何填满 填充后的颜色
-    painter->drawConvexPolygon(pts); //这是个重载函数，绘制多边形。
+    haloGradient.setColorAt(1, QColor(160,160,160));
+    painter->setPen(Qt::white);
+    painter->setBrush(haloGradient);
+    painter->drawConvexPolygon(pts);
     painter->restore();
 
-    //画中心点
+
     QColor niceBlue(150, 150, 200);
-    QConicalGradient coneGradient(0, 0, -90.0);  //角度渐变
+    QConicalGradient coneGradient(0, 0, -90.0);
     coneGradient.setColorAt(0.0, Qt::darkGray);
     coneGradient.setColorAt(0.2, niceBlue);
     coneGradient.setColorAt(0.5, Qt::white);
     coneGradient.setColorAt(1.0, Qt::darkGray);
-    painter->setPen(Qt::NoPen);  //没有线，填满没有边界
+    painter->setPen(Qt::NoPen);
     painter->setBrush(coneGradient);
     painter->drawEllipse(-5, -5, 10, 10);
 }
@@ -174,10 +171,10 @@ void mySpeed::paintEvent(QPaintEvent *)
     drawBackground(&painter);
     drawScaleNum(&painter);
 
-    drawScale(&painter);							/* 画刻度线 */
-    drawTitle(&painter);							/* 画单位 */
+    drawScale(&painter);
+    drawTitle(&painter);
 
-    drawNumericValue(&painter);				    	/* 画数字显示 */
+    drawNumericValue(&painter);
     drawIndicator(&painter);
 
 }
@@ -190,7 +187,7 @@ void mySpeed::UpdateAngle()
      m_value = 0;
   }
 
-  //m_angle = ((m_angle + 1) % 360);与上面几行功能一样
-  update();//刷新控件，会调用paintEvent函数
+
+  update();
 }
 

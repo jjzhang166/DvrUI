@@ -35,7 +35,8 @@ class SetFirst : public QDialog
 public:
     explicit SetFirst(QWidget *parent = 0);
     ~SetFirst();
-public slots://界面切换
+    void FormInCenter();
+public slots:
 //    void on_click_setttingsButton();
 //    void on_click_returnButton();
     void on_audioButton_clicked();
@@ -57,9 +58,13 @@ private:
     Ui::SetFirst *ui;
     Settings* setSecond_Desk;
     void setWindowStyleSheet();
-    void FormInCenter();
+
 private:
     bool voiceButtonState;
+signals:
+    void want_window_close();
+public slots:
+    void on_want_window_close();
 };
 
 #endif // SETFIRST_H

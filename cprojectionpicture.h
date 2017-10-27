@@ -35,10 +35,10 @@ protected:
 
 
 public Q_SLOTS:
-    void zoomIn();  // 放大
-    void zoomOut();  // 缩小
-    void zoom(float scale); // 缩放 - scaleFactor：缩放的比例因子
-    void translate(QPointF delta);  // 平移
+    void zoomIn();  //
+    void zoomOut();  //
+    void zoom(float scale); //
+    void translate(QPointF delta);  //move
 
 
 private:
@@ -55,10 +55,10 @@ private:
 
     qreal scaleFactor;
     qreal currentStepScaleFactor;
-    Qt::MouseButton m_translateButton;  // 平移按钮
+    Qt::MouseButton m_translateButton;
     bool m_bMouseTranslate;
-    qreal m_zoomDelta;  // 缩放的增量
-    QPoint m_lastMousePos;  // 鼠标最后按下的位置
+    qreal m_zoomDelta;
+    QPoint m_lastMousePos;
 
 
 };

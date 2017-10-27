@@ -6,7 +6,7 @@ ADAS::ADAS(QWidget *parent) :
     ui(new Ui::ADAS)
 {
     ui->setupUi(this);
-
+    this->setWindowFlags(Qt::FramelessWindowHint);
     front_ADAS_label=new myLabel();
     front_ADAS_label->setBaseSize(60,20);
     front_ADAS_label->setStyleSheet(tr("background-image: url(:/frontCamera.png);"));
@@ -31,7 +31,7 @@ ADAS::~ADAS()
 }
 void ADAS::on_pictureLabel1_clicked()
 {
-    qDebug()<<"打开后ADAS设置界面";
+    qDebug()<<"open adas ";
     rear_adas_settings=new rear_ADAS_setting(this);
     connect(rear_adas_settings,SIGNAL(unHideSettings()),this,SLOT(on_unhideSettings()));
     emit hideSettings();
@@ -39,7 +39,7 @@ void ADAS::on_pictureLabel1_clicked()
 }
 void ADAS::on_pictureLabel2_clicked()
 {
-    qDebug()<<"打开前ADAS设置界面";
+    qDebug()<<"open front adas";
     front_adas_settings=new front_ADAS_setting(this);
     connect(front_adas_settings,SIGNAL(unHideSettings()),this,SLOT(on_unhideSettings()));
     emit hideSettings();

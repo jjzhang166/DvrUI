@@ -1,24 +1,12 @@
 <RCC>
     <qresource prefix="/">
-        <file>camera.jpg</file>
-        <file>camera.png</file>
         <file>camera2.png</file>
-        <file>change.png</file>
-        <file>frontCamera.png</file>
         <file>GPS.png</file>
         <file>light.png</file>
-        <file>lock.png</file>
-        <file>movie1.png</file>
-        <file>picture.png</file>
-        <file>picture1.png</file>
-        <file>play.png</file>
         <file>rearCamera.png</file>
         <file>record.png</file>
-        <file>return.png</file>
         <file>reverseline1.png</file>
         <file>reverseline2.png</file>
-        <file>setting.png</file>
-        <file>voice.png</file>
         <file>icon/arrowdown.png</file>
         <file>icon/circle-white.png</file>
         <file>icon/left_arrow.png</file>
@@ -30,9 +18,6 @@
         <file>icon/sound.png</file>
         <file>icon/navigate-down.png</file>
         <file>icon/navigate-up.png</file>
-        <file>icon/camera.png</file>
-        <file>icon/lock.png</file>
-        <file>icon/record.png</file>
         <file>icon/setting_main.png</file>
         <file>icon/gps.png</file>
         <file>icon/Switch_Camera.png</file>
@@ -44,7 +29,6 @@
         <file>icon/add-line_horizontal.png</file>
         <file>icon/add-line_vertical.png</file>
         <file>icon/no_shotvideo.png</file>
-        <file>icon/error (2).png</file>
         <file>icon/info.png</file>
         <file>icon/question.png</file>
         <file>icon/mute.png</file>
@@ -57,6 +41,15 @@
         <file>icon/skip-backward.png</file>
         <file>icon/skip-forward.png</file>
         <file>icon/contrast.png</file>
-        <file>icon/Camera_2.png</file>
+        <file>icon/lock.png</file>
+        <file>icon/camera.png</file>
+        <file>icon/record.png</file>
+        <file>icon/ExposureCompensation.png</file>
+        <file>icon/whiteBalance.png</file>
+        <file>frontCamera.png</file>
+        <file>icon/larger.png</file>
+        <file>icon/smaller.png</file>
+        <file>icon/next.png</file>
+        <file>icon/prev.png</file>
     </qresource>
 </RCC>

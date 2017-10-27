@@ -10,35 +10,21 @@ Settings::Settings(QWidget *parent) :
     ui(new Ui::Settings)
 {
     ui->setupUi(this);
-//    int w,h;
-//    w=(890-this->width())/2;
-//    h=(450-this->height())/2;
-//    this->mapToParent(QPoint(w,h));
-    FormInCenter();
-    //将Tab设置为横向
+
+//    this->setWindowFlags(Qt::FramelessWindowHint);
+
     ui->settingTab->setTabPosition(QTabWidget::West);
+    ui->settingTab->setWindowFlags(Qt::FramelessWindowHint);
 //    ui->settingTab->setTabShape(QTabWidget::Triangular);
     ui->settingTab->tabBar()->setStyle(new CustomTabStyle(130,80));
-    //设置Tab标签的名称
-//    ui->settingTab->setTabText(0,tr("预览设置"));
-//    ui->settingTab->setTabText(1,tr("ADAS"));
-//    ui->settingTab->setTabText(2,tr("倒车线设置"));
-//    ui->settingTab->setTabText(3,tr("时间设置"));
-//    ui->settingTab->setTabText(4,tr("关于"));
-//    ui->settingTab->setCurrentIndex(4);
+
     ui->settingTab->clear();
     #if 0
     ui->settingTab->setStyleSheet("QTabWidget::pane{ \
-            border-left: 1px solid #eeeeee;\
+            border-left: 0px solid #eeeeee;\
         }");
     #endif
-    //隐藏窗口的边框
-    //this->setWindowFlags(Qt::FramelessWindowHint);
-    //设置窗口为透明的
-    //this->setAttribute(Qt::WA_TranslucentBackground);
-    //设置按钮的ICON
 
-    //为tabbar加入widget
 
     abouts=new About(this);
     ui->settingTab->addTab(abouts,tr("关于"));
@@ -70,7 +56,7 @@ Settings::Settings(QWidget *parent) :
     pStatic_settings=this;
 }
 
-    //窗体居中显示
+
     void Settings::FormInCenter()
     {
         int frmX = this->width();
@@ -98,7 +84,7 @@ void Settings::on_unhideSettings()
 void Settings::on_returnButton_clicked()
 {
     this->close();
-    //恢复显示setFirst页面
+
     SetFirst* psetFirst=static_cast<SetFirst*>(parentWidget());
     psetFirst->setHidden(false);
 }

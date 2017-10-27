@@ -10,16 +10,16 @@
 #include <QDesktopWidget>
 #include <QPalette>
 
-#include "moviedesk.h"
+#include "moviedesk1.h"
 #include "frmmessagebox.h"
 #if defined(Q_OS_LINUX)
 extern int is_dir_exist(const char *dir_path);
 #endif
 #define SEEKTO 1
-extern movieDesk* pStaticMovieDesk;
+extern movieDesk1* pStaticMovieDesk;
 Video_Player* pStaticVideoPlayer=NULL;
-static int subtitle_num_now=0;
-static int audio_num_now=0;
+static int subtitle_num_now=1;
+static int audio_num_now=1;
 #if defined(Q_OS_LINUX)
 #define AUDIO_PCM_OUTPUT 128
 #if  1
@@ -34,7 +34,7 @@ int autCb_func(int32_t msgType, void *user,void* data,int len)
 
         case SUBCTRL_SUBTITLE_AVAILABLE:
         {
-            printf("subtitle show,text=%s\n",pItem->pText);
+            
             if(pItem == NULL)
             {
                 logw("error pItem == NULL");
@@ -46,9 +46,10 @@ int autCb_func(int32_t msgType, void *user,void* data,int len)
                     QString str=QString(pItem->pText);
                     pStaticVideoPlayer->subtitle_label->setVisible(true);
                     pStaticVideoPlayer->subtitle_label->setAlignment(Qt::AlignCenter);
-//                    pStaticVideoPlayer->subtitle_label->resize(QSize(1024,61));
+
                     printf("-----now is text subtitle--------\n");
-                    qDebug()<<"the subtitle is: "<<str;
+                    printf("subtitle show,text=%s\n",pItem->pText);
+
                     pStaticVideoPlayer->subtitle_label->setText(str);
                     qDebug()<<"subtitle show done";
                 }
@@ -118,14 +119,14 @@ int autCb_func(int32_t msgType, void *user,void* data,int len)
 extern QFileInfo fileInfo_to_play;
 extern main_desktop* pStaticMaindesktop;
 static int test=100;
-const int interval=10;//每次快进10s
+const int interval=10;//
 Video_Player::Video_Player(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Video_Player)
 {
     ui->setupUi(this);
     setAttribute(Qt::WA_TranslucentBackground, true);
-    qDebug()<<"将要播放的视频名称为："<<fileInfo_to_play.completeBaseName();
+    qDebug()<<"the filename will play is"<<fileInfo_to_play.completeBaseName();
     ui->playButton->setIcon(QIcon(":/icon/Pause.png"));
     ui->playButton->setIconSize(QSize(51,51));
     ui->stopButton->setIcon(QIcon(":/icon/Stop.png"));
@@ -134,11 +135,16 @@ Video_Player::Video_Player(QWidget *parent) :
     ui->muteButton->setIconSize(QSize(51,51));
     ui->voiceSlider->setRange(0,100);
     ui->voiceSlider->setValue(30);
+    ui->fastBackButton->setEnabled(true);
+    ui->fastFrontButton->setEnabled(true);
     show_title();
     FormInCenter();
     current_path=fileInfo_to_play.absolutePath();
     qDebug()<<"current path is:"<<current_path;
 #if defined(Q_OS_LINUX)
+    timer = new QTimer(this);
+    connect(timer,SIGNAL(timeout()),this,SLOT(timerUpdate()));
+    timer->start(100);
     if(!is_dir_exist((char*)current_path.toStdString().c_str()))
     {
         dir.setPath(current_path);
@@ -171,17 +177,17 @@ Video_Player::Video_Player(QWidget *parent) :
     }
 
 #endif
-    isMuted=false;//初始化为关闭静音
-    isPlaying=true;//开始播放
+    isMuted=false;
+    isPlaying=true;
     seekto_is_ok=1;
-    //一段时间没有操作后自动隐藏图标
+
     ui->widget->setVisible(true);
     ui->widget_2->move(10,467);
     ui->widget_2->setGeometry(10,467,1024,60);
     setMouseTracking(true);
     mouseMoveTime = new QTimer();
     connect(mouseMoveTime,SIGNAL(timeout()),this,SLOT(on_timeout_mouserMoveTime()));
-    mouseMoveTime->start(3000);
+    mouseMoveTime->start(100000);
     pStaticVideoPlayer=this;
     subtitle_label=new QLabel();
     subtitle_label->resize(QSize(600,60));
@@ -197,40 +203,55 @@ Video_Player::Video_Player(QWidget *parent) :
 
 #if defined(Q_OS_LINUX)
     ap = new AUTPlayer();
+    if(ap == NULL){
+        qDebug()<<"new AutPlayer error";
+        return ;
+    }
     astatus = ASTATUS_STOPPED;
     QFileInfo file_path_to_play=file_list.at(current_video);
     QString ab_file_path=file_path_to_play.absoluteFilePath();
     qDebug()<<"the file's absoluteFilePath is"<<ab_file_path;
     QString file_name=file_path_to_play.fileName();
     qDebug()<<"the video name: "<<file_name<<"while play";
-    #if defined(USE_AUTPLAYER)
-          int ret = ap->setUrl((char*)ab_file_path.toStdString().c_str());
-          find_correspond_subtitle_file(ab_file_path);
-          if (ret < 0)
-          {
-              qDebug()<<"setUrl is error-------------------";
-          }else{
-              ap->setUserCb(autCb_func, this);
-              ap->setViewWindow(0, 0, 1024, 600);
-              int linux_duration=ap->getDuration()/1000;
-              ui->progressSlider->setRange(0,linux_duration);
-              printf("----------------------the video totaltime is %d\n",linux_duration);
-              QString totalTime=QDateTime::fromTime_t(linux_duration).toString("mm:ss");
-              printf("----------------------the video totaltime is %s\n",(char*)totalTime.toStdString().c_str());
-              ap->play();
-              astatus = ASTATUS_PLAYING;
-              this->duration=linux_duration;
-              qDebug()<<"total time is"<<duration;
-              ui->label->setText(QString(tr("now play:"))+file_name);
-          }
-          connect(ui->voiceSlider,SIGNAL(valueChanged(int)),this,SLOT(setVolume(int)));
-          connect(ui->progressSlider,SIGNAL(sliderMoved(int)),this,SLOT(seek(int)));
 
-    #endif
-    //每10ms钟获取当前的播放位置，并更新slider和label
-    timer = new QTimer(this);
-    connect(timer,SIGNAL(timeout()),this,SLOT(timerUpdate()));
-    timer->start(100);
+    int ret = ap->setUrl((char*)ab_file_path.toStdString().c_str());
+    if (ret < 0)
+    {
+        qDebug()<<"setUrl is error-------------------";
+        on_stopButton_clicked();
+         ui->label->setText("");
+         emit video_source_error();
+        frmMessageBox *msg=new frmMessageBox;
+        msg->SetMessage(QString(tr("video not support!")),0);
+        msg->exec();
+    }else{
+        ap->setUserCb(autCb_func, this);
+        ap->setViewWindow(0, 0, 1024, 600);
+        find_correspond_subtitle_file(ab_file_path);
+        int linux_duration=ap->getDuration()/1000;
+        ui->progressSlider->setRange(0,linux_duration);
+        printf("----------------------the video totaltime is %d\n",linux_duration);
+        QString totalTime=QDateTime::fromTime_t(linux_duration).toString("mm:ss");
+        printf("----------------------the video totaltime is %s\n",(char*)totalTime.toStdString().c_str());
+        ret=ap->play();
+        if(ret!=0)
+            qDebug()<<"play bug";
+        astatus = ASTATUS_PLAYING;
+        this->duration=linux_duration;
+        qDebug()<<"total time is"<<duration;
+        //can't catch
+        //method 1
+//        QByteArray ba=file_name.toLocal8Bit();
+//        const char* str=ba.data();
+        //method2
+        const char* str=file_name.toLatin1().data();
+        ui->label->setText(str);
+        connect(ui->voiceSlider,SIGNAL(valueChanged(int)),this,SLOT(setVolume(int)));
+        connect(ui->progressSlider,SIGNAL(sliderMoved(int)),this,SLOT(seek(int)));
+    }
+
+
+
     //printf("---------------------------------cant find the correct video\n");
 
 
@@ -248,7 +269,7 @@ Video_Player::Video_Player(QWidget *parent) :
         player->setMedia(QMediaContent(QUrl::fromLocalFile(ab_file_path)));
         player->play();
 
-        ui->label->setText(QString(tr("当前播放："))+file_name);
+        ui->label->setText(QString(tr("now playing:"))+file_name);
         ui->progressSlider->setRange(0,player->duration()/1000);
         connect(ui->voiceSlider,SIGNAL(valueChanged(int)),player,SLOT(setVolume(int)));
         connect(ui->progressSlider,SIGNAL(sliderMoved(int)),this,SLOT(seek(int)));
@@ -256,82 +277,105 @@ Video_Player::Video_Player(QWidget *parent) :
         connect(player, SIGNAL(positionChanged(qint64)), SLOT(positionChanged(qint64)));
 
 #endif
-    qDebug()<<"退出循环";
-//    connect(this,SIGNAL(main_desktop_visible()),pStaticMaindesktop,SLOT(on_main_desktop_visible()));
+    connect(this,SIGNAL(main_desktop_visible()),pStaticMaindesktop,SLOT(on_main_desktop_visible()));
+    connect(this,SIGNAL(video_source_error()),this,SLOT(on_video_source_error()));
     ui->voiceSlider->setRange(0,200);
     ui->voiceSlider->setValue(100);
+//    ui->widget->setAttribute(Qt::WA_TranslucentBackground, true);
+//    ui->widget_2->setAttribute(Qt::WA_TranslucentBackground, true);
 
 }
-//外挂字幕的显示
+void Video_Player::on_video_source_error()
+{
+    qDebug()<<"video is not support";
+}
 void Video_Player::find_correspond_subtitle_file(QFileInfo fileInfo)
 {
-    QString pure_file_name=fileInfo.completeBaseName();
-    QString suffix_file_name=fileInfo.completeSuffix();
-    qDebug()<<"file name is :"<<pure_file_name<<"suffix is:"<<suffix_file_name;
-    QMap<QString,QFileInfo> tmp_map;
-    tmp_map.clear();
-    for(int i=0;i<all_file_list.size();i++)
-    {
-        QFileInfo tmp_file_info=all_file_list.at(i);
-        QString tmp_file_info_pure_file_name=tmp_file_info.completeBaseName();
-        QString tmp_file_info_suffix_file_name=tmp_file_info.completeSuffix();
-        if(suffix_file_name!=tmp_file_info_suffix_file_name&&tmp_file_info_pure_file_name==pure_file_name)
-        {
-            qDebug()<<"add in map:"<<tmp_file_info.absoluteFilePath();
-            tmp_map.insert(tmp_file_info_suffix_file_name,tmp_file_info);
-        }else{
-            continue;
-        }
-    }
+    QMap<QString,QFileInfo>tmp_map=get_subtitle_files(fileInfo);
     qDebug()<<"this video has the subtitle file is:";
-    QMap<QString,QFileInfo>::Iterator iter=tmp_map.begin();
-    for(;iter!=tmp_map.end();iter++)
-    {
-        QFileInfo tmp1=iter.value();
-        QString tmp2=iter.key();
-        if(tmp2!=suffix_file_name)
-            qDebug()<<tmp1.absoluteFilePath();
-    }
+    show_subtitle_file_name(tmp_map);
     int ret=0;
     if(tmp_map.size()==1)
     {
         qDebug()<<"only have 1 subtitle file";
         QString file_name=tmp_map.begin().value().absoluteFilePath();
         qDebug()<<"set the subtitle file is:"<<file_name;
-
     #if defined(Q_OS_LINUX)
-        ret=ap->setsubtitleUrl((char*)file_name.toStdString().c_str());
-        if(ret!=0)
-            qDebug()<<"subtitle set fail";
+        if(!file_name.isEmpty())
+        {
+            ret=ap->setsubtitleUrl((char*)file_name.toStdString().c_str());
+            if(ret!=0){
+                qDebug()<<"subtitle set fail";
+                frmMessageBox *msg=new frmMessageBox;
+                msg->SetMessage(QString(tr("subtitle set fail!")),2);
+                QTimer::singleShot(1000, msg, SLOT(close()));
+                msg->exec();
+                return ;
+            }
+        }
     #endif
     }else if(tmp_map.size()==2){
-        //这里有个坑，如果一个视频有多个subtitle文件这里需要重写，目前测试一个视频文件只有一个subtitle
+        qDebug()<<tmp_map.contains("sub")<<tmp_map.contains("idx");
+        if(!tmp_map.contains("sub")&&!tmp_map.contains("idx"))
+        {
+            QString filename=tmp_map[tmp_map.firstKey()].absoluteFilePath();
+            qDebug()<<"find 2 subtitle select any one";
+            if(!filename.isEmpty())
+            {
+            #if defined(Q_OS_LINUX)
+                ret=ap->setsubtitleUrl((char*)filename.toStdString().c_str());
+                if(ret!=0){
+                    qDebug()<<"setsubtitleUrl subtitle set fail";
+                    frmMessageBox *msg=new frmMessageBox;
+                    msg->SetMessage(QString(tr("setsubtitleUrl set fail!")),2);
+                    QTimer::singleShot(1000, msg, SLOT(close()));
+                    msg->exec();
+                    return ;
+                }
+            #endif
+            }
+            return ;
+        }
         qDebug()<<"have 2 subtitle file";
         QString file_name_1=tmp_map["sub"].absoluteFilePath();
         QString file_name_2=tmp_map["idx"].absoluteFilePath();
     #if defined(Q_OS_LINUX)
-        ret=ap->setsubtitleUrlFd((char*)file_name_1.toStdString().c_str(),
-                    (char*)file_name_2.toStdString().c_str());
-        if(ret!=0)
-            qDebug()<<"subtitle set fail";
+        qDebug()<<"the subtitle "<<"\n"<<file_name_1<<"\n"<<file_name_2<<"\n"<<"while be set";
+        if(!file_name_1.isEmpty()&&!file_name_2.isEmpty())
+        {  
+            ret=ap->setsubtitleUrlFd((char*)file_name_1.toStdString().c_str(),
+                        (char*)file_name_2.toStdString().c_str());
+            if(ret!=0){
+                qDebug()<<"setsubtitleUrlFd subtitle set fail";
+                frmMessageBox *msg=new frmMessageBox;
+                msg->SetMessage(QString(tr("setsubtitleUrlFd set fail!")),2);
+                QTimer::singleShot(1000, msg, SLOT(close()));
+                msg->exec();
+                return ;
+            }
+        }
     #endif
     }else if(tmp_map.size()==0){
-        qDebug()<<"can't find this video's subtitle";
+        qDebug()<<"this subtitle is not outside";
     }
+    return ;
 }
 
-  //设置窗口为透明的，重载了paintEvent
+
 void Video_Player::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.fillRect(this->rect(), QColor(0, 0, 10, 90));  //QColor最后一个参数80代表背景的透明度
+    painter.fillRect(this->rect(), QColor(0, 0, 10, 90));
 }
 
 Video_Player::~Video_Player()
 {
+	if(timer != NULL)
+		delete timer;
     delete ui;
     #if defined(USE_AUTPLAYER)
-        delete ap;
+    	if(ap != NULL)
+        	delete ap;
         astatus = ASTATUS_STOPPED;
     #endif
 }
@@ -340,7 +384,6 @@ void Video_Player::setVolume(int n_value)
 {
 #if defined(Q_OS_LINUX)
     qDebug()<<"player ready to change the voice";
-    //目前设置的是headphone的音量，
     QString cmd="tinymix 2 "+ QString::number(n_value,10);
     system((char*)cmd.toStdString().c_str());
 #endif
@@ -377,7 +420,6 @@ void Video_Player::updateDurationInfo(qint64 currentInfo)
     QString tStr;
 
 #if defined(Q_OS_LINUX)
-    //如果播放到末尾，那么将按钮设置为play 然后更新progressslider和nowTimeLabel为初始值
     int linux_duration=ap->getDuration()/1000;
     if(linux_duration==(int)currentInfo)
     {
@@ -400,11 +442,14 @@ void Video_Player::updateDurationInfo(qint64 currentInfo)
 void Video_Player::seek(int seconds)
 {
 #if defined(Q_OS_LINUX)
+    int ret=0;
     qDebug()<<"ready to seekto"<<seconds<<"s";
     timer->stop();
     int currentTime=ap->getCurrentPosition()/1000;
     astatus = ASTATUS_SEEKING;
-    ap->seekto(seconds);
+    ret=ap->seekto(seconds);
+    if(ret!=0)
+        qDebug()<<"seekto bug";
     if (!ui->progressSlider->isSliderDown()) {
         ui->progressSlider->setValue(currentTime);
     }
@@ -419,9 +464,12 @@ void Video_Player::on_playButton_clicked()
 {
 //    qDebug()<<"start video";
 #if defined(Q_OS_LINUX)
-#if defined(USE_AUTPLAYER)
-    ap->pause();
-#endif
+    if(ap==NULL)
+        return;
+    int ret=0;
+    ret=ap->pause();
+    if(ret!=0)
+        qDebug()<<"pause bug";
     if (astatus == ASTATUS_PAUSED)
     {
       astatus = ASTATUS_PLAYING;
@@ -454,7 +502,15 @@ void Video_Player::on_stopButton_clicked()
     qDebug()<<"close video";
 #if defined(Q_OS_LINUX)
     #if defined(USE_AUTPLAYER)
-        ap->stop();
+        timer->stop();
+        if(ap!=NULL){
+            ap->stop();
+            delete ap;
+        }
+        ap=NULL;
+        ui->fastBackButton->setEnabled(false);
+        ui->fastFrontButton->setEnabled(false);
+        ui->playButton->setIcon(QIcon(":/icon/play.png"));
     #endif
     astatus = ASTATUS_STOPPED;
 
@@ -484,13 +540,11 @@ void Video_Player::on_muteButton_clicked()
     qDebug()<<"set muted";
     if(!isMuted){
         qDebug()<<"now is not muted";
-//        ap->setMuted(true);
         ui->muteButton->setIcon(QIcon(":/icon/mute.png"));
         ui->voiceSlider->setValue(0);
         isMuted=true;
     }else{
         qDebug()<<"now is muted";
-//        ap->setMuted(false);
         ui->voiceSlider->setValue(50);
         ui->muteButton->setIcon(QIcon(":/icon/voice.png"));
         isMuted=false;
@@ -500,12 +554,11 @@ void Video_Player::on_muteButton_clicked()
 
 void Video_Player::on_btnMenu_Min_clicked()
 {
-    //实现QMenu选择字幕和音频文件
     m_menu=new QMenu();
     m_subtitleSelect=new QAction(m_menu);
     m_audioFileSelect=new QAction(m_menu);
-    m_subtitleSelect->setText(QObject::tr("字幕选择"));
-    m_audioFileSelect->setText(QObject::tr("音频选择"));
+    m_subtitleSelect->setText(QObject::tr("subtitle select"));
+    m_audioFileSelect->setText(QObject::tr("audio select"));
     m_menu->addAction(m_subtitleSelect);
     m_menu->addAction(m_audioFileSelect);
     QMenu* m_subMenu_subtitle=new QMenu();
@@ -524,7 +577,7 @@ void Video_Player::on_btnMenu_Min_clicked()
     for(int i=0;i<num_subtitle;i++)
     {
         QAction* file=new QAction(m_subMenu_subtitle);
-        QString str=QString(tr("字幕%1")).arg(i+1);
+        QString str=QString(tr("subtitle%1")).arg(i+1);
         file->setText(str);
         m_subMenu_subtitle->addAction(file);
         if(i==subtitle_num_now-1)
@@ -542,7 +595,7 @@ void Video_Player::on_btnMenu_Min_clicked()
     for(int i=0;i<num_audio;i++)
     {
         QAction* file=new QAction(m_subMenu_audio);
-        QString str=QString(tr("音频%1")).arg(i+1);
+        QString str=QString(tr("audio%1")).arg(i+1);
         file->setText(str);
         m_subMenu_audio->addAction(file);
         if(i==audio_num_now-1)
@@ -620,16 +673,18 @@ void Video_Player::getAllAudio(int& nums)
 void Video_Player::on_btnMenu_Max_clicked()
 {
     #if defined(Q_OS_LINUX)
+    timer->stop();
         #if defined(USE_AUTPLAYER)
             ap->stop();
         #endif
         astatus = ASTATUS_STOPPED;
-        timer->stop();
+
     #else
         player->stop();
     #endif
     this->close();
-        pStaticMaindesktop->setHidden(false);
+//        pStaticMaindesktop->setHidden(false);
+     emit main_desktop_visible();
         pStaticMovieDesk->setHidden(false);
 }
 
@@ -638,15 +693,22 @@ void Video_Player::on_btnMenu_Close_clicked()
 
 #if defined(Q_OS_LINUX)
     #if defined(USE_AUTPLAYER)
+    timer->stop();
+    if(ap!=NULL){
         ap->stop();
+        delete ap;
+    }
+    ap=NULL;
+
     #endif
     astatus = ASTATUS_STOPPED;
-    timer->stop();
+
 #else
     player->stop();
 #endif
 this->close();
-    pStaticMaindesktop->setHidden(false);
+//    pStaticMaindesktop->setHidden(false);
+    emit main_desktop_visible();
     pStaticMovieDesk->setHidden(false);
 
 }
@@ -670,7 +732,7 @@ void Video_Player::show_title()
     ui->nowTimeLabel->setFont(iconFont);
 #endif
 }
-//窗体居中显示
+
 void Video_Player::FormInCenter()
 {
     int frmX = this->width();
@@ -684,40 +746,73 @@ void Video_Player::FormInCenter()
 
 void Video_Player::on_preMovieButton_clicked()
 {
+    qDebug()<<"-----------------on_preMovieButton_clicked,here";
 #if defined(Q_OS_LINUX)
     if(current_video-1>=0){
-        ap->stop();
         timer->stop();
+        
+        if(ap!=NULL){
+            ap->stop();
+        delete ap;
+        }
         astatus = ASTATUS_STOPPED;
-        if(ap!=NULL)
-            delete ap;
         ap = new AUTPlayer();
+        if(ap == NULL){
+            qDebug()<<"new AutPlayer error";
+            return ;
+        }
+        ui->fastBackButton->setEnabled(true);
+        ui->fastFrontButton->setEnabled(true);
         if(!is_dir_exist((char*)current_path.toStdString().c_str()))
         {
-            file_list=GetFileList(dir);
+            int ret=0;
+//            file_list=GetFileList(dir);
             QFileInfo file_path_to_play=file_list.at(--current_video);
             QString ab_file_path=file_path_to_play.absoluteFilePath();
             QString file_name=file_path_to_play.fileName();
-
-            int ret = ap->setUrl((char*)ab_file_path.toStdString().c_str());
+            if(ab_file_path.isEmpty())
+            {
+                qDebug()<<"file path is error";
+            }
+            ret = ap->setUrl((char*)ab_file_path.toStdString().c_str());
+		    if (ret < 0)
+		    {
+		        qDebug()<<"setUrl is error-------------------";
+		        on_stopButton_clicked();
+                 ui->label->setText("");
+		        frmMessageBox *msg=new frmMessageBox;
+		        msg->SetMessage(QString(tr("video not support!")),0);
+		        msg->exec();
+		        return ;
+		    }
             find_correspond_subtitle_file(ab_file_path);
-            if (ret < 0)
-              return ;
-              ap->setUserCb(autCb_func, this);
-            ap->setViewWindow(0, 0, 1024, 600);
+            ap->setUserCb(autCb_func, this);
+            ret=ap->setViewWindow(0, 0, 1024, 600);
+            if(ret!=0)
+                qDebug()<<"setViewWindow bug";
             int linux_duration=ap->getDuration()/1000;
             ui->progressSlider->setRange(0,linux_duration);
             printf("----------------------the video totaltime is %d\n",linux_duration);
             QString totalTime=QDateTime::fromTime_t(linux_duration).toString("mm:ss");
             printf("----------------------the video totaltime is %s\n",(char*)totalTime.toStdString().c_str());
-            ap->play();
+            ret=ap->play();
+            if(ret!=0)
+                qDebug()<<"play bug";
             this->duration=linux_duration;
             qDebug()<<"total time is"<<duration;
-            ui->label->setText(QString(tr("now play:"))+file_name);
+            QByteArray ba=file_name.toLocal8Bit();
+            const char* str=ba.data();
+            ui->label->setText(QString(tr("now play:"))+QString(str));
             timer->start(100);
             astatus = ASTATUS_PLAYING;
             ui->playButton->setIcon(QIcon(":/icon/Pause.png"));
         }
+    }else{
+        qDebug()<<"this is the first video"<<current_video<<file_list.size();
+        frmMessageBox *msg=new frmMessageBox;
+        msg->SetMessage(QString(tr("this is first video!")),0);
+        QTimer::singleShot(8000, msg, SLOT(close()));
+        msg->show();
     }
 #else
     if(current_video-1>=0){
@@ -728,7 +823,7 @@ void Video_Player::on_preMovieButton_clicked()
         player->setMedia(QMediaContent(QUrl::fromLocalFile(ab_file_path)));
         player->play();
 
-        ui->label->setText(QString(tr("当前播放："))+file_name);
+        ui->label->setText(QString(tr("now playing:"))+file_name);
         ui->progressSlider->setRange(0,player->duration()/1000);
     }
 
@@ -739,19 +834,20 @@ void Video_Player::on_fastBackButton_clicked()
 {
 #if defined(Q_OS_LINUX)
 
-//    int nowTime=ap->getCurrentPosition()/1000;//防止在视频刚开始时快退导致的问题
-//    if(nowTime<20)//如果开始播放小于20s
+//    int nowTime=ap->getCurrentPosition()/1000;
+//    if(nowTime<20)
 //    {
 //        qDebug()<<"------------------begin play less than 20s";
-//        ap->seekto(1);//就把视频定位到1s
+//        ap->seekto(1);
 //        updateDurationInfo(1);
 //        return ;
 //    }
 //    qDebug()<<"------------------begin play lager than 20s";
     mouseMoveTime->stop();
     timer->stop();
+    int ret;
 #if defined(SEEKTO)
-    //seekto 实现快退
+
     qDebug()<<"-----------------now is seekto";
     int currentTime=ap->getCurrentPosition()/1000;
 
@@ -759,7 +855,9 @@ void Video_Player::on_fastBackButton_clicked()
     {
         qDebug()<<"-------------------now seek to is ok";
         currentTime-=interval;
-        ap->seekto(currentTime);
+        ret=ap->seekto(currentTime);
+        if(ret!=0)
+            qDebug()<<"seekto bug";
         seekto_is_ok=0;
     }else{
         qDebug()<<"-------------------seek to is not ok";
@@ -772,7 +870,7 @@ void Video_Player::on_fastBackButton_clicked()
     ui->progressSlider->setValue(currentTime);
     updateDurationInfo(currentTime);
     timer->start(100);
-    mouseMoveTime->start(3000);
+    mouseMoveTime->start(100000);
 #else
     int currentValue=ui->progressSlider->value();
     currentValue-=interval;
@@ -792,7 +890,7 @@ void Video_Player::on_fastFrontButton_clicked()
     mouseMoveTime->stop();
     timer->stop();
 #if defined(SEEKTO)
-    //seekto 实现快进
+    int ret=0;
     qDebug()<<"-----------------now is seekto";
     int currentTime=ap->getCurrentPosition()/1000;
     if(seekto_is_ok==1)
@@ -801,7 +899,9 @@ void Video_Player::on_fastFrontButton_clicked()
         currentTime+=interval;
         if(currentTime<duration)
         {
-            ap->seekto(currentTime);
+            ret=ap->seekto(currentTime);
+            if(ret!=0)
+                qDebug()<<"seekto bug";
             seekto_is_ok=0;
         }else{
 
@@ -818,7 +918,7 @@ void Video_Player::on_fastFrontButton_clicked()
      ui->progressSlider->setValue(currentTime);
      updateDurationInfo(currentTime);
      timer->start(100);
-     mouseMoveTime->start(3000);
+     mouseMoveTime->start(100000);
 #else
     int currentValue=ui->progressSlider->value();
     currentValue+=interval;
@@ -834,41 +934,73 @@ void Video_Player::on_fastFrontButton_clicked()
 
 void Video_Player::on_nextMovieButton_clicked()
 {
+    qDebug()<<"-----------------on_nextMovieButton_clicked,here";
 #if defined(Q_OS_LINUX)
     if(current_video+1<file_list.size()){
-        ap->stop();
+        qDebug()<<"----------------now is:"<<current_video<<"\n-----------------------total is"<<file_list.size();
         timer->stop();
         astatus = ASTATUS_STOPPED;
-        if(ap!=NULL)
+        if(ap!=NULL){
+            ap->stop();
             delete ap;
+        }
         ap = new AUTPlayer();
+        if(ap == NULL){
+        	qDebug()<<"new AutPlayer error";
+			return ;
+        }
+        ui->fastBackButton->setEnabled(true);
+        ui->fastFrontButton->setEnabled(true);
         if(!is_dir_exist((char*)current_path.toStdString().c_str()))
         {
-            file_list=GetFileList(dir);
+            int ret=0;
+//            file_list=GetFileList(dir);
             QFileInfo file_path_to_play=file_list.at(++current_video);
             QString ab_file_path=file_path_to_play.absoluteFilePath();
             QString file_name=file_path_to_play.fileName();
 
-            int ret = ap->setUrl((char*)ab_file_path.toStdString().c_str());
+            if(ab_file_path.isEmpty())
+            {
+                qDebug()<<"file path is error";
+            }
+            ret = ap->setUrl((char*)ab_file_path.toStdString().c_str());
+		    if (ret < 0)
+		    {
+		        qDebug()<<"setUrl is error-------------------";
+		        on_stopButton_clicked();
+                 ui->label->setText("");
+		        frmMessageBox *msg=new frmMessageBox;
+		        msg->SetMessage(QString(tr("video not support!")),0);
+		        msg->exec();
+		        return ;
+		    }
             find_correspond_subtitle_file(ab_file_path);
-            if (ret < 0)
-              return ;
-              ap->setUserCb(autCb_func, this);
+            ap->setUserCb(autCb_func, this);
             ap->setViewWindow(0, 0, 1024, 600);
             int linux_duration=ap->getDuration()/1000;
             ui->progressSlider->setRange(0,linux_duration);
             printf("----------------------the video totaltime is %d\n",linux_duration);
             QString totalTime=QDateTime::fromTime_t(linux_duration).toString("mm:ss");
             printf("----------------------the video totaltime is %s\n",(char*)totalTime.toStdString().c_str());
-            ap->play();
+            ret=ap->play();
+            if(ret!=0)
+                qDebug()<<"play bug";
             this->duration=linux_duration;
             qDebug()<<"total time is"<<duration;
-            ui->label->setText(QString(tr("now play:"))+file_name);
+            QByteArray ba=file_name.toLocal8Bit();
+            const char* str=ba.data();
+            ui->label->setText(QString(tr("now play:"))+QString(str));
             astatus = ASTATUS_PLAYING;
             timer->start(100);
             ui->playButton->setIcon(QIcon(":/icon/Pause.png"));
         }
 
+    }else{//the last video
+        qDebug()<<"this is the last video"<<current_video<<file_list.size();
+        frmMessageBox *msg=new frmMessageBox;
+        msg->SetMessage(QString(tr("this is last video!")),0);
+        QTimer::singleShot(8000, msg, SLOT(close()));
+        msg->show();
     }
 #else
     if(current_video+1<file_list.size()){
@@ -878,7 +1010,7 @@ void Video_Player::on_nextMovieButton_clicked()
         QString file_name=file_path_to_play.fileName();
         player->setMedia(QMediaContent(QUrl::fromLocalFile(ab_file_path)));
         player->play();
-        ui->label->setText(QString(tr("当前播放："))+file_name);
+        ui->label->setText(QString(tr("now playing"))+file_name);
         ui->progressSlider->setRange(0,player->duration()/1000);
     }
 
@@ -888,14 +1020,14 @@ QFileInfoList Video_Player::GetFileList(QDir dir)
 {
     qDebug()<<"get all video file name";
     QStringList filters;
-    filters << "*.mp4" << "*.avi"<<"*.mkv"<<"*.mp3";
+    filters << "*.mp4" <<"*.MP4"<< "*.avi"<<"*.AVI"<<"*.mkv"<<"*.MKV"<<"*.mp3"<<"*.VOB"<<"*.vob"<<"*.FLV"<<"*.flv"<<"*.WMV";
     dir.setNameFilters(filters);
     QFileInfoList file_list=dir.entryInfoList();
     for(int i=0;i<file_list.size();i++)
     {
         QFileInfo fileInfo=file_list.at(i);
         fileInfo.absoluteFilePath();
-        qDebug()<<fileInfo.fileName();
+//        qDebug()<<fileInfo.fileName();
     }
     return file_list;
 }
@@ -907,11 +1039,11 @@ QFileInfoList Video_Player::GetAllFileList(QDir dir)
     {
         QFileInfo fileInfo=all_file_list.at(i);
         fileInfo.absoluteFilePath();
-        qDebug()<<fileInfo.fileName();
+//        qDebug()<<fileInfo.fileName();
     }
     return all_file_list;
 }
-//重写QWidget的4个方法来保证有动作时显示，没动作时隐藏
+
 void Video_Player::mouseDoubleClickEvent(QMouseEvent *)
 {
     on_mouse_active();
@@ -928,19 +1060,59 @@ void Video_Player::mouseReleaseEvent(QMouseEvent *)
 {
     on_mouse_active();
 }
-//有操作出现
+
 void Video_Player::on_mouse_active()
 {
     mouseMoveTime->stop();
-    mouseMoveTime->start();
+    mouseMoveTime->start(100000);
 
     ui->widget->setVisible(true);
+    ui->titlewidget->setVisible(true);
     ui->widget_2->move(10,467);
 }
 void Video_Player::on_timeout_mouserMoveTime()
 {
     ui->widget->setVisible(false);
+    ui->titlewidget->setVisible(false);
     ui->widget_2->move(10,529);
 }
 
-
+QMap<QString,QFileInfo> Video_Player::get_subtitle_files(QFileInfo fileInfo)
+{
+    QString complete_file_name=fileInfo.fileName();
+    QString pure_file_name=fileInfo.completeBaseName();
+    int index=complete_file_name.lastIndexOf(".");
+    QString suffix_file_name=complete_file_name.right(complete_file_name.size()-index-1);
+    qDebug()<<"file name is :"<<pure_file_name<<"suffix is:"<<suffix_file_name;
+    QMap<QString,QFileInfo> tmp_map;
+    tmp_map.clear();
+    for(int i=0;i<all_file_list.size();i++)
+    {
+        QFileInfo tmp_file_info=all_file_list.at(i);
+        QString complete_tmp_file_name=tmp_file_info.fileName();
+        QString tmp_file_info_pure_file_name=tmp_file_info.completeBaseName();
+        int index=complete_tmp_file_name.lastIndexOf(".");
+        QString tmp_file_info_suffix_file_name=complete_tmp_file_name.right(complete_tmp_file_name.size()-index-1);
+         if(suffix_file_name!=tmp_file_info_suffix_file_name&&tmp_file_info_pure_file_name==pure_file_name&&
+                 (suffix_file_name=="sub"||suffix_file_name=="idx"||suffix_file_name=="dvdsub"||suffix_file_name=="pgs"
+                  ||suffix_file_name=="divx"||suffix_file_name=="dvdsub"||suffix_file_name=="txt"
+                  ||suffix_file_name=="timetext"||suffix_file_name=="ssa"||suffix_file_name=="smi"||suffix_file_name=="srt"))
+        {
+            qDebug()<<"add in map:"<<tmp_file_info.absoluteFilePath();
+            tmp_map.insert(tmp_file_info_suffix_file_name,tmp_file_info);
+        }else{
+            continue;
+        }
+    }
+    return tmp_map;
+}
+void Video_Player::show_subtitle_file_name(QMap<QString,QFileInfo> tmp_map )
+{
+    QMap<QString,QFileInfo>::Iterator iter=tmp_map.begin();
+    for(;iter!=tmp_map.end();iter++)
+    {
+        QFileInfo tmp1=iter.value();
+        QString tmp2=iter.key();
+        qDebug()<<tmp1.absoluteFilePath();
+    }
+}

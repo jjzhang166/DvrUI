@@ -22,7 +22,7 @@ class Settings : public QDialog
 public:
     explicit Settings(QWidget *parent = 0);
     ~Settings();
-
+    void FormInCenter();
 public slots:
     void on_hideSettings();
 
@@ -30,7 +30,7 @@ public slots:
 private slots:
     void on_returnButton_clicked();
 
-private://tabbar管理
+private:
     About *abouts;
     Preview *previews;
     ADAS *adass;
@@ -38,11 +38,11 @@ private://tabbar管理
     TimeSetting *timesettings;
 private:
     Ui::Settings *ui;
-    void FormInCenter();
+
 };
 
 
-//将tabWidget设置为横向的
+
 class CustomTabStyle : public QProxyStyle
 {
 public:
@@ -53,7 +53,7 @@ public:
         QSize s = QProxyStyle::sizeFromContents(type, option, size, widget);
         if (type == QStyle::CT_TabBarTab) {
             s.transpose();
-            s.rwidth() = this->width; // 设置每个tabBar中item的大小
+            s.rwidth() = this->width;
             s.rheight() = this->height;
         }
         return s;
@@ -78,7 +78,7 @@ public:
                     painter->setPen(0xf8fcff);
                 }
                 else {
-                    painter->setPen(0x5d5d5d);
+                    painter->setPen(0xf8fcff);
                 }
 
                 painter->drawText(allRect, tab->text, option);
